@@ -1,9 +1,8 @@
-describe CloudFactory::Food do
-  it "broccoli is gross" do
-    CloudFactory::Food.portray("Broccoli").should eql("Gross!")
-  end
-  
-  it "anything else is delicious" do
-    CloudFactory::Food.portray("Not Broccoli").should eql("Delicious!")
+require 'cloud_factory/line'
+
+describe CloudFactory::Line do
+  it "creating a new line" do
+    line = CloudFactory::Line.new("Digitize Card")
+    line.name.should eq("Digitize Card")
   end
 end
