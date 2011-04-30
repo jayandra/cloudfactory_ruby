@@ -1,3 +1,2 @@
 module CloudFactory
-  # Your code goes here...
 end
