@@ -3,8 +3,8 @@ module CloudFactory
     
     attr_accessor :name
     
-    def initialize(name)
-      @name = name
+    def initialize(name, &block)
+      self.name = name
     end
     
   end
