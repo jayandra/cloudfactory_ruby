@@ -21,10 +21,10 @@ module CloudFactory
     # ==using Line.input_headers method <br><br>
     # ---
     # <br>
-    #   * <b>Usage Example:</b><br><br>
+    # * <b>Usage Example:</b><br><br>
     #       line = Line.new("line name")
     #       line.input_headers(InputHeader.new)
-    #     <br>returns 
+    #   <br>returns 
     #       line.input_headers
     def input_headers input_header = nil
       if input_header
@@ -37,10 +37,10 @@ module CloudFactory
     # ==using Line.stations method <br><br>
     # ---
     # <br>
-    #   * <b>Usage Example:</b><br><br>
+    # * <b>Usage Example:</b><br><br>
     #       line = Line.new("line name")
     #       line.stations(Station.new)
-    #     <br>returns 
+    #   <br>returns 
     #       line.stations
     def stations station = nil
       if station
