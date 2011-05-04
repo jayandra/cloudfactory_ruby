@@ -6,6 +6,7 @@ require 'cloud_factory/robot_worker'
 require 'cloud_factory/station'
 require 'cloud_factory/standard_instruction'
 require 'cloud_factory/form_field'
+require 'cloud_factory/custom_instruction'
 
 module CloudFactory
 end
