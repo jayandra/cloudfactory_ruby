@@ -3,6 +3,7 @@ require 'cloud_factory/input_header'
 require 'cloud_factory/worker'
 require 'cloud_factory/human_worker'
 require 'cloud_factory/robot_worker'
+require 'cloud_factory/station'
 
 module CloudFactory
 end
