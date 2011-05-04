@@ -2,8 +2,7 @@ module CloudFactory
   class Line
     
     attr_accessor :name, :input_headers, :stations
-    
-<<<<<<< HEAD
+
     # =<br><b>Line class for CloudFactory api entities.</b><br><br>
     # ==<b>Initializes a new line</b><br><br>
     # * <b>Example:</b><br><br>
@@ -11,14 +10,10 @@ module CloudFactory
     #     line = Line.new("Digit")
     #--
 
-    def initialize(name, &block)
-      self.name = name 
-=======
     def initialize(name)
       @name = name
       @input_headers = []
       @stations = []
->>>>>>> d5f1f559a41dfe7b8f70858e1de5de45bec99cf3
     end
     
     # line = Line.new("line name")
