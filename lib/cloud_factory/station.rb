@@ -1,7 +1,7 @@
 module CloudFactory
   class Station
     
-    attr_accessor :name, :worker
+    attr_accessor :name, :worker, :instruction
     
     def initialize(name)
       @name = name
@@ -22,6 +22,14 @@ module CloudFactory
         @worker = worker
       else
         @worker
+      end
+    end
+    
+    def instruction instruction = nil
+      if instruction
+        @instruction = instruction
+      else
+        @instruction
       end
     end
     
