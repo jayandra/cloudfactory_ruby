@@ -32,7 +32,7 @@ describe CloudFactory::Line do
         line_1 = CloudFactory::Line.create("Digitize Card") do |l|
           l.stations << CloudFactory::Station.new("Station 1 Name")
         
-          # l.station = Station.new("Station 1 Name") do |station|
+          # l.station = Station.Create("Station 1 Name") do |station|
           #   station.workers = worker
           #   station.instruction = instruction
           # end
