@@ -1,9 +1,9 @@
 module CloudFactory
   class CustomInstruction
-
+    # :title
+    # :description  
     attr_accessor :title, :description, :html, :css, :javascript
 
-    # =<br><b>CustomInstruction class for CloudFactory api entities.</b><br><br>
     # ==<b>Initializes a new CustomInstruction</b><br><br>
     # ---
     # * <b>Usage Example:</b><br><br>
@@ -16,7 +16,6 @@ module CloudFactory
       @description = options[:description]
     end
   
-    # =<br><b>CustomInstruction class for CloudFactory api entities.</b><br><br>
     # ==<b>Initializes a new CustomInstruction within block using Variable</b><br><br>
     # ---
     # <br>
