@@ -12,7 +12,7 @@ require 'cloud_factory/run'
 module CloudFactory  
   
   class << self
-    attr_accessor :api_key, :remote_uri
+    attr_accessor :api_key, :api_url, :api_version
     
     def configure
       yield self
@@ -20,5 +20,6 @@ module CloudFactory
   end
   
   # Configuring the defaults
-  CloudFactory.remote_uri = "http://cloudfactory.com/api/v1/"
+  CloudFactory.api_url = "http://cloudfactory.com/api/"
+  CloudFactory.api_version = "v1"
 end
