@@ -10,22 +10,22 @@ describe CloudFactory::Line do
     end
     
     it "using block with variable" do
+      input_header = CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
       line = CloudFactory::Line.create("Digitize Card") do |l|
-        l.input_headers << input_header
+        input_header = CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+        l.input_headers = [input_header]
       end
       line.name.should eq("Digitize Card")
-      line.input_headers.size.should eq(1)
-      line.input_headers.first.should == input_header
+      line.input_headers.first.label.should == "image_url"
     end
 
     it "using block without variable" do
       input_header = CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
       line = CloudFactory::Line.create("Digitize Card") do
-        input_headers << input_header
+        input_headers [input_header]
       end
       line.name.should eq("Digitize Card")
-      line.input_headers.size.should eq(1)
-      line.input_headers.first.should == input_header
+      line.input_headers.first.label.should == "image_url"
     end
     
     context "with 1 station" do
@@ -45,7 +45,8 @@ describe CloudFactory::Line do
           end
         end
         line_1.name.should eq("Digitize Card")
-        line_1.stations.first.name.should eq("Station 1 Name")
+        line_1.stations.name.should eq("Station 1 Name")
+        line_1.stations.worker.should == worker
       end
       
     end

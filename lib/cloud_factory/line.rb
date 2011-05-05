@@ -14,7 +14,6 @@ module CloudFactory
 
     def initialize(name)
       @name = name
-      @input_headers = []
       @stations = []
     end
     
@@ -26,13 +25,14 @@ module CloudFactory
     #       line.input_headers(InputHeader.new)
     #   <br>returns 
     #       line.input_headers
-    def input_headers input_header = nil
-      if input_header
-        @input_headers << input_header
+    def input_headers input_headers = nil
+      if input_headers
+        @input_headers = input_headers
       else
         @input_headers
       end
     end
+    
 
     # ==using Line.stations method <br><br>
     # ---
