@@ -4,9 +4,10 @@ module CloudFactory
     # :description  
     attr_accessor :title, :description, :html, :css, :javascript
 
-    # ==<b>Initializes a new CustomInstruction</b><br><br>
+    # ==Initializes a new CustomInstruction
     # ---
-    # * <b>Usage Example:</b><br><br>
+    # * ==Usage Example:
+    #
     #     attrs = {:title => "Enter text from a business card image",
     #         :description => "Describe"}
     #
@@ -16,34 +17,34 @@ module CloudFactory
       @description = options[:description]
     end
   
-    # ==<b>Initializes a new CustomInstruction within block using Variable</b><br><br>
+    # ==Initializes a new CustomInstruction within block using Variable
     # ---
-    # <br>
-    # * <b>Usage Example:</b><br><br>
-    #     attrs = {:title => "Enter text from a business card image",
-    #         :description => "Describe"}
+    # * ==Usage Example:
+    #   * ===Creating CustomInstruction using block variable
+    #       attrs = {:title => "Enter text from a business card image",
+    #           :description => "Describe"}
     #     
-    #     html_content = '<div>.........</div>'
+    #       html_content = '<div>.........</div>'
     #
-    #     css_content = 'body {background:#fbfbfb;}
-    #         #instructions{
-    #           text-align:center;
-    #         }.....'
+    #       css_content = 'body {background:#fbfbfb;}
+    #           #instructions{
+    #             text-align:center;
+    #           }.....'
     #
-    #     javascript_content = '<script>.........</script>'
+    #       javascript_content = '<script>.........</script>'
     #
-    #     instruction = CustomInstruction.create(instruction) do |i|
-    #       i.html = html_content 
-    #       i.css = css_content
-    #       i.javascript = javascript_content
-    #     end
+    #       instruction = CustomInstruction.create(instruction) do |i|
+    #         i.html = html_content 
+    #         i.css = css_content
+    #         i.javascript = javascript_content
+    #       end
     #
-    #   <br>OR without block variable
-    #     instruction = CustomInstruction.create(instruction) do
-    #       html html_content 
-    #       css css_content
-    #       javascript javascript_content
-    #     end  
+    #   * ===OR without block variable
+    #       instruction = CustomInstruction.create(instruction) do
+    #         html html_content 
+    #         css css_content
+    #         javascript javascript_content
+    #       end  
     #--
     def self.create(instruction, &block)
       instruction = CustomInstruction.new(instruction)
@@ -55,9 +56,8 @@ module CloudFactory
       instruction
     end
 
-    # ==Usage of instruction.html<br><br>
+    # ==Usage of instruction.html
     # ---
-    # <br>
     #     html_content = '<div>.........</div>'
     #
     #     instruction.html = html_content
@@ -70,9 +70,8 @@ module CloudFactory
       end
     end
 
-    # ==Usage of instruction.css<br><br>
+    # ==Usage of instruction.css
     # ---
-    # <br>
     #     css_content = 'body {background:#fbfbfb;}
     #         #instructions{
     #           text-align:center;
@@ -87,9 +86,8 @@ module CloudFactory
       end
     end
     
-    # ==Usage of instruction.javascript<br><br> 
+    # ==Usage of instruction.javascript
     # ---   
-    # <br>
     #     javascript_content = '<script>.........</script>'
     #
     #     instruction.html = javascript_content
