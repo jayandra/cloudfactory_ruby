@@ -3,11 +3,11 @@ module CloudFactory
 
     attr_accessor :label, :field_type, :value, :required, :validation_format
     
-    # =<br>InputHeader class for CloudFactory api entities.<br><br>
-    # ==Initializes a new input_header </b><br><br>
+    # =InputHeader class for CloudFactory api entities.
+    # ==Initializes a new input_header
     # ---
-    # <br>* Syntax for creating new input_header: <b>InputHeader.new(</b> Hash <b>)</b><br><ul>
-    # ==<b>Usage Example:</b><br></li><br>
+    # * Syntax for creating new input_header: <b>InputHeader.new(</b> Hash <b>)</b>
+    # ==Usage Example:
     #   attrs = {:label => "image_url",
     #     :field_type => "text_data",
     #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",

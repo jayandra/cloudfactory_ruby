@@ -3,12 +3,11 @@ module CloudFactory
     
     attr_accessor :number, :reward
     
-    # =<br><b>Worker class for CloudFactory api entities.</b><br>
-    # ==<ul><br><b>Initializes a new worker</b><br><ul>
+    # =Worker class for CloudFactory api entities.
+    # * ==Initializes a new worker
     # ---
-    # <br>
-    # <br><li><b>Usage Example:</b></li><br>
-    #   worker = Worker.new("Digit")
+    # * ==Usage Example:
+    #     worker = Worker.new("Digit")
     #--
     
     def initialize(number=1, reward)

@@ -3,11 +3,10 @@ module CloudFactory
 
     attr_accessor :name, :input_headers, :stations
 
-    # =<br><b>Line class for CloudFactory api entities.</b><br><br>
-    # ==<b>Initializes a new line</b><br><br>
+    # =Line class for CloudFactory api entities.
+    # ==Initializes a new line
     # ---
-    # <br>
-    # * <b>Usage Example:</b><br><br>
+    # * ==Usage Example:
     #
     #     line = Line.new("Digit")
     
@@ -17,13 +16,12 @@ module CloudFactory
       @stations = []
     end
     
-    # ==using Line.input_headers method <br><br>
+    # ==using Line.input_headers method 
     # ---
-    # <br>
-    # * <b>Usage Example:</b><br><br>
+    # * ==Usage Example:
     #       line = Line.new("line name")
     #       line.input_headers(InputHeader.new)
-    #   <br>returns 
+    #   returns 
     #       line.input_headers
     def input_headers input_headers = nil
       if input_headers
@@ -34,13 +32,12 @@ module CloudFactory
     end
     
 
-    # ==using Line.stations method <br><br>
+    # ==using Line.stations method 
     # ---
-    # <br>
-    # * <b>Usage Example:</b><br><br>
+    # * ==Usage Example:
     #       line = Line.new("line name")
     #       line.stations(Station.new)
-    #   <br>returns 
+    #   returns 
     #       line.stations
     def stations station = nil
       if station
@@ -50,35 +47,34 @@ module CloudFactory
       end
     end
     
-    # ==<b>Initializes a new line</b><br><br>
+    # ==Initializes a new line
     # ---
-    # <br>
-    # * <b>Usage Example:</b><br><br>
-    #   <br>creating Line within block using variable
-    #     attrs = {:label => "image_url",
-    #       :field_type => "text_data",
-    #       :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
-    #       :required => true,
-    #       :validation_format => "url"} 
+    # * ==Usage Example:
+    #   * ===creating Line within block using variable
+    #       attrs = {:label => "image_url",
+    #         :field_type => "text_data",
+    #         :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
+    #         :required => true,
+    #         :validation_format => "url"} 
     #
-    #     input_header = InputHeader.new(attrs)
+    #       input_header = InputHeader.new(attrs)
     #
-    #     Line.create("Line name") do |line|
-    #       line.input_headers << input_header
-    #     end
+    #       Line.create("Line name") do |line|
+    #         line.input_headers << input_header
+    #       end
     # 
-    #   <br>OR creating without variable
-    #     attrs = {:label => "image_url",
-    #       :field_type => "text_data",
-    #       :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
-    #       :required => true,
-    #       :validation_format => "url"} 
+    #   * ===OR creating without variable
+    #       attrs = {:label => "image_url",
+    #         :field_type => "text_data",
+    #         :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
+    #         :required => true,
+    #         :validation_format => "url"} 
     #
-    #     input_header = InputHeader.new(attrs)
+    #       input_header = InputHeader.new(attrs)
     #
-    #     Line.create("Line name") do
-    #       input_headers << input_header
-    #     end
+    #       Line.create("Line name") do
+    #         input_headers << input_header
+    #       end
     #--
     def self.create(name, &block)
       line = Line.new(name)
