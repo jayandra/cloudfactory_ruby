@@ -19,9 +19,12 @@ Gem::Specification.new do |s|
   s.executables   = ["cf"]
   s.require_paths = ["lib"]
   
+  s.add_dependency  "activesupport", '~> 3.0.0'
+  
   s.add_development_dependency "rspec", "~> 2.0"
   s.add_development_dependency "aruba"
   s.add_development_dependency "cucumber"
   s.add_development_dependency "thor"
   s.add_development_dependency "rdoc", "~> 3.5.3"
+  s.add_development_dependency "ruby-debug19"
 end
