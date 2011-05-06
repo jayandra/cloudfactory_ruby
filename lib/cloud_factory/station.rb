@@ -4,10 +4,10 @@ module CloudFactory
     attr_accessor :name
     
     # for creating worker instance 
-    attr_accessor :worker_instance
+    #attr_accessor :worker_instance
     
     # for creating instruction instance
-    attr_accessor :instruction_instance
+    #attr_accessor :instruction_instance
     
     # =Station class for CloudFactory api entities.
     # ==Initializes a new station
@@ -68,6 +68,9 @@ module CloudFactory
         @worker_instance
       end
     end
+    def worker=(worker_instance) # :nodoc:
+      @worker_instance = worker_instance
+    end
     
     # * Creates new instruction for station object
     # ==Usage of Instruction method for "station" object
@@ -89,6 +92,8 @@ module CloudFactory
         @instruction_instance
       end
     end
-    
+    def instruction=(instruction_instance) # :nodoc:
+      @instruction_instance = instruction_instance
+    end
   end
 end

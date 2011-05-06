@@ -10,7 +10,6 @@ describe CloudFactory::Line do
     end
     
     it "using block with variable" do
-      input_header = CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
       line = CloudFactory::Line.create("Digitize Card") do |l|
         input_header = CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
         l.input_headers = [input_header]
