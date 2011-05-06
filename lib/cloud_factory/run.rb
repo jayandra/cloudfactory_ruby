@@ -17,6 +17,17 @@ module CloudFactory
       end
       run
     end
+    #Line.fire_run(@input_data, )
+    #  POST http://cf.com/api/v1/lines/:id/runs
+    #	 file.csv
+    #  InputHeader.new(:label => "file")
+  	#  InputHeader.new(:label => "duration")
+    # 
+    #  FormField.new(:lable => "duration", :value => 300)
+    # 
+    #  file, duration
+    #www., 100
+    
     
     def input_data input_data = nil
       if input_data
