@@ -1,12 +1,13 @@
 module CloudFactory
   class CustomInstruction
-    # :title
-    # :description  
-    attr_accessor :title, :description, :html, :css, :javascript
+    # Title of "custom_instruction" object, e.g. :title => "title_name of custom_instruction"
+    attr_accessor :title
+    
+    # Description of "custom_instruction" object, e.g. :description => "description for title of custom_instruction"
+    attr_accessor :description
 
     # ==Initializes a new CustomInstruction
-    # ---
-    # * ==Usage Example:
+    # ==Usage custom_instruction.new(hash):
     #
     #     attrs = {:title => "Enter text from a business card image",
     #         :description => "Describe"}
@@ -18,34 +19,32 @@ module CloudFactory
     end
   
     # ==Initializes a new CustomInstruction within block using Variable
-    # ---
-    # * ==Usage Example:
-    #   * ===Creating CustomInstruction using block variable
-    #       attrs = {:title => "Enter text from a business card image",
-    #           :description => "Describe"}
+    # ==Usage of custom_instruction.create(instruction):
+    # ===Creating CustomInstruction using block variable
+    #     attrs = {:title => "Enter text from a business card image",
+    #         :description => "Describe"}
     #     
-    #       html_content = '<div>.........</div>'
+    #     html_content = '<div>.........</div>'
     #
-    #       css_content = 'body {background:#fbfbfb;}
-    #           #instructions{
-    #             text-align:center;
-    #           }.....'
+    #     css_content = 'body {background:#fbfbfb;}
+    #          #instructions{
+    #           text-align:center;
+    #         }.....'
     #
-    #       javascript_content = '<script>.........</script>'
+    #     javascript_content = '<script>.........</script>'
     #
-    #       instruction = CustomInstruction.create(instruction) do |i|
-    #         i.html = html_content 
-    #         i.css = css_content
-    #         i.javascript = javascript_content
-    #       end
+    #     instruction = CustomInstruction.create(instruction) do |i|
+    #       i.html = html_content 
+    #        i.css = css_content
+    #        i.javascript = javascript_content
+    #      end
     #
-    #   * ===OR without block variable
-    #       instruction = CustomInstruction.create(instruction) do
-    #         html html_content 
-    #         css css_content
-    #         javascript javascript_content
-    #       end  
-    #--
+    # ===OR without block variable
+    #     instruction = CustomInstruction.create(instruction) do
+    #       html html_content 
+    #       css css_content
+    #       javascript javascript_content
+    #     end
     def self.create(instruction, &block)
       instruction = CustomInstruction.new(instruction)
       if block.arity >= 1
@@ -56,48 +55,52 @@ module CloudFactory
       instruction
     end
 
-    # ==Usage of instruction.html
-    # ---
+    # ==Usage of instruction.html:
     #     html_content = '<div>.........</div>'
     #
     #     instruction.html = html_content
     #
-    def html html = nil
-      if html
-        @html = html
+    def html html_content = nil
+      if html_content
+        @html_content = html_content
       else
-        @html
+        @html_content
       end
     end
+    def html=(html_content) # :nodoc:
+      @html_content = html_content
+    end
 
-    # ==Usage of instruction.css
-    # ---
+    # ==Usage of instruction.css:
     #     css_content = 'body {background:#fbfbfb;}
     #         #instructions{
     #           text-align:center;
     #         }.....'
     #
     #     instruction.css = css_content
-    def css css = nil
-      if css
-        @css = css
+    def css css_content = nil
+      if css_content
+        @css_content = css_content
       else
-        @css
+        @css_content
       end
     end
-    
-    # ==Usage of instruction.javascript
-    # ---   
+    def css=(css_content) # :nodoc:
+      @css_content = css_content
+    end
+    # ==Usage of instruction.javascript:
     #     javascript_content = '<script>.........</script>'
     #
     #     instruction.html = javascript_content
-    def javascript javascript = nil
-      if javascript
-        @javascript = javascript
+    def javascript javascript_content = nil
+      if javascript_content
+        @javascript_content = javascript_content
       else
-        @javascript
+        @javascript_content
       end
     end
-
+    def javascript=(javascript_content) # :nodoc:
+      @javascript_content = javascript_content
+    end
   end
 end
