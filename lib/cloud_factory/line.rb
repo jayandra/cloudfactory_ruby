@@ -1,6 +1,8 @@
 module CloudFactory
   class Line
-
+    include Client
+    include ClientRequestResponse
+    
     attr_accessor :name
     #attr_accessor :input_header_instance
     #attr_accessor :station_instance
@@ -15,6 +17,7 @@ module CloudFactory
     def initialize(name)
       @name = name
       @stations = []
+      self.class.post("/lines.json", :body => {:line => {:name => name}})
     end
     
     # ==using Line.input_headers method 
@@ -85,7 +88,9 @@ module CloudFactory
       else
         line.instance_eval &block
       end
+      post("/lines.json", :body => {:line => {:name => "First Line"}})
       line
     end
+    
   end
 end
