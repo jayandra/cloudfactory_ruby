@@ -1,3 +1,11 @@
+require 'httparty'
+require 'hashie'
+
+directory = File.expand_path(File.dirname(__FILE__))
+
+Hash.send :include, Hashie::HashExtensions
+
+
 require 'cloud_factory/line'
 require 'cloud_factory/input_header'
 require 'cloud_factory/worker'
@@ -17,6 +25,7 @@ module CloudFactory
     def configure
       yield self
     end
+    
   end
   
   # Configuring the defaults
