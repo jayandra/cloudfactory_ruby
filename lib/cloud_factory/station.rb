@@ -1,13 +1,8 @@
 module CloudFactory
   class Station
-    # Staion name
+    
+    # name of the station, e.g. station = Station.new("station_name")
     attr_accessor :name
-    
-    # for creating worker instance 
-    #attr_accessor :worker_instance
-    
-    # for creating instruction instance
-    #attr_accessor :instruction_instance
     
     # =Station class for CloudFactory api entities.
     # ==Initializes a new station
@@ -19,8 +14,6 @@ module CloudFactory
     
     # =Station class for CloudFactory api entities.
     # ==Initializes a new station within block 
-    # ---
-    # 
     # ==Usage Example
     # ===Creating station using block variable
     #     worker = HumanWorker.new(2, 0.2)
@@ -37,6 +30,7 @@ module CloudFactory
     #     
     #         i.form_fields = form_field_value
     #       end
+    #     end
     # ===OR creating without variable within block
     #     station = Station.new("station name") do
     #       worker worker
@@ -56,7 +50,7 @@ module CloudFactory
       station
     end
     
-    # * Creates new instruction for station object
+    # ==Creates new instruction for station object
     # ==Usage of worker method for "station" object
     #     worker = HumanWorker.new(2, 0.2)
     #     
@@ -72,7 +66,7 @@ module CloudFactory
       @worker_instance = worker_instance
     end
     
-    # * Creates new instruction for station object
+    # ==Creates new instruction for station object
     # ==Usage of Instruction method for "station" object
     #
     #       form_field_value = []
