@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.executables   = ["cf"]
   s.require_paths = ["lib"]
   
+  s.add_dependency  "i18n"
   s.add_dependency  "activesupport", '~> 3.0.0'
   s.add_dependency  "hashie", "~> 1.0.0"
   s.add_dependency  "httparty", "~> 0.7.7"
