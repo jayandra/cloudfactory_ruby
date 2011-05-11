@@ -43,7 +43,6 @@ module CloudFactory
       self.id = resp._id
     end
     
-    # ==using Line.input_headers method 
     # ==Usage of line.input_headers(input_header)
     #     line = Line.new("line name")
     #     line.input_headers = InputHeader.new
@@ -59,8 +58,7 @@ module CloudFactory
     def input_headers=(input_headers_value) # :nodoc:
       @input_headers_value = input_headers_value
     end
-
-    # ==using Line.stations method 
+    
     # ==Usage of line.stations << station
     #     line = Line.new("line name")
     #     station = Station.new("station_name")
