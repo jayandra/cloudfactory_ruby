@@ -1,18 +1,29 @@
 module CloudFactory
   class Station
+    include Client
+    include ClientRequestResponse
     
-    # name of the station, e.g. station = Station.new("station_name")
-    attr_accessor :name
     
-    # =Station class for CloudFactory api entities.
+    # type of the station, e.g. station = Station.new(line, {:type => "Work"})
+    attr_accessor :type
+    
+    # line attribute is parent attribute for station & is reuired for making Api call
+    attr_accessor :line
+    
+    # station_id attribute is required to be stored for making Api calls
+    attr_accessor :station_id
+
     # ==Initializes a new station
     # ==Usage Example
     #     station = Station.new("station name")
-    def initialize(name)
-      @name = name
+    def initialize(line, options={})
+      @line = line
+      @type = options[:type].camelize
+      resp = self.class.post("/lines/#{@line.id}/stations.json", :body => {:station => {:type => @type}})
+      debugger
+      @station_id = resp._id
     end
-    
-    # =Station class for CloudFactory api entities.
+
     # ==Initializes a new station within block 
     # ==Usage Example
     # ===Creating station using block variable
@@ -40,8 +51,8 @@ module CloudFactory
     #
     #         i.form_fields = form_field_value
     #       end
-    def self.create(name, &block)
-      station = Station.new(name)
+    def self.create(line, name, &block)
+      station = Station.new(line, name)
       if block.arity >= 1
         block.call(station)
       else
@@ -88,6 +99,16 @@ module CloudFactory
     end
     def instruction=(instruction_instance) # :nodoc:
       @instruction_instance = instruction_instance
+    end
+    
+    def update(line, options={})
+      @type = options[:type]
+      self.class.put("/lines/#{@line.id}/stations/#{station_id}.json", :body => {:station => {:type => @type}})
+    end
+    
+    def self.get_station(station)
+      debugger
+      get("/lines/#{station.line.id}/stations/#{station.station_id}.json")
     end
   end
 end
