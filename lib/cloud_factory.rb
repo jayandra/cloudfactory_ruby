@@ -60,5 +60,6 @@ require 'cloud_factory/standard_instruction'
 require 'cloud_factory/form_field'
 require 'cloud_factory/custom_instruction'
 require 'cloud_factory/run'
+require 'cloud_factory/category'
 
 
