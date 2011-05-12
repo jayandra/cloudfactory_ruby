@@ -5,11 +5,13 @@ PATH
       activesupport (~> 3.0.0)
       hashie (~> 1.0.0)
       httparty (~> 0.7.7)
+      i18n
 
 GEM
   remote: http://rubygems.org/
   specs:
     activesupport (3.0.7)
+    addressable (2.2.5)
     archive-tar-minitar (0.5.2)
     aruba (0.2.3)
       background_process
@@ -31,6 +33,7 @@ GEM
     hashie (1.0.0)
     httparty (0.7.7)
       crack (= 0.1.8)
+    i18n (0.5.0)
     json (1.4.6)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
@@ -55,6 +58,10 @@ GEM
       archive-tar-minitar (>= 0.5.2)
     term-ansicolor (1.0.5)
     thor (0.14.6)
+    vcr (1.9.0)
+    webmock (1.6.2)
+      addressable (>= 2.2.2)
+      crack (>= 0.1.7)
 
 PLATFORMS
   ruby
@@ -67,3 +74,5 @@ DEPENDENCIES
   rspec (~> 2.0)
   ruby-debug19
   thor
+  vcr
+  webmock

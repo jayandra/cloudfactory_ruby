@@ -1,13 +1,32 @@
 module CloudFactory
   class Run
     
-    attr_accessor :name, :input_data
-
+    # name of the "run" object, e.g. run = Run.new("run_name")
+    attr_accessor :name
+    
+    # input_data for the Run
+    attr_accessor :input_data
+    
+    # ==Initializes a new Run
+    # ==Usage Example:
+    #     
+    #   run = Run.new("RunName")
     def initialize(name)
       @name = name
       @input_data =[]
     end
     
+    # ==Initializes a new run
+    # ==Usage of run.create("run_name") do |block|
+    # ===creating Run within block using variable
+    #   run = CloudFactory::Run.create("run name") do |r|
+    #     r.input_data [{:name => "Bob Smith", :age => 23}, {:name => "John Doe", :age => 24}]
+    #   end
+    # 
+    # ===OR creating without variable
+    #   run = CloudFactory::Run.create("run name") do
+    #     input_data [{:name => "Bob Smith", :age => 23}, {:name => "John Doe", :age => 24}]
+    #   end
     def self.create(name, &block)
       run = Run.new(name)
       if block.arity >= 1
