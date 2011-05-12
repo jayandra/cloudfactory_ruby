@@ -4,13 +4,20 @@ describe CloudFactory::Line do
   let(:input_header) { CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"}) }
   
   context "create a line" do
-    it "the plain ruby way" do
-      line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
-      line.title.should eq("Digitize Card")
-      line.category_id.should eq("4dc8ad6572f8be0600000001")
+    
+    # use_vcr_cassette "lines/create", :record => :new_episodes
+    
+    it "the plain ruby way", :focus => true do
+      VCR.use_cassette "lines/create", :record => :new_episodes do
+        line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+        line.title.should eq("Digitize Card")
+        line.category_id.should eq("4dc8ad6572f8be0600000001")
+      end
     end
     
-    it "using block with variable" do
+    it "using block with variable", :focus => true do
+      VCR.use_cassette "lines/create-block-var", :record => :new_episodes do
+      
       line = CloudFactory::Line.create("Digitize Card","4dc8ad6572f8be0600000001") do |l|
         input_header = CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",
             :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
@@ -20,8 +27,10 @@ describe CloudFactory::Line do
       line.category_id.should eq("4dc8ad6572f8be0600000001")
       line.input_headers.first.label.should == "image_url"
     end
+    end
 
-    it "using block without variable" do
+    it "using block without variable", :focus => true do
+      VCR.use_cassette "lines/create-without-block-var", :record => :new_episodes do
       input_header = CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
       worker = CloudFactory::HumanWorker.new(2, 0.2)
       form_fields = []
@@ -41,14 +50,17 @@ describe CloudFactory::Line do
       line.category_id.should eq("4dc8ad6572f8be0600000001")
       line.input_headers.first.label.should == "image_url"
     end
+    end
     
-    it "with all the optional params" do
+    it "with all the optional params", :focus => true do
+      VCR.use_cassette "lines/create-optional-params", :record => :new_episodes do
       # title, category along with optional description, public
       line = CloudFactory::Line.new("Line Name", "4dc8ad6572f8be0600000001", {:public => true, :description => "this is description"})
       line.title.should eq("Line Name")
       line.category_id.should eq("4dc8ad6572f8be0600000001")
       line.public.should == true
       line.description.should eq("this is description")
+    end
     end
     
     context "with 1 station" do
