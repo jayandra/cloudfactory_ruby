@@ -23,7 +23,6 @@ module CloudFactory
       def post(*args); handle_response super end
     
       def handle_response(response)
-        debugger
         case response.code
         when 401; raise Unauthorized.new
         when 403; raise RateLimitExceeded.new
