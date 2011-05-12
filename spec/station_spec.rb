@@ -3,8 +3,10 @@ require 'spec_helper'
 describe CloudFactory::Station do
   context "create a station" do
     it "the plain ruby way" do
-      station = CloudFactory::Station.new("Station One")
-      station.name.should eq("Station One")
+      line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+      line.title.should eq("Digitize Card")
+      station = CloudFactory::Station.new(line, :type => "Work")
+      station.type.should eq("Work")
     end
 
     it "using the block variable" do
@@ -13,14 +15,17 @@ describe CloudFactory::Station do
       form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
       form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
       
+      line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+      line.title.should eq("Digitize Card")
+      
       worker = CloudFactory::HumanWorker.new(2, 0.2)
-      station = CloudFactory::Station.create("Station 1 Name") do |s|
+      station = CloudFactory::Station.create(line, :type => "work") do |s|
         s.worker = worker
         s.instruction = CloudFactory::StandardInstruction.create(:title => "Enter text from a business card image", :description => "Describe") do |i|
           i.form_fields = form_fields
         end
       end
-      station.name.should eq("Station 1 Name")
+      station.type.should eq("Work")
       station.worker.should == worker
       station.worker.number.should == 2
       station.worker.reward.should == 0.2
@@ -32,14 +37,17 @@ describe CloudFactory::Station do
       form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
       form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
       
+      line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+      line.title.should eq("Digitize Card")
+      
       human_worker = CloudFactory::HumanWorker.new(2, 0.2)
-      station_1 = CloudFactory::Station.create("Station 1 Name") do 
+      station_1 = CloudFactory::Station.create(line, :type => "Work") do 
         worker human_worker
         instruction = CloudFactory::StandardInstruction.create(:title => "Enter text from a business card image", :description => "Describe") do 
           form_fields form_fields
         end 
       end
-      station_1.name.should eq("Station 1 Name")
+      station_1.type.should eq("Work")
       station_1.worker.should == human_worker
       station_1.worker.number.should == 2
       station_1.worker.reward.should == 0.2
@@ -122,12 +130,66 @@ describe CloudFactory::Station do
         i.css = css
         i.javascript = javascript
       end
-      station = CloudFactory::Station.create("Station two") do |s|
+      line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+      line.title.should eq("Digitize Card")
+      
+      station = CloudFactory::Station.create(line, :type => "work") do |s|
         s.instruction = instruction
       end
+      station.type.should eq("Work")
       station.instruction.html.should == html
       station.instruction.css.should == css
       station.instruction.javascript.should == javascript
     end
   end
+  
+  context "updating a station" do
+    it "should update a station" do
+      line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+      line.title.should eq("Digitize Card")
+      station = CloudFactory::Station.new(line, :type => "Work")
+      station.type.should eq("Work")
+      station.update(line, :type => "Tournament")
+      station.type.should eq("Tournament")
+      station.type.should_not eq("Work")
+    end
+  end
+  
+  context "get station" do
+    it "should get information about a single station" do
+      line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+      line.title.should eq("Digitize Card")
+      station = CloudFactory::Station.new(line, :type => "Work")
+      station.type.should eq("Work")
+      CloudFactory::Station.get_station(station)._type.should eq("WorkStation")
+    end
+    
+    it "should get all existing stations of a line" do
+      line = CloudFactory::Line.create("Digitize Card", "4dc8ad6572f8be0600000001") do |l|
+        station = []
+        station << CloudFactory::Station.new(l, :type => "work")
+        station << CloudFactory::Station.new(l, :type => "Tournament")
+        l.stations = station
+      end
+      stations = CloudFactory::Station.all(line)
+      stations[0]._type.should eq("WorkStation")
+      stations[1]._type.should eq("TournamentStation")
+    end
+  end
+  
+  context "deleting a station" do
+    it "should delete a station" do
+      line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+      line.title.should eq("Digitize Card")
+      station = CloudFactory::Station.new(line, :type => "Work")
+      station.type.should eq("Work")
+      station.delete(line)
+      begin
+        CloudFactory::Station.get_station(line)
+      rescue Exception => exec
+        exec.class.should eql(NoMethodError)
+      end
+    end
+  end
+  
 end
