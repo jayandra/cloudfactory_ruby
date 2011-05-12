@@ -1,0 +1,94 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishdas.lvh.me:3000/api/v1/lines.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: line[title]=Digitize%20Card&line[category_id]=4dc8ad6572f8be0600000001&line[public]=&line[description]=
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 201
+      message: Created
+    headers: 
+      location: 
+      - http://manishdas.lvh.me:3000/api/v1/lines/4dcb97c772f8be0fb5000037
+      content-type: 
+      - application/json; charset=utf-8
+      cache-control: 
+      - no-cache
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.816555"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Thu, 12 May 2011 08:18:15 GMT
+      content-length: 
+      - "295"
+    body: "{\"_id\":\"4dcb97c772f8be0fb5000037\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-12T14:03:15+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-12T14:03:15+05:45\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcb97c772f8be0fb5000037/stations.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: station[type]=Work
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"28fb1fdce52a6e44cf558767bfb7ef35\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.747497"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Thu, 12 May 2011 08:18:15 GMT
+      content-length: 
+      - "197"
+    body: "{\"_id\":\"4dcb97c772f8be0fb5000038\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-12T14:03:15+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcb97c772f8be0fb5000037\",\"updated_at\":\"2011-05-12T14:03:15+05:45\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcb97c772f8be0fb5000037/stations/4dcb97c772f8be0fb5000038.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: 
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"28fb1fdce52a6e44cf558767bfb7ef35\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.815969"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Thu, 12 May 2011 08:18:16 GMT
+      content-length: 
+      - "197"
+    body: "{\"_id\":\"4dcb97c772f8be0fb5000038\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-12T14:03:15+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcb97c772f8be0fb5000037\",\"updated_at\":\"2011-05-12T14:03:15+05:45\"}"
+    http_version: "1.1"
