@@ -1,5 +1,7 @@
 module CloudFactory
   class InputHeader
+    include Client
+    include ClientRequestResponse
 
     # label for the input_header, e.g. :label => "image_url"
     attr_accessor :label
@@ -27,12 +29,18 @@ module CloudFactory
     #     :validation_format => "url"} 
     #
     #   input_header = InputHeader.new(attrs)
-    def initialize(options={})
+    def initialize(line, options={})
       @label              = options[:label]
       @field_type         = options[:field_type]
       @value              = options[:value]
       @required           = options[:required]
       @validation_format  = options[:validation_format]
+      self.class.post("/lines/#{line.id}/input_headers.json", :body => 
+          {:input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format}})
+    end
+    
+    def self.get_input_headers_of_line(line)
+      get("/lines/#{line.id}/input_headers.json")
     end
   end
 end

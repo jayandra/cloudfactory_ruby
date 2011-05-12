@@ -26,8 +26,8 @@ module CloudFactory
   # Set ENV['TEST'] is true for testing against the api
   # TEST=true bundle exec rspec spec/.....
   if ENV['TEST']
-    CloudFactory.api_key = '9d51f463f0eb3e24ea72e7059a9a6a7604aa8717'
-    CloudFactory.api_url = "sprout.lvh.me:3000/api/"
+    CloudFactory.api_key = '6bbf1bf58c56119aa22801484a8700071c35fe1d'
+    CloudFactory.api_url = "manishdas.lvh.me:3000/api/"
   end
   class CloudFactoryError < StandardError
     attr_reader :data
