@@ -142,6 +142,7 @@ describe CloudFactory::Station do
       station.instruction.javascript.should == javascript
     end
   end
+  
   context "updating a station" do
     it "should update a station" do
       line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
@@ -159,24 +160,36 @@ describe CloudFactory::Station do
       line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
       line.title.should eq("Digitize Card")
       station = CloudFactory::Station.new(line, :type => "Work")
-      debugger
       station.type.should eq("Work")
-      CloudFactory::Station.get_station(station).type.should eq("Work")
+      CloudFactory::Station.get_station(station)._type.should eq("WorkStation")
+    end
+    
+    it "should get all existing stations of a line" do
+      line = CloudFactory::Line.create("Digitize Card", "4dc8ad6572f8be0600000001") do |l|
+        station = []
+        station << CloudFactory::Station.new(l, :type => "work")
+        station << CloudFactory::Station.new(l, :type => "Tournament")
+        l.stations = station
+      end
+      stations = CloudFactory::Station.all(line)
+      stations[0]._type.should eq("WorkStation")
+      stations[1]._type.should eq("TournamentStation")
     end
   end
-
+  
   context "deleting a station" do
-    xit "should delete a station" do
+    it "should delete a station" do
       line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
       line.title.should eq("Digitize Card")
       station = CloudFactory::Station.new(line, :type => "Work")
       station.type.should eq("Work")
-      station.delete
+      station.delete(line)
       begin
         CloudFactory::Station.get_station(line)
       rescue Exception => exec
-        exec.class.should eql(Crack::ParseError)
+        exec.class.should eql(NoMethodError)
       end
     end
   end
+  
 end
