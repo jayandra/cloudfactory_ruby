@@ -4,10 +4,10 @@ describe CloudFactory do
   context "configuration" do
     it "be able to configure the api key" do
       CloudFactory.configure do |c|
-        c.api_key = "1323d12a25cb9bb9f1f201b75bf81a037f599aa9"
+        c.api_key = "6bbf1bf58c56119aa22801484a8700071c35fe1d"
       end
-      CloudFactory.api_key.should eq("1323d12a25cb9bb9f1f201b75bf81a037f599aa9")
-      CloudFactory.api_url.should eq("http://cloudfactory.com/api/")
+      CloudFactory.api_key.should eq("6bbf1bf58c56119aa22801484a8700071c35fe1d")
+      CloudFactory.api_url.should eq("manishdas.lvh.me:3000/api/")
       CloudFactory.api_version.should eq("v1")
     end
   end
