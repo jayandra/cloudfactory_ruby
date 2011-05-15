@@ -13,7 +13,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishdas.lvh.me:3000/api/v1/lines/4dcb97bf72f8be0fb500002f
+      - http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a4272f8be152300007c
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -21,19 +21,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.821336"
+      - "0.768437"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 12 May 2011 08:18:07 GMT
+      - Sun, 15 May 2011 04:44:50 GMT
       content-length: 
       - "295"
-    body: "{\"_id\":\"4dcb97bf72f8be0fb500002f\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-12T14:03:07+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-12T14:03:07+05:45\"}"
+    body: "{\"_id\":\"4dcf5a4272f8be152300007c\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-15T10:29:50+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-15T10:29:50+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcb97bf72f8be0fb500002f/stations.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a4272f8be152300007c/stations.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
     body: station[type]=Work
     headers: 
       accept: 
@@ -46,18 +46,18 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"224167c5f875e666983fb76959acec43\""
+      - "\"829c9823f89ff8cb951975c0c423da08\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.811059"
+      - "0.759016"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 12 May 2011 08:18:08 GMT
+      - Sun, 15 May 2011 04:44:50 GMT
       content-length: 
       - "197"
-    body: "{\"_id\":\"4dcb97c072f8be0fb5000030\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-12T14:03:08+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcb97bf72f8be0fb500002f\",\"updated_at\":\"2011-05-12T14:03:08+05:45\"}"
+    body: "{\"_id\":\"4dcf5a4272f8be152300007d\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-15T10:29:50+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcf5a4272f8be152300007c\",\"updated_at\":\"2011-05-15T10:29:50+05:45\"}"
     http_version: "1.1"

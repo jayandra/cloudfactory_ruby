@@ -1,0 +1,156 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishdas.lvh.me:3000/api/v1/lines.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: line[title]=Digitize&line[category_id]=4dc8ad6572f8be0600000006&line[public]=&line[description]=
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 201
+      message: Created
+    headers: 
+      location: 
+      - http://manishdas.lvh.me:3000/api/v1/lines/4dcf75f072f8be1523000102
+      content-type: 
+      - application/json; charset=utf-8
+      cache-control: 
+      - no-cache
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.850950"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Sun, 15 May 2011 06:42:56 GMT
+      content-length: 
+      - "290"
+    body: "{\"_id\":\"4dcf75f072f8be1523000102\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000006\",\"complete\":false,\"created_at\":\"2011-05-15T12:27:56+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize\",\"updated_at\":\"2011-05-15T12:27:56+05:45\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf75f072f8be1523000102/input_headers.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: input_header[label]=image_url_type&input_header[field_type]=text_data&input_header[value]=http%3A%2F%2Fs3.amazon.com%2Fbizcardarmy%2Fmedium%2F1.jpg&input_header[required]=true&input_header[validation_format]=url
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"96c3020ddd38ee5556cb972fa87787b1\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.782702"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Sun, 15 May 2011 06:42:57 GMT
+      content-length: 
+      - "205"
+    body: "{\"field_type\":\"text_data\",\"label\":\"image_url_type\",\"line_id\":\"4dcf75f072f8be1523000102\",\"required\":\"true\",\"station_ids\":[],\"validation_format\":\"url\",\"value\":\"http://s3.amazon.com/bizcardarmy/medium/1.jpg\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishdas.lvh.me:3000/api/v1/lines.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: line[title]=Digitize&line[category_id]=4dc8ad6572f8be0600000006&line[public]=&line[description]=
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 201
+      message: Created
+    headers: 
+      location: 
+      - http://manishdas.lvh.me:3000/api/v1/lines/4dcf75f172f8be1523000104
+      content-type: 
+      - application/json; charset=utf-8
+      cache-control: 
+      - no-cache
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.796407"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Sun, 15 May 2011 06:42:58 GMT
+      content-length: 
+      - "290"
+    body: "{\"_id\":\"4dcf75f172f8be1523000104\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000006\",\"complete\":false,\"created_at\":\"2011-05-15T12:27:57+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize\",\"updated_at\":\"2011-05-15T12:27:57+05:45\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf75f072f8be1523000102/input_headers.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: 
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"8566bb5b1bcc5705da9865df1c990dc9\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.715907"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Sun, 15 May 2011 06:42:58 GMT
+      content-length: 
+      - "322"
+    body: "[{\"_id\":\"4dcf75f172f8be1523000103\",\"created_at\":\"2011-05-15T12:27:57+05:45\",\"field_type\":\"text_data\",\"label\":\"image_url_type\",\"line_id\":\"4dcf75f072f8be1523000102\",\"required\":\"true\",\"station_ids\":[],\"updated_at\":\"2011-05-15T12:27:57+05:45\",\"validation_format\":\"url\",\"value\":\"http://s3.amazon.com/bizcardarmy/medium/1.jpg\"}]"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf75f072f8be1523000102/input_headers/4dcf75f172f8be1523000103.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: 
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"96c3020ddd38ee5556cb972fa87787b1\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "8.994782"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Sun, 15 May 2011 06:43:07 GMT
+      content-length: 
+      - "205"
+    body: "{\"field_type\":\"text_data\",\"label\":\"image_url_type\",\"line_id\":\"4dcf75f072f8be1523000102\",\"required\":\"true\",\"station_ids\":[],\"validation_format\":\"url\",\"value\":\"http://s3.amazon.com/bizcardarmy/medium/1.jpg\"}"
+    http_version: "1.1"

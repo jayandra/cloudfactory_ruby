@@ -13,7 +13,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishdas.lvh.me:3000/api/v1/lines/4dcbab2372f8be2142000035
+      - http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a0172f8be1523000070
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -21,12 +21,12 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.852020"
+      - "0.767393"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 12 May 2011 09:40:51 GMT
+      - Sun, 15 May 2011 04:43:45 GMT
       content-length: 
       - "310"
-    body: "{\"_id\":\"4dcbab2372f8be2142000035\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-12T15:25:51+05:45\",\"description\":\"this is description\",\"public\":true,\"rate\":0,\"rating_value\":0,\"title\":\"line-name\",\"updated_at\":\"2011-05-12T15:25:51+05:45\"}"
+    body: "{\"_id\":\"4dcf5a0172f8be1523000070\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-15T10:28:45+05:45\",\"description\":\"this is description\",\"public\":true,\"rate\":0,\"rating_value\":0,\"title\":\"line-name\",\"updated_at\":\"2011-05-15T10:28:45+05:45\"}"
     http_version: "1.1"
