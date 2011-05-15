@@ -52,6 +52,49 @@ describe CloudFactory::InputHeader do
         input_headers_of_line.map(&:value).should include("http://s3.amazon.com/bizcardarmy/")
       end
     end
+    
+    it "should return info of a input header" do
+      VCR.use_cassette "input_headers/get-input-header", :record => :new_episodes do
+        attrs_1 = {:label => "image_url_type",
+          :field_type => "text_data",
+          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
+          :required => true, 
+          :validation_format => "url"
+        }
+        
+        line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
+          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
+          l.input_headers = [input_header_1]
+        end
+        input_headers_of_line = CloudFactory::InputHeader.get_input_headers_of_line(line)
+        input_header = input_headers_of_line.last
+        got_input_header = CloudFactory::InputHeader.get_input_header(line, input_header)
+        input_header.label.should eq("image_url_type")
+        input_header.field_type.should eq("text_data")
+        input_header.value.should eq("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
+      end
+    end
   end
   
+  context "update input_header" do
+    it "should update input_header" do
+      VCR.use_cassette "input_headers/update-input-header", :record => :new_episodes do
+        attrs_1 = {:label => "image_url_type",
+          :field_type => "text_data",
+          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
+          :required => true, 
+          :validation_format => "url"
+        }
+        
+        line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
+          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
+          l.input_headers = [input_header_1]
+        end
+        input_header = CloudFactory::InputHeader.get_input_headers_of_line(line).first
+        updated_input_header = CloudFactory::InputHeader.update(line, input_header, {:label => "jackpot", :field_type => "lottery"})
+        updated_input_header.parsed_response['label'].should eq("jackpot")
+        updated_input_header.parsed_response['field_type'].should eq("lottery")
+      end
+    end
+  end
 end
