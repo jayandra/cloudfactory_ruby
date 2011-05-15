@@ -13,7 +13,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishdas.lvh.me:3000/api/v1/lines/4dcbab1f72f8be2142000030
+      - http://manishdas.lvh.me:3000/api/v1/lines/4dcf59fb72f8be1523000069
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -21,14 +21,45 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.896406"
+      - "0.824310"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 12 May 2011 09:40:47 GMT
+      - Sun, 15 May 2011 04:43:40 GMT
       content-length: 
       - "295"
-    body: "{\"_id\":\"4dcbab1f72f8be2142000030\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-12T15:25:47+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-12T15:25:47+05:45\"}"
+    body: "{\"_id\":\"4dcf59fb72f8be1523000069\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-15T10:28:39+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-15T10:28:39+05:45\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf59fb72f8be1523000069/input_headers.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    body: input_header[label]=image_url&input_header[field_type]=text_data&input_header[value]=http%3A%2F%2Fs3.amazon.com%2Fbizcardarmy%2Fmedium%2F1.jpg&input_header[required]=true&input_header[validation_format]=url
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"264c49d70dbcaf995156e4fa582a80c2\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.756257"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Sun, 15 May 2011 04:43:40 GMT
+      content-length: 
+      - "200"
+    body: "{\"field_type\":\"text_data\",\"label\":\"image_url\",\"line_id\":\"4dcf59fb72f8be1523000069\",\"required\":\"true\",\"station_ids\":[],\"validation_format\":\"url\",\"value\":\"http://s3.amazon.com/bizcardarmy/medium/1.jpg\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -44,7 +75,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishdas.lvh.me:3000/api/v1/lines/4dcbab2072f8be2142000031
+      - http://manishdas.lvh.me:3000/api/v1/lines/4dcf59fd72f8be152300006b
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -52,12 +83,12 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.842769"
+      - "0.824158"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 12 May 2011 09:40:48 GMT
+      - Sun, 15 May 2011 04:43:41 GMT
       content-length: 
       - "295"
-    body: "{\"_id\":\"4dcbab2072f8be2142000031\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-12T15:25:48+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-12T15:25:48+05:45\"}"
+    body: "{\"_id\":\"4dcf59fd72f8be152300006b\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-15T10:28:41+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-15T10:28:41+05:45\"}"
     http_version: "1.1"
