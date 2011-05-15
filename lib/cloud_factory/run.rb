@@ -47,7 +47,22 @@ module CloudFactory
     #  file, duration
     #www., 100
     
-    
+    # ==Usage of input_headers.input_data << input_data_value
+    #   attrs = {:label => "image_url",
+    #     :field_type => "text_data",
+    #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
+    #     :required => true,
+    #     :validation_format => "url"
+    #   }
+    #
+    #   line = Line.new("line name") do |l|
+    #     input_headers = CloudFactory::InputHeader.new(line, "attrs")
+    #     l.input_headers = [input_headers]
+    #     l.input_headers.input_data << input_data_value
+    #   end
+    # 
+    # returns 
+    #     line.input_headers.input_data
     def input_data input_data = nil
       if input_data
         input_data.each do |i|
