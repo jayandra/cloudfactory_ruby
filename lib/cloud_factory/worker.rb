@@ -3,17 +3,11 @@ require 'active_support/concern'
 module CloudFactory
   module Worker
     extend ActiveSupport::Concern
-        
-    # =Worker class for CloudFactory api entities.
-    # * ==Initializes a new worker
-    # ---
-    # * ==Usage Example:
-    #     worker = Worker.new("Digit")
-    #--
     
     included do |base|
       
       host = base.to_s.split("::").last
+      
       # Number of worker 
       attr_accessor :number
       # Amount of money assigned for worker
@@ -21,12 +15,16 @@ module CloudFactory
       
       case host
       when "HumanWorker"
+        
+        # Initializes new worker
         def initialize(number=1, reward)
           @number = number
           @reward = reward
         end
         
       else
+        
+        # Creates new worker 
         def self.create
           worker = self.new
           worker.instance_eval do

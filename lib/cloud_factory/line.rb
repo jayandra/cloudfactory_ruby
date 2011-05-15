@@ -86,7 +86,8 @@ module CloudFactory
     #       :field_type => "text_data",
     #       :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
     #       :required => true,
-    #       :validation_format => "url"} 
+    #       :validation_format => "url"
+    #     } 
     #
     #     input_header = InputHeader.new(attrs)
     #

@@ -1,4 +1,4 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in cloud_factory.gemspec
+# All the gem's dependencies are specified in cloud_factory.gemspec
 gemspec
