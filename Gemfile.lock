@@ -37,6 +37,7 @@ GEM
     json (1.4.6)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
+    rake (0.8.7)
     rdoc (3.5.3)
     rspec (2.5.0)
       rspec-core (~> 2.5.0)
@@ -70,6 +71,7 @@ DEPENDENCIES
   aruba
   cloud_factory!
   cucumber
+  rake
   rdoc (~> 3.5.3)
   rspec (~> 2.0)
   ruby-debug19
