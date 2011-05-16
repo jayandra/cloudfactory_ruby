@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "thor"
   s.add_development_dependency "rdoc", "~> 3.5.3"
   s.add_development_dependency "vcr"
+  s.add_development_dependency "rake"
   s.add_development_dependency "webmock"
   s.add_development_dependency "ruby-debug19"
 end
