@@ -12,7 +12,10 @@ module CloudFactory
     # form_fields for the StandardInstruction
     attr_accessor :form_fields
     
+    # station attributes required to store station information
     attr_accessor :station
+    
+    # ID of Standard Instruction
     attr_accessor :id
     
     # ==Initializes a new StandardInstruction
