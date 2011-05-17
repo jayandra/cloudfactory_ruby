@@ -75,6 +75,29 @@ module CloudFactory
       end
     end
     
+    # ==Deletes Standard Instruction of a station
+    # ==Usage example
+    #   attrs = {:title => "Enter text from a business card image",
+    #     :description => "Describe"
+    #   }
+    #
+    #   form_fields = []
+    #   form_fields << CloudFactory::FormField.new(:label => "First Name", :field_type => "SA", :required => "true")
+    #   form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
+    #   form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
+    # 
+    #   line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
+    #     l.stations = CloudFactory::Station.create(l, :type => "work") do |s|
+    #       s.instruction = CloudFactory::StandardInstruction.create(s, attrs) do |i|
+    #         i.form_fields = form_fields
+    #       end
+    #       @got_instruction = s.get_instruction
+    #     end
+    #   end
+    #      
+    #   station = line.stations
+    #
+    #   CloudFactory::StandardInstruction.delete_instruction(station)
     def self.delete_instruction(station)
       delete("/stations/#{station.id}/instruction.json")
     end
