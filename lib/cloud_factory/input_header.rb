@@ -88,7 +88,7 @@ module CloudFactory
     #   input_header = line.input_headers[0]
     #   got_input_header = input_header.get_input_header
     def get_input_header
-      self.class.get("/lines/#{line_id}/input_headers/#{id}.json")
+      self.class.get("/lines/#{line_id}/input_headers/#{@id}.json")
     end
     
     # ==Updates input header
