@@ -7,7 +7,7 @@ module CloudFactory
       base.send(:base_uri, "#{CloudFactory.api_url}#{CloudFactory.api_version}")
       base.send(:headers, "accept" => "application/json")
       base.send(:format, :json)
-      base.send(:default_params, {:api_key => CloudFactory.api_key})
+      base.send(:default_params, {:api_key => CloudFactory.api_key, :email => CloudFactory.email})
       # base.extend(ClassMethods)
     end
     

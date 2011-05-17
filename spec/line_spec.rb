@@ -6,21 +6,21 @@ describe CloudFactory::Line do
   context "create a line" do
     it "the plain ruby way" do
       VCR.use_cassette "lines/create", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+        line = CloudFactory::Line.new("Digitize Card", "Digitization")
         line.title.should eq("Digitize Card")
-        line.category_id.should eq("4dc8ad6572f8be0600000001")
+        line.category_name.should eq("Digitization")
       end
     end
 
     it "using block with variable" do
       VCR.use_cassette "lines/create-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card","4dc8ad6572f8be0600000001") do |l|
+        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
           input_header = CloudFactory::InputHeader.new(l, {:label => "image_url",:field_type => "text_data",
             :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             l.input_headers = [input_header]
           end
           line.title.should eq("Digitize Card")
-          line.category_id.should eq("4dc8ad6572f8be0600000001")
+          line.category_name.should eq("Digitization")
           line.input_headers.first.label.should == "image_url"
         end
       end
@@ -33,7 +33,7 @@ describe CloudFactory::Line do
         form_fields << CloudFactory::FormField.new(:label => "First Name", :field_type => "SA", :required => "true")
         form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
         form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
-        line = CloudFactory::Line.create("Digitize Card", "4dc8ad6572f8be0600000001") do
+        line = CloudFactory::Line.create("Digitize Card", "Digitization") do
           input_header = CloudFactory::InputHeader.new(self, {:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
           input_headers [input_header]
           stations = CloudFactory::Station.create(self, :type => "work") do |station|
@@ -44,16 +44,16 @@ describe CloudFactory::Line do
           end
         end
         line.title.should eq("Digitize Card")
-        line.category_id.should eq("4dc8ad6572f8be0600000001")
+        line.category_name.should eq("Digitization")
         line.input_headers.first.label.should == "image_url"
       end
     end
 
     it "with all the optional params" do
       VCR.use_cassette "lines/create-optional-params", :record => :new_episodes do 
-        line = CloudFactory::Line.new("Line Name", "4dc8ad6572f8be0600000001", {:public => true, :description => "this is description"})
+        line = CloudFactory::Line.new("Line Name", "Digitization", {:public => true, :description => "this is description"})
         line.title.should eq("Line Name")
-        line.category_id.should eq("4dc8ad6572f8be0600000001")
+        line.category_name.should eq("Digitization")
         line.public.should == true
         line.description.should eq("this is description")
       end
@@ -68,7 +68,7 @@ describe CloudFactory::Line do
           form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
           form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
 
-          line_1 = CloudFactory::Line.create("Digitize Card", "4dc8ad6572f8be0600000001") do |l|
+          line_1 = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
             l.stations = CloudFactory::Station.create(l, :type => "work") do |station|
               station.worker = worker
               station.instruction = CloudFactory::StandardInstruction.create(:title => "Enter text from a business card image", :description => "Describe") do |i|
@@ -77,7 +77,7 @@ describe CloudFactory::Line do
             end
           end
           line_1.title.should eq("Digitize Card")
-          line_1.category_id.should eq("4dc8ad6572f8be0600000001")
+          line_1.category_name.should eq("Digitization")
           line_1.stations.type.should eq("Work")
           line_1.stations.worker.should == worker
         end
@@ -88,7 +88,7 @@ describe CloudFactory::Line do
     it "should list all the existing lines that belong to particular owner" do
       VCR.use_cassette "lines/listing-lines", :record => :new_episodes do
         5.times do |i|
-          CloudFactory::Line.new("Digitize Card #{i}", "4dc8ad6572f8be0600000001", {:public => false, :description => "#{i}-this is description"})
+          CloudFactory::Line.new("Digitize Card #{i}", "Digitization", {:public => false, :description => "#{i}-this is description"})
         end
         lines = CloudFactory::Line.my_lines
         lines.first.title.should eq("digitize-card-0")
@@ -99,10 +99,10 @@ describe CloudFactory::Line do
     it "should list all the public lines" do
       VCR.use_cassette "lines/listing-public-lines", :record => :new_episodes do
         5.times do |i|
-          CloudFactory::Line.new("Digitize Card #{i}", "4dc8ad6572f8be0600000001", {:public => false, :description => "#{i}-this is description"})
+          CloudFactory::Line.new("Digitize Card #{i}", "Digitization", {:public => false, :description => "#{i}-this is description"})
         end
         5.times do |i|
-          CloudFactory::Line.new("Line #{i}", "4dc8ad6572f8be0600000001", {:public => true, :description => "#{i}-this is description"})
+          CloudFactory::Line.new("Line #{i}", "Digitization", {:public => true, :description => "#{i}-this is description"})
         end
         lines = CloudFactory::Line.public_lines
         lines.first.title.should eq("line-0")
@@ -114,10 +114,10 @@ describe CloudFactory::Line do
   context "an existing line" do
     it "should get the line info" do
       VCR.use_cassette "lines/line-info", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card", "4dc8ad6572f8be0600000001", {:public => true, :description => "this is description"})
+        line = CloudFactory::Line.new("Digitize Card", "Digitization", {:public => true, :description => "this is description"})
         get_line = CloudFactory::Line.get_line(line)
         get_line.title.should eql("digitize-card")
-        get_line.category_id.should eql("4dc8ad6572f8be0600000001")
+        get_line.category_id.should eql("4db9319f703cf14825000001")
         get_line.public.should == true
         get_line.description.should eql("this is description")
       end
@@ -127,11 +127,13 @@ describe CloudFactory::Line do
   context "Updating a line" do
     it "updates an existing line" do
       VCR.use_cassette "lines/update-line", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card", "4dc8ad6572f8be0600000001", {:public => true, :description => "this is description"})
-        line.update({:title => "New Title", :category_id => "4dc8ad6572f8be0600000001", :description => "this is new description"})
+        line = CloudFactory::Line.new("Digitize Card", "Digitization", {:public => true, :description => "this is description"})
+        line.update({:title => "New Title", :category_name => "Survey", :description => "this is new description"})
         updated_line = CloudFactory::Line.get_line(line)
         updated_line.title.should eql("new-title")
         updated_line.title.should_not eql("Digitize Card")
+        updated_line.category_name.should eql("Survey")
+        updated_line.category_name.should_not eql("Digitization")
         updated_line.description.should eql("this is new description")
         updated_line.description.should_not eql("this is description")
       end
@@ -141,7 +143,7 @@ describe CloudFactory::Line do
   context "deleting" do
     it "should delete a line" do
       VCR.use_cassette "lines/delete-line", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card", "4dc8ad6572f8be0600000001", {:public => true, :description => "this is description"})
+        line = CloudFactory::Line.new("Digitize Card", "Digitization", {:public => true, :description => "this is description"})
         line.delete
         begin
           CloudFactory::Line.get_line(line)

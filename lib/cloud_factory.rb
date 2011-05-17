@@ -11,7 +11,7 @@ Hash.send :include, Hashie::HashExtensions
 module CloudFactory  
   
   class << self
-    attr_accessor :api_key, :api_url, :api_version
+    attr_accessor :api_key, :api_url, :api_version, :email
     
     def configure
       yield self
@@ -26,8 +26,9 @@ module CloudFactory
   # Set ENV['TEST'] is true for testing against the api
   # TEST=true bundle exec rspec spec/.....
   if ENV['TEST']
-    CloudFactory.api_key = '6bbf1bf58c56119aa22801484a8700071c35fe1d'
-    CloudFactory.api_url = "manishdas.lvh.me:3000/api/"
+    CloudFactory.api_key = '5c99665131ad4044968de3ca0b984c8c0d45e9a2'
+    CloudFactory.email = 'manish.das@sprout-technology.com'
+    CloudFactory.api_url = "manishlaldas.lvh.me:3000/api/"
   end
   class CloudFactoryError < StandardError
     attr_reader :data

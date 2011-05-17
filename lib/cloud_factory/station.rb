@@ -7,24 +7,24 @@ module CloudFactory
     # type of the station, e.g. station = Station.new(line, {:type => "Work"})
     attr_accessor :type
     
-    # line attribute is parent attribute for station & is reuired for making Api call
+    # line attribute is parent attribute for station & is required for making Api call
     attr_accessor :line
     
-    # station_id attribute is required to be stored for making Api calls
-    attr_accessor :station_id
+    # ID of the station
+    attr_accessor :id
 
     # ==Initializes a new station
-    # ==Usage Example
+    # ===Usage Example
     #     station = Station.new("station name")
     def initialize(line, options={})
       @line = line
       @type = options[:type].camelize
       resp = self.class.post("/lines/#{@line.id}/stations.json", :body => {:station => {:type => @type}})
-      @station_id = resp._id
+      @id = resp._id
     end
 
     # ==Initializes a new station within block 
-    # ==Usage Example
+    # ===Usage Example
     # ===Creating station using block variable
     #     worker = HumanWorker.new(2, 0.2)
     #     form_field_value = []
@@ -61,7 +61,7 @@ module CloudFactory
     end
     
     # ==Creates new instruction for station object
-    # ==Usage of worker method for "station" object
+    # ===Usage of worker method for "station" object
     #     worker = HumanWorker.new(2, 0.2)
     #     
     #     station.worker = worker
@@ -77,7 +77,7 @@ module CloudFactory
     end
     
     # ==Creates new instruction for station object
-    # ==Usage of Instruction method for "station" object
+    # ===Usage of Instruction method for "station" object
     #
     #       form_field_value = []
     #       form_field_value << CloudFactory::FormField.new(:label => "First Name", :field_type => "SA", :required => "true")
@@ -104,11 +104,11 @@ module CloudFactory
     # ===Usage example for update method is 
     #   line = CloudFactory::Line.new("Digitize Card", "4dc8ad6572f8be0600000001")
     #   station = CloudFactory::Station.new(line, :type => "Work")
-    #   station.update(line, :type => "Tournament")
+    #   station.update(:type => "Tournament")
     # ===This changes the type of the "station" object from "Work" to "Tournament"
-    def update(line, options={})
+    def update(options={})
       @type = options[:type]
-      self.class.put("/lines/#{@line.id}/stations/#{station_id}.json", :body => {:station => {:type => @type}})
+      self.class.put("/lines/#{@line.id}/stations/#{id}.json", :body => {:station => {:type => @type}})
     end
     
     # ==Returns a particular station of a line
@@ -116,10 +116,10 @@ module CloudFactory
     #   line = CloudFactory::Line.create("Digitize Card", "4dc8ad6572f8be0600000001")
     #   station = CloudFactory::Station.new(line, :type => "Work")
     #
-    #   CloudFactory::Station.get_all(station)
+    #   got_station = station.get_station
     # returns the station object
-    def self.get_station(station)
-      get("/lines/#{station.line.id}/stations/#{station.station_id}.json")
+    def get_station
+      self.class.get("/lines/#{@line.id}/stations/#{id}.json")
     end
     
     # ==Returns all the stations associated with a particular line
@@ -141,9 +141,9 @@ module CloudFactory
     # ===Usage example for delete method
     #   line = CloudFactory::Line.new("Digitize Card", "4dc8ad6572f8be0600000001")
     #   station = CloudFactory::Station.new(line, :type => "Work")
-    #   station.delete(line)
-    def delete(line)
-      self.class.delete("/lines/#{line.id}/stations/#{station_id}.json")
+    #   station.delete
+    def delete
+      self.class.delete("/lines/#{@line.id}/stations/#{id}.json")
     end
   end
 end

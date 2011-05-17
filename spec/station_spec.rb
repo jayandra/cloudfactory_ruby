@@ -4,7 +4,7 @@ describe CloudFactory::Station do
   context "create a station" do
     it "the plain ruby way" do
       VCR.use_cassette "stations/create", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+        line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
         station = CloudFactory::Station.new(line, :type => "Work")
         station.type.should eq("Work")
@@ -18,7 +18,7 @@ describe CloudFactory::Station do
         form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
         form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
 
-        line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+        line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
 
         worker = CloudFactory::HumanWorker.new(2, 0.2)
@@ -42,7 +42,7 @@ describe CloudFactory::Station do
         form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
         form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
 
-        line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+        line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
 
         human_worker = CloudFactory::HumanWorker.new(2, 0.2)
@@ -61,8 +61,9 @@ describe CloudFactory::Station do
 
     it "create a custom instruction" do
       VCR.use_cassette "stations/create-instruction", :record => :new_episodes do
-        attrs = {:title => "Enter text from a business card image",
-          :description => "Describe"}
+          attrs = {:title => "Enter text from a business card image",
+          :description => "Describe"
+          }
           html =   
           '<div id="form-content">
             <div id="instructions">
@@ -134,7 +135,7 @@ describe CloudFactory::Station do
               i.css = css
               i.javascript = javascript
             end
-            line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+            line = CloudFactory::Line.new("Digitize Card","Digitization")
             line.title.should eq("Digitize Card")
 
             station = CloudFactory::Station.create(line, :type => "work") do |s|
@@ -149,14 +150,13 @@ describe CloudFactory::Station do
       end
 
       context "updating a station" do
-
         it "should update a station" do
           VCR.use_cassette "stations/update", :record => :new_episodes do
-            line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+            line = CloudFactory::Line.new("Digitize Card","Digitization")
             line.title.should eq("Digitize Card")
-            station = CloudFactory::Station.new(line, :type => "Work")
+            station = CloudFactory::Station.new(line, {:type => "Work"})
             station.type.should eq("Work")
-            station.update(line, :type => "Tournament")
+            station.update({:type => "Tournament"})
             station.type.should eq("Tournament")
             station.type.should_not eq("Work")
           end
@@ -166,17 +166,17 @@ describe CloudFactory::Station do
       context "get station" do
         it "should get information about a single station" do
           VCR.use_cassette "stations/get-station", :record => :new_episodes do
-            line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+            line = CloudFactory::Line.new("Digitize Card","Digitization")
             line.title.should eq("Digitize Card")
             station = CloudFactory::Station.new(line, :type => "Work")
             station.type.should eq("Work")
-            CloudFactory::Station.get_station(station)._type.should eq("WorkStation")
+            station.get_station._type.should eq("WorkStation")
           end
         end
 
         it "should get all existing stations of a line" do
           VCR.use_cassette "stations/get-all-stations", :record => :new_episodes do
-            line = CloudFactory::Line.create("Digitize Card", "4dc8ad6572f8be0600000001") do |l|
+            line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
               station = []
               station << CloudFactory::Station.new(l, :type => "work")
               station << CloudFactory::Station.new(l, :type => "Tournament")
@@ -192,15 +192,15 @@ describe CloudFactory::Station do
       context "deleting a station" do
         it "should delete a station" do
           VCR.use_cassette "stations/delete", :record => :new_episodes do
-            line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+            line = CloudFactory::Line.new("Digitize Card","Digitization")
             line.title.should eq("Digitize Card")
             station = CloudFactory::Station.new(line, :type => "Work")
             station.type.should eq("Work")
-            station.delete(line)
+            station.delete
             begin
-              CloudFactory::Station.get_station(line)
+              station.get_station
             rescue Exception => exec
-              exec.class.should eql(NoMethodError)
+              exec.class.should eql(Crack::ParseError)
             end
           end
         end

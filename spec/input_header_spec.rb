@@ -11,7 +11,7 @@ describe CloudFactory::InputHeader do
           :validation_format => "url"
         }
 
-        line = CloudFactory::Line.new("Digitize Card","4dc8ad6572f8be0600000001")
+        line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
         input_header = CloudFactory::InputHeader.new(line, attrs)
         input_header.label.should eq("image_url")
@@ -39,7 +39,7 @@ describe CloudFactory::InputHeader do
           :validation_format => "url"
         }
         
-        line = CloudFactory::Line.create("Digitize Card","4dc8ad6572f8be0600000001") do |l|
+        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
           input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
           input_header_2 = CloudFactory::InputHeader.new(l, attrs_2)
           
@@ -53,7 +53,7 @@ describe CloudFactory::InputHeader do
       end
     end
     
-    it "should return info of a input header" do
+    it "should return info of an input header" do
       VCR.use_cassette "input_headers/get-input-header", :record => :new_episodes do
         attrs_1 = {:label => "image_url_type",
           :field_type => "text_data",
@@ -61,17 +61,22 @@ describe CloudFactory::InputHeader do
           :required => true, 
           :validation_format => "url"
         }
+        attrs_2 = {:label => "text_url",
+          :field_type => "text_data",
+          :value => "http://s3.amazon.com/bizcardarmy/", 
+          :required => true, 
+          :validation_format => "url"
+        }
         
-        line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
+        line = CloudFactory::Line.create("Digitize","Digitization") do |l|
           input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-          l.input_headers = [input_header_1]
+          input_header_2 = CloudFactory::InputHeader.new(l, attrs_2)
+          l.input_headers = [input_header_1, input_header_2]
         end
-        input_headers_of_line = CloudFactory::InputHeader.get_input_headers_of_line(line)
-        input_header = input_headers_of_line.last
-        got_input_header = CloudFactory::InputHeader.get_input_header(line, input_header)
-        input_header.label.should eq("image_url_type")
-        input_header.field_type.should eq("text_data")
-        input_header.value.should eq("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
+        got_input_header = line.input_headers[0].get_input_header 
+        got_input_header.label.should eq("image_url_type")
+        got_input_header.field_type.should eq("text_data")
+        got_input_header.value.should eq("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
       end
     end
   end
@@ -86,14 +91,79 @@ describe CloudFactory::InputHeader do
           :validation_format => "url"
         }
         
-        line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
+        line = CloudFactory::Line.create("Digitize","Digitization") do |l|
           input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
           l.input_headers = [input_header_1]
         end
-        input_header = CloudFactory::InputHeader.get_input_headers_of_line(line).first
-        updated_input_header = CloudFactory::InputHeader.update(line, input_header, {:label => "jackpot", :field_type => "lottery"})
+        updated_input_header = line.input_headers.last.update({:label => "jackpot", :field_type => "lottery"})
         updated_input_header.parsed_response['label'].should eq("jackpot")
         updated_input_header.parsed_response['field_type'].should eq("lottery")
+      end
+    end
+  end
+  
+  context "delete input_headers" do
+    xit "should delete all the input_headers of a specific line" do
+      VCR.use_cassette "input_headers/delete-input-headers", :record => :new_episodes do
+        attrs_1 = {:label => "image_url_0",
+          :field_type => "text_data",
+          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
+          :required => true, 
+          :validation_format => "url"
+        }
+        attrs_2 = {:label => "image_url_1",
+          :field_type => "text_data",
+          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
+          :required => true, 
+          :validation_format => "url"
+        }
+        attrs_3 = {:label => "image_url_2",
+          :field_type => "text_data",
+          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
+          :required => true, 
+          :validation_format => "url"
+        }
+        
+        line = CloudFactory::Line.create("Digitize","Digitization") do |l|
+          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
+          input_header_2 = CloudFactory::InputHeader.new(l, attrs_2)
+          input_header_3 = CloudFactory::InputHeader.new(l, attrs_3)
+          l.input_headers = [input_header_1, input_header_2, input_header_3]
+        end
+        
+        CloudFactory::InputHeader.delete_all(line)
+        
+        begin
+          CloudFactory::InputHeader.get_input_headers_of_line(line)
+        rescue Exception => exec
+          exec.class.should eql(NoMethodError)
+        end
+      end
+    end
+  end
+  
+  context "delete an input_header" do
+    it "should delete an input_header of a specific line" do
+      VCR.use_cassette "input_headers/delete-input-header", :record => :new_episodes do
+        attrs_1 = {:label => "image_url_type",
+          :field_type => "text_data",
+          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
+          :required => true, 
+          :validation_format => "url"
+        }
+        
+        line = CloudFactory::Line.create("Digitize","Digitization") do |l|
+          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
+          l.input_headers = [input_header_1]
+        end
+        
+        line.input_headers[0].delete
+        
+        begin
+          line.input_headers[0].get_input_header
+        rescue Exception => exec
+          exec.class.should eql(Crack::ParseError)
+        end
       end
     end
   end
