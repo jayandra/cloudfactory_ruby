@@ -144,7 +144,8 @@ describe CloudFactory::Line do
     it "should delete a line" do
       VCR.use_cassette "lines/delete-line", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization", {:public => true, :description => "this is description"})
-        line.delete
+        resp = line.delete
+        debugger
         begin
           CloudFactory::Line.get_line(line)
         rescue Exception => exec
