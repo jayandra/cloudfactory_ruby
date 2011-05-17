@@ -24,7 +24,7 @@ describe CloudFactory::Station do
         worker = CloudFactory::HumanWorker.new(2, 0.2)
         station = CloudFactory::Station.create(line, :type => "work") do |s|
           s.worker = worker
-          s.instruction = CloudFactory::StandardInstruction.create(:title => "Enter text from a business card image", :description => "Describe") do |i|
+          s.instruction = CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
             i.form_fields = form_fields
           end
         end
@@ -48,7 +48,7 @@ describe CloudFactory::Station do
         human_worker = CloudFactory::HumanWorker.new(2, 0.2)
         station_1 = CloudFactory::Station.create(line, :type => "Work") do 
           worker human_worker
-          instruction = CloudFactory::StandardInstruction.create(:title => "Enter text from a business card image", :description => "Describe") do 
+          instruction = CloudFactory::StandardInstruction.create(self,{:title => "Enter text from a business card image", :description => "Describe"}) do 
             form_fields form_fields
           end 
         end
