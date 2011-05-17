@@ -111,7 +111,7 @@ module CloudFactory
       self.class.put("/lines/#{@line.id}/stations/#{self.id}.json", :body => {:station => {:type => @type}})
     end
     
-    # ==Updates StandardInstruction of a station
+    # ==Updates Standard Instruction of a station
     # ===Usage example
     #   attrs = {:title => "Enter text from a business card image",
     #       :description => "Describe"
