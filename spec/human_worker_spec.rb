@@ -12,8 +12,11 @@ module CloudFactory
             s.worker = @worker
           end
         end
-        @worker.number.should eq(2)
-        @worker.reward.should eq(0.2)
+        
+        station = line.stations.get_station
+        # debugger
+        #         station.worker.number.should eq(2)
+        #         station.worker.reward.should eq(0.2)
       end
     end
   end
