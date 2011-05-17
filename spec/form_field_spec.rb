@@ -4,7 +4,7 @@ describe CloudFactory::FormField do
   context "create an form_field" do
     it "the plain ruby way" do
       # WebMock.allow_net_connect!
-      VCR.use_cassette "standard_instruction/create", :record => :new_episodes do
+      VCR.use_cassette "form_fields/create", :record => :new_episodes do
         attrs = {:title => "Enter text from a business card image",
           :description => "Describe"
         }
