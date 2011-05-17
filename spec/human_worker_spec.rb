@@ -4,9 +4,16 @@ module CloudFactory
   describe CloudFactory::HumanWorker do
     context "create a worker" do
       it "the plain ruby way" do
-        worker = CloudFactory::HumanWorker.new(2, 0.2)
-        worker.number.should eq(2)
-        worker.reward.should eq(0.2)
+        WebMock.allow_net_connect!
+        
+        line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
+          l.stations = CloudFactory::Station.create(l, :type => "work") do |s|
+            @worker = CloudFactory::HumanWorker.new(s, 2, 0.2)
+            s.worker = @worker
+          end
+        end
+        @worker.number.should eq(2)
+        @worker.reward.should eq(0.2)
       end
     end
   end
