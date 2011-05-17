@@ -108,9 +108,14 @@ module CloudFactory
     # ===This changes the type of the "station" object from "Work" to "Tournament"
     def update(options={})
       @type = options[:type]
-      self.class.put("/lines/#{@line.id}/stations/#{id}.json", :body => {:station => {:type => @type}})
+      self.class.put("/lines/#{@line.id}/stations/#{self.id}.json", :body => {:station => {:type => @type}})
     end
     
+    def update_instruction(options={})
+      @title       = options[:title]
+      @description = options[:description]
+      self.class.put("/stations/#{self.id}/instruction.json", :body => {:instruction => {:title => @title, :description => @description, :type => "StandardInstruction"}})
+    end
     # ==Returns a particular station of a line
     # ===Usage example for get_station() method
     #   line = CloudFactory::Line.create("Digitize Card", "4dc8ad6572f8be0600000001")
@@ -119,7 +124,11 @@ module CloudFactory
     #   got_station = station.get_station
     # returns the station object
     def get_station
-      self.class.get("/lines/#{@line.id}/stations/#{id}.json")
+      self.class.get("/lines/#{@line.id}/stations/#{self.id}.json")
+    end
+    
+    def get_instruction
+      self.class.get("/stations/#{self.id}/instruction.json")
     end
     
     # ==Returns all the stations associated with a particular line
@@ -143,7 +152,7 @@ module CloudFactory
     #   station = CloudFactory::Station.new(line, :type => "Work")
     #   station.delete
     def delete
-      self.class.delete("/lines/#{@line.id}/stations/#{id}.json")
+      self.class.delete("/lines/#{@line.id}/stations/#{self.id}.json")
     end
   end
 end
