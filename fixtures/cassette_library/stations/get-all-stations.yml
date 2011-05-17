@@ -2,8 +2,8 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishdas.lvh.me:3000/api/v1/lines.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
-    body: line[title]=Digitize%20Card&line[category_id]=4dc8ad6572f8be0600000001&line[public]=&line[description]=
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: line[title]=Digitize%20Card&line[category_name]=Digitization&line[public]=&line[description]=
     headers: 
       accept: 
       - application/json
@@ -13,7 +13,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a4b72f8be1523000086
+      - http://manishlaldas.lvh.me:3000/api/v1/lines/4dd1021572f8be09ca000058
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -21,19 +21,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.780463"
+      - "1.282483"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Sun, 15 May 2011 04:44:59 GMT
+      - Mon, 16 May 2011 10:53:09 GMT
       content-length: 
       - "295"
-    body: "{\"_id\":\"4dcf5a4b72f8be1523000086\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-15T10:29:59+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-15T10:29:59+05:45\"}"
+    body: "{\"_id\":\"4dd1021572f8be09ca000058\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-16T16:38:09+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-16T16:38:09+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a4b72f8be1523000086/stations.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd1021572f8be09ca000058/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: station[type]=Work
     headers: 
       accept: 
@@ -46,25 +46,25 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"f6aa7cc5b8f3f293e887103991ae9285\""
+      - "\"ddcb0005e9c27d97b042ffd1dbc84cca\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.761984"
+      - "1.281343"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Sun, 15 May 2011 04:45:00 GMT
+      - Mon, 16 May 2011 10:53:10 GMT
       content-length: 
       - "197"
-    body: "{\"_id\":\"4dcf5a4c72f8be1523000087\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-15T10:30:00+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcf5a4b72f8be1523000086\",\"updated_at\":\"2011-05-15T10:30:00+05:45\"}"
+    body: "{\"_id\":\"4dd1021672f8be09ca000059\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-16T16:38:10+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd1021572f8be09ca000058\",\"updated_at\":\"2011-05-16T16:38:10+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a4b72f8be1523000086/stations.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd1021572f8be09ca000058/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: station[type]=Tournament
     headers: 
       accept: 
@@ -77,25 +77,25 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"342c1ff686140815fbdaae85bb00d037\""
+      - "\"363e0a5bfca98661fff0a95dc24990a8\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.762131"
+      - "1.148966"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Sun, 15 May 2011 04:45:01 GMT
+      - Mon, 16 May 2011 10:53:11 GMT
       content-length: 
       - "203"
-    body: "{\"_id\":\"4dcf5a4d72f8be1523000088\",\"_type\":\"TournamentStation\",\"created_at\":\"2011-05-15T10:30:01+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcf5a4b72f8be1523000086\",\"updated_at\":\"2011-05-15T10:30:01+05:45\"}"
+    body: "{\"_id\":\"4dd1021772f8be09ca00005a\",\"_type\":\"TournamentStation\",\"created_at\":\"2011-05-16T16:38:11+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd1021572f8be09ca000058\",\"updated_at\":\"2011-05-16T16:38:11+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a4b72f8be1523000086/stations.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd1021572f8be09ca000058/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: station[type]=Work
     headers: 
       accept: 
@@ -108,26 +108,26 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"df0048f162f09f82567875e51837e8e6\""
+      - "\"d76418cf83f93b265013406154282841\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.827849"
+      - "1.256045"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Sun, 15 May 2011 04:45:02 GMT
+      - Mon, 16 May 2011 10:53:13 GMT
       content-length: 
       - "197"
-    body: "{\"_id\":\"4dcf5a4d72f8be1523000089\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-15T10:30:01+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcf5a4b72f8be1523000086\",\"updated_at\":\"2011-05-15T10:30:01+05:45\"}"
+    body: "{\"_id\":\"4dd1021972f8be09ca00005b\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-16T16:38:13+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd1021572f8be09ca000058\",\"updated_at\":\"2011-05-16T16:38:13+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishdas.lvh.me:3000/api/v1/lines.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
-    body: line[title]=Digitize%20Card&line[category_id]=4dc8ad6572f8be0600000001&line[public]=&line[description]=
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: line[title]=Digitize%20Card&line[category_name]=Digitization&line[public]=&line[description]=
     headers: 
       accept: 
       - application/json
@@ -137,7 +137,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a4e72f8be152300008a
+      - http://manishlaldas.lvh.me:3000/api/v1/lines/4dd1021a72f8be09ca00005c
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -145,19 +145,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.775282"
+      - "1.271586"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Sun, 15 May 2011 04:45:02 GMT
+      - Mon, 16 May 2011 10:53:14 GMT
       content-length: 
       - "295"
-    body: "{\"_id\":\"4dcf5a4e72f8be152300008a\",\"account_id\":\"4dca0fbc72f8be084f00000a\",\"category_id\":\"4dc8ad6572f8be0600000001\",\"complete\":false,\"created_at\":\"2011-05-15T10:30:02+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-15T10:30:02+05:45\"}"
+    body: "{\"_id\":\"4dd1021a72f8be09ca00005c\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-16T16:38:14+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-16T16:38:14+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://manishdas.lvh.me:3000/api/v1/lines/4dcf5a4b72f8be1523000086/stations.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd1021572f8be09ca000058/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: 
     headers: 
       accept: 
@@ -170,18 +170,18 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"c86bb2b738991f1527e3d7b04dc19691\""
+      - "\"eab2fdf3800425ec4ce98a21bda1cf0b\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.775756"
+      - "1.174657"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Sun, 15 May 2011 04:45:03 GMT
+      - Mon, 16 May 2011 10:53:15 GMT
       content-length: 
       - "601"
-    body: "[{\"_id\":\"4dcf5a4c72f8be1523000087\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-15T10:30:00+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcf5a4b72f8be1523000086\",\"updated_at\":\"2011-05-15T10:30:00+05:45\"},{\"_id\":\"4dcf5a4d72f8be1523000088\",\"_type\":\"TournamentStation\",\"created_at\":\"2011-05-15T10:30:01+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcf5a4b72f8be1523000086\",\"updated_at\":\"2011-05-15T10:30:01+05:45\"},{\"_id\":\"4dcf5a4d72f8be1523000089\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-15T10:30:01+05:45\",\"input_header_ids\":[],\"line_id\":\"4dcf5a4b72f8be1523000086\",\"updated_at\":\"2011-05-15T10:30:01+05:45\"}]"
+    body: "[{\"_id\":\"4dd1021672f8be09ca000059\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-16T16:38:10+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd1021572f8be09ca000058\",\"updated_at\":\"2011-05-16T16:38:10+05:45\"},{\"_id\":\"4dd1021772f8be09ca00005a\",\"_type\":\"TournamentStation\",\"created_at\":\"2011-05-16T16:38:11+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd1021572f8be09ca000058\",\"updated_at\":\"2011-05-16T16:38:11+05:45\"},{\"_id\":\"4dd1021972f8be09ca00005b\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-16T16:38:13+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd1021572f8be09ca000058\",\"updated_at\":\"2011-05-16T16:38:13+05:45\"}]"
     http_version: "1.1"

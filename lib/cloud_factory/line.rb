@@ -6,8 +6,8 @@ module CloudFactory
     # Title of the Line
     attr_accessor :title
     
-    # Category Id is required for the category which is categorized according to ID, e.g. "4dc8ad6572f8be0600000001"
-    attr_accessor :category_id
+    # Category Name is required for the category which is categorized according to ID, e.g. "4dc8ad6572f8be0600000001"
+    attr_accessor :category_name
     
     # Public is a boolean attribute which when set to true becomes public & vice-versa
     #
@@ -34,12 +34,12 @@ module CloudFactory
     #     line = Line.new("Digit")
     
 
-    def initialize(title, category_id, options={})
+    def initialize(title, category_name, options={})
       @title = title
-      @category_id = category_id
+      @category_name = category_name
       @public = options[:public]
       @description = options[:description]
-      resp = self.class.post("/lines.json", :body => {:line => {:title => title, :category_id => category_id, :public => @public, :description => @description}})
+      resp = self.class.post("/lines.json", :body => {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
       self.id = resp._id
     end
     
@@ -107,8 +107,8 @@ module CloudFactory
     #     Line.create("line_name") do
     #       input_headers  [input_header]
     #     end
-    def self.create(title, category_id, options={}, &block)
-      line = Line.new(title,category_id,options={})
+    def self.create(title, category_name, options={}, &block)
+      line = Line.new(title,category_name,options={})
       @public = options[:public]
       @description = options[:description]
       if block.arity >= 1
@@ -116,7 +116,7 @@ module CloudFactory
       else
         line.instance_eval &block
       end
-      resp = post("/lines.json", :body => {:line => {:title => title, :category_id => category_id, :public => @public, :description => @description}})
+      resp = post("/lines.json", :body => {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
       line
     end
     
@@ -148,10 +148,10 @@ module CloudFactory
     # ===This changes the title of the "line" object from "Digitize Card" to "New Title"
     def update(options={})
       @title = options[:title]
-      @category_id = options[:category_id]
+      @category_name = options[:category_name]
       @public = options[:public]
       @description = options[:description]
-      self.class.put("/lines/#{id}.json", :body => {:line => {:title => @title, :category_id => @category_id, :public => @public, :description => @description}})
+      self.class.put("/lines/#{id}.json", :body => {:line => {:title => @title, :category_name => @category_name, :public => @public, :description => @description}})
     end
     
     # ==Deletes a line
