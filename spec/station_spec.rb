@@ -14,22 +14,22 @@ describe CloudFactory::Station do
     it "using the block variable" do
       VCR.use_cassette "stations/create-with-block-var", :record => :new_episodes do
         form_fields = []
-        form_fields << CloudFactory::FormField.new(:label => "First Name", :field_type => "SA", :required => "true")
-        form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
-        form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
-
+        
         line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
 
-        worker = CloudFactory::HumanWorker.new(2, 0.2)
         station = CloudFactory::Station.create(line, :type => "work") do |s|
+          worker = CloudFactory::HumanWorker.new(s, 2, 0.2)
           s.worker = worker
           s.instruction = CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
+            form_fields << CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
+            form_fields << CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
+            form_fields << CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+            
             i.form_fields = form_fields
           end
         end
         station.type.should eq("Work")
-        station.worker.should == worker
         station.worker.number.should == 2
         station.worker.reward.should == 0.2
       end
@@ -38,22 +38,21 @@ describe CloudFactory::Station do
     it "using without the block variable also creating instruction without block variable" do
       VCR.use_cassette "stations/create-without-block-var", :record => :new_episodes do
         form_fields = []
-        form_fields << CloudFactory::FormField.new(:label => "First Name", :field_type => "SA", :required => "true")
-        form_fields << CloudFactory::FormField.new(:label => "Middle Name", :field_type => "SA")
-        form_fields << CloudFactory::FormField.new(:label => "Last Name", :field_type => "SA", :required => "true")
-
         line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
-
-        human_worker = CloudFactory::HumanWorker.new(2, 0.2)
+        
         station_1 = CloudFactory::Station.create(line, :type => "Work") do 
+          human_worker = CloudFactory::HumanWorker.new(self, 2, 0.2)
+          s = self
           worker human_worker
           instruction = CloudFactory::StandardInstruction.create(self,{:title => "Enter text from a business card image", :description => "Describe"}) do 
+            form_fields << CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
+            form_fields << CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
+            form_fields << CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
             form_fields form_fields
           end 
         end
         station_1.type.should eq("Work")
-        station_1.worker.should == human_worker
         station_1.worker.number.should == 2
         station_1.worker.reward.should == 0.2
       end
