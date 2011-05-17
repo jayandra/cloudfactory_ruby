@@ -28,7 +28,7 @@ module CloudFactory
       @station = station
       @title       = options[:title]
       @description = options[:description]
-      resp = self.class.post("/stations/#{station.id}/instruction.json", :body => {:instruction => {:title => @title, :description => @description, :type => "StandardInstruction"}})
+      resp = self.class.post("/stations/#{station.id}/instruction.json", :body => {:instruction => {:title => @title, :description => @description, :_type => "StandardInstruction"}})
       @id = resp._id
     end
     
