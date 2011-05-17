@@ -3,27 +3,33 @@ require 'active_support/concern'
 module CloudFactory
   module Worker
     extend ActiveSupport::Concern
-    
+    include Client
+    include ClientRequestResponse
+
     included do |base|
-      
+
       host = base.to_s.split("::").last
-      
+
       # Number of worker 
       attr_accessor :number
       # Amount of money assigned for worker
       attr_accessor :reward
-      
+      # attr_accessor :station
+
       case host
       when "HumanWorker"
-        
+
         # Initializes new worker
-        def initialize(number=1, reward)
+        def initialize( station, number=1, reward )
+          # @station =  station
           @number = number
           @reward = reward
+          CloudFactory::HumanWorker.post("/stations/#{station.id}/workers.json", :body => 
+          {:worker => {:number => @number, :reward => @reward, :_type => "HumanWorker"}})
         end
-        
+
       else
-        
+
         # Creates new worker 
         def self.create
           worker = self.new
