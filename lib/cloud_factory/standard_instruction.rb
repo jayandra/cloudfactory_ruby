@@ -1,5 +1,7 @@
 module CloudFactory
   class StandardInstruction
+    include Client
+    include ClientRequestResponse
     
     # title of the standard_instruction
     attr_accessor :title
@@ -10,15 +12,21 @@ module CloudFactory
     # form_fields for the StandardInstruction
     attr_accessor :form_fields
     
+    attr_accessor :station
+    attr_accessor :id
+    
     # ==Initializes a new StandardInstruction
     # ==Usage of standard_instruction.new
     #   attrs = {:title => "Enter text from a business card image",
     #       :description => "Describe"}
     #
     #   instruction = StandardInstruction.new(attrs)
-    def initialize(options={})
+    def initialize(station, options={})
+      @station = station
       @title       = options[:title]
       @description = options[:description]
+      resp = self.class.post("/stations/#{station.id}/instruction.json", :body => {:instruction => {:title => @title, :description => @description, :type => "StandardInstruction"}})
+      @id = resp._id
     end
     
     # ==Initializes a new StandardInstruction within block using Variable
@@ -40,8 +48,8 @@ module CloudFactory
     #   instruction = CloudFactory::StandardInstruction.create(attrs) do |i|
     #     form_fields form_fields_values
     #   end
-    def self.create(instruction, &block)
-      instruction = StandardInstruction.new(instruction)
+    def self.create(station, options, &block)
+      instruction = StandardInstruction.new(station, options)
       if block.arity >= 1
         block.call(instruction)
       else
@@ -65,6 +73,10 @@ module CloudFactory
       else
         @form_fields
       end
+    end
+    
+    def self.delete_instruction(station)
+      delete("/stations/#{station.id}/instruction.json")
     end
   end
 end
