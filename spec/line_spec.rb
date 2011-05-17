@@ -38,7 +38,7 @@ describe CloudFactory::Line do
           input_headers [input_header]
           stations = CloudFactory::Station.create(self, :type => "work") do |station|
             station.worker = worker
-            station.instruction = CloudFactory::StandardInstruction.create(:title => "Enter text from a business card image", :description => "Describe") do |i|
+            station.instruction = CloudFactory::StandardInstruction.create(station,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
               i.form_fields = form_fields
             end
           end
@@ -71,7 +71,7 @@ describe CloudFactory::Line do
           line_1 = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
             l.stations = CloudFactory::Station.create(l, :type => "work") do |station|
               station.worker = worker
-              station.instruction = CloudFactory::StandardInstruction.create(:title => "Enter text from a business card image", :description => "Describe") do |i|
+              station.instruction = CloudFactory::StandardInstruction.create(station,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
                 i.form_fields = form_fields
               end
             end
@@ -145,7 +145,6 @@ describe CloudFactory::Line do
       VCR.use_cassette "lines/delete-line", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization", {:public => true, :description => "this is description"})
         resp = line.delete
-        debugger
         begin
           CloudFactory::Line.get_line(line)
         rescue Exception => exec
