@@ -73,8 +73,6 @@ module CloudFactory
     # * returns 
     # line.stations as an array of stations
     def stations stations = nil
-      resp = self.class.post("/lines/#{id}/stations.json", :body => {:station => {:type => "Work"}})
-      @station_id = resp._id
       if stations
         @stations << stations
       else
@@ -82,8 +80,6 @@ module CloudFactory
       end
     end
     def stations=(stations) # :nodoc:
-      resp = self.class.post("/lines/#{id}/stations.json", :body => {:station => {:type => "Work"}})
-      @station_id = resp._id
       @stations << stations
     end
     # ==Initializes a new line
@@ -121,7 +117,7 @@ module CloudFactory
       else
         line.instance_eval &block
       end
-      resp = post("/lines.json", :body => {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
+      # resp = post("/lines.json", :body => {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
       line
     end
     

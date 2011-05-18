@@ -10,8 +10,8 @@ RSpec.configure do |config|
   config.filter_run :focus => true
   config.filter_run_excluding :broken => true
   config.run_all_when_everything_filtered = true
-  
   config.extend VCR::RSpec::Macros
+  # Tenant.current = Tenant.create(:host => SANDBOX)
 end
 
 # WebMock.disable_net_connect!(:allow => "sprout.lvh.me")

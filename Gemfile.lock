@@ -6,6 +6,7 @@ PATH
       hashie (~> 1.0.0)
       httparty (~> 0.7.7)
       i18n
+      rest-client
 
 GEM
   remote: http://rubygems.org/
@@ -37,8 +38,11 @@ GEM
     json (1.4.6)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
+    mime-types (1.16)
     rake (0.8.7)
     rdoc (3.5.3)
+    rest-client (1.6.1)
+      mime-types (>= 1.16)
     rspec (2.5.0)
       rspec-core (~> 2.5.0)
       rspec-expectations (~> 2.5.0)

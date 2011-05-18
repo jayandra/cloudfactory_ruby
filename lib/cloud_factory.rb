@@ -2,6 +2,8 @@ require 'httparty'
 require 'hashie'
 require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
+require "rest_client"
+
 
 directory = File.expand_path(File.dirname(__FILE__))
 
