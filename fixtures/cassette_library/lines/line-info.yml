@@ -13,7 +13,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/lines/4dd23b5f72f8be353a0000a7
+      - http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bda72f8be03340000c2
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -21,19 +21,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.124296"
+      - "1.038277"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Tue, 17 May 2011 09:09:51 GMT
+      - Wed, 18 May 2011 07:57:14 GMT
       content-length: 
       - "314"
-    body: "{\"_id\":\"4dd23b5f72f8be353a0000a7\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-17T14:54:51+05:45\",\"description\":\"this is description\",\"public\":true,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-17T14:54:51+05:45\"}"
+    body: "{\"_id\":\"4dd37bda72f8be03340000c2\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-18T13:42:14+05:45\",\"description\":\"this is description\",\"public\":true,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-18T13:42:14+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd23b5f72f8be353a0000a7.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bda72f8be03340000c2.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: 
     headers: 
       accept: 
@@ -46,18 +46,18 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"cba98997630c9af368bb9254cbdca5d9\""
+      - "\"2b2e261731ed75525df1cea4bc1cddb5\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.024418"
+      - "1.037592"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Tue, 17 May 2011 09:09:52 GMT
+      - Wed, 18 May 2011 07:57:15 GMT
       content-length: 
       - "314"
-    body: "{\"_id\":\"4dd23b5f72f8be353a0000a7\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-17T14:54:51+05:45\",\"description\":\"this is description\",\"public\":true,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-17T14:54:51+05:45\"}"
+    body: "{\"_id\":\"4dd37bda72f8be03340000c2\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-18T13:42:14+05:45\",\"description\":\"this is description\",\"public\":true,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-18T13:42:14+05:45\"}"
     http_version: "1.1"
