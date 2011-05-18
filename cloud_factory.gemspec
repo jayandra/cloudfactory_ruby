@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency  "activesupport", '~> 3.0.0'
   s.add_dependency  "hashie", "~> 1.0.0"
   s.add_dependency  "httparty", "~> 0.7.7"
+  s.add_dependency  "rest-client"
   
   s.add_development_dependency "rspec", "~> 2.0"
   s.add_development_dependency "aruba"
