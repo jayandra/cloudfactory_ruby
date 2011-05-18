@@ -1,8 +1,10 @@
 module CloudFactory
   class Run
+    include Client
+    include ClientRequestResponse
     
-    # name of the "run" object, e.g. run = Run.new("run_name")
-    attr_accessor :name
+    # title of the "run" object, e.g. run = Run.new("run_name")
+    attr_accessor :title,:file, :line
     
     # input_data for the Run
     attr_accessor :input_data
@@ -11,9 +13,13 @@ module CloudFactory
     # ==Usage Example:
     #     
     #   run = Run.new("RunName")
-    def initialize(name)
-      @name = name
+    def initialize(line, title, file)
+      @line = line
+      @title = title
+      @file = file
       @input_data =[]
+      resp = self.class.post("/lines/#{line.id}/runs.json", :body => {:run => {:title => @title, :file => @file}})
+      @id = resp._id
     end
     
     # ==Initializes a new run
@@ -27,14 +33,8 @@ module CloudFactory
     #   run = CloudFactory::Run.create("run name") do
     #     input_data [{:name => "Bob Smith", :age => 23}, {:name => "John Doe", :age => 24}]
     #   end
-    def self.create(name, &block)
-      run = Run.new(name)
-      if block.arity >= 1
-        block.call(run)
-      else
-        run.instance_eval &block
-      end
-      run
+    def self.create(line, title, file)
+      Run.new(line, name, file)
     end
     #Line.fire_run(@input_data, )
     #  POST http://cf.com/api/v1/lines/:id/runs
@@ -73,5 +73,9 @@ module CloudFactory
       end
     end
     
+    
+    def get
+      self.class.get("/lines/#{@line.id}/runs/#{@id}.json")
+    end
   end
 end

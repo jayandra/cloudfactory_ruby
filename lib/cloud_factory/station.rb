@@ -112,7 +112,7 @@ module CloudFactory
     # ===This changes the type of the "station" object from "Work" to "Tournament"
     def update(options={})
       @type = options[:type]
-      resp = self.class.put("/lines/#{@line.id}/stations/#{self.id}.json", :body => {:station => {:_type => @type}})
+      resp = self.class.put("/lines/#{@line.id}/stations/#{self.id}.json", :body => {:station => {:type => @type}})
     end
     
     # ==Updates Standard Instruction of a station
