@@ -13,7 +13,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/lines/4dd23b4e72f8be353a000099
+      - http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bb172f8be033400009b
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -21,19 +21,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.210530"
+      - "1.031616"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Tue, 17 May 2011 09:09:34 GMT
+      - Wed, 18 May 2011 07:56:33 GMT
       content-length: 
       - "295"
-    body: "{\"_id\":\"4dd23b4e72f8be353a000099\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-17T14:54:34+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-17T14:54:34+05:45\"}"
+    body: "{\"_id\":\"4dd37bb172f8be033400009b\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-18T13:41:33+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-18T13:41:33+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd23b4e72f8be353a000099/input_headers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bb172f8be033400009b/input_headers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: input_header[label]=image_url&input_header[field_type]=text_data&input_header[value]=http%3A%2F%2Fs3.amazon.com%2Fbizcardarmy%2Fmedium%2F1.jpg&input_header[required]=true&input_header[validation_format]=url
     headers: 
       accept: 
@@ -46,20 +46,113 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"793e5b529fa8656f589650a3f327e8a4\""
+      - "\"9dd576279cb962ca4e473e26374a9b98\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.189717"
+      - "1.033208"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Tue, 17 May 2011 09:09:35 GMT
+      - Wed, 18 May 2011 07:56:34 GMT
       content-length: 
-      - "200"
-    body: "{\"field_type\":\"text_data\",\"label\":\"image_url\",\"line_id\":\"4dd23b4e72f8be353a000099\",\"required\":\"true\",\"station_ids\":[],\"validation_format\":\"url\",\"value\":\"http://s3.amazon.com/bizcardarmy/medium/1.jpg\"}"
+      - "233"
+    body: "{\"_id\":\"4dd37bb272f8be033400009c\",\"field_type\":\"text_data\",\"label\":\"image_url\",\"line_id\":\"4dd37bb172f8be033400009b\",\"required\":\"true\",\"station_ids\":[],\"validation_format\":\"url\",\"value\":\"http://s3.amazon.com/bizcardarmy/medium/1.jpg\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bb172f8be033400009b/input_headers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: input_header[label]=image&input_header[field_type]=text_data&input_header[value]=http%3A%2F%2Fs3.amazon.com%2Fbizcardarmy%2Fmedium%2F1.jpg&input_header[required]=true&input_header[validation_format]=url
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"15ebb10e34776246a943c241c6ed1997\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "1.013700"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Wed, 18 May 2011 07:56:35 GMT
+      content-length: 
+      - "229"
+    body: "{\"_id\":\"4dd37bb372f8be033400009d\",\"field_type\":\"text_data\",\"label\":\"image\",\"line_id\":\"4dd37bb172f8be033400009b\",\"required\":\"true\",\"station_ids\":[],\"validation_format\":\"url\",\"value\":\"http://s3.amazon.com/bizcardarmy/medium/1.jpg\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bb172f8be033400009b/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: station[type]=Work
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"42a7f80a555d21c0c28a41e6c5e149ec\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "1.029023"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Wed, 18 May 2011 07:56:36 GMT
+      content-length: 
+      - "197"
+    body: "{\"_id\":\"4dd37bb472f8be033400009e\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-18T13:41:36+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd37bb172f8be033400009b\",\"updated_at\":\"2011-05-18T13:41:36+05:45\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bb172f8be033400009b/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: station[type]=Work
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"485d1e0da7f5b0d466f13479be009ada\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "0.944763"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Wed, 18 May 2011 07:56:37 GMT
+      content-length: 
+      - "197"
+    body: "{\"_id\":\"4dd37bb572f8be033400009f\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-18T13:41:37+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd37bb172f8be033400009b\",\"updated_at\":\"2011-05-18T13:41:37+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -75,7 +168,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/lines/4dd23b5072f8be353a00009b
+      - http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bb672f8be03340000a0
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -83,12 +176,43 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.117876"
+      - "1.041597"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Tue, 17 May 2011 09:09:36 GMT
+      - Wed, 18 May 2011 07:56:38 GMT
       content-length: 
       - "295"
-    body: "{\"_id\":\"4dd23b5072f8be353a00009b\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-17T14:54:36+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-17T14:54:36+05:45\"}"
+    body: "{\"_id\":\"4dd37bb672f8be03340000a0\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-18T13:41:38+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-18T13:41:38+05:45\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4dd37bb172f8be033400009b/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: station[type]=Work
+    headers: 
+      accept: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json; charset=utf-8
+      etag: 
+      - "\"1c5aa72f515be246241adb3973076fda\""
+      cache-control: 
+      - max-age=0, private, must-revalidate
+      x-ua-compatible: 
+      - IE=Edge
+      x-runtime: 
+      - "1.018898"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
+      date: 
+      - Wed, 18 May 2011 07:56:39 GMT
+      content-length: 
+      - "197"
+    body: "{\"_id\":\"4dd37bb772f8be03340000a1\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-18T13:41:39+05:45\",\"input_header_ids\":[],\"line_id\":\"4dd37bb172f8be033400009b\",\"updated_at\":\"2011-05-18T13:41:39+05:45\"}"
     http_version: "1.1"

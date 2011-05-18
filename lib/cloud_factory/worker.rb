@@ -26,6 +26,7 @@ module CloudFactory
           @reward = reward
           CloudFactory::HumanWorker.post("/stations/#{station.id}/workers.json", :body => 
           {:worker => {:number => @number, :reward => @reward, :_type => "HumanWorker"}})
+          station.worker = self
         end
 
       else

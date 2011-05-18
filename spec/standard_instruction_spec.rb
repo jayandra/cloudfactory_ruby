@@ -7,21 +7,17 @@ describe CloudFactory::StandardInstruction do
         attrs = {:title => "Enter text from a business card image",
           :description => "Describe"
         }
-
-        form_fields = []
         
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
-          l.stations = CloudFactory::Station.create(l, :type => "work") do |s|
-            s.instruction = CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              form_fields << CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              form_fields << CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              form_fields << CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
-              
-              i.form_fields = form_fields
+          CloudFactory::Station.create(l, :type => "work") do |s|
+            CloudFactory::StandardInstruction.create(s, attrs) do |i|
+              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
-        instruction = line.stations.instruction
+        instruction = line.stations[0].instruction
         instruction.title.should eq("Enter text from a business card image")
         instruction.description.should eq("Describe")
         instruction.form_fields.first.label.should eq("First Name")
@@ -38,16 +34,12 @@ describe CloudFactory::StandardInstruction do
           :description => "Describe"
         }
 
-        form_fields = []
-        
-
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
-          l.stations = CloudFactory::Station.create(l, :type => "work") do |s|
-            s.instruction = CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              form_fields << CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              form_fields << CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              form_fields << CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
-              i.form_fields = form_fields
+          CloudFactory::Station.create(l, :type => "work") do |s|
+            CloudFactory::StandardInstruction.create(s, attrs) do |i|
+              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
             @got_instruction = s.get_instruction
           end
@@ -65,15 +57,12 @@ describe CloudFactory::StandardInstruction do
           :description => "Describe"
         }
 
-        form_fields = []
-
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
-          l.stations = CloudFactory::Station.create(l, :type => "work") do |s|
-            s.instruction = CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              form_fields << CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              form_fields << CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              form_fields << CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
-              i.form_fields = form_fields
+          CloudFactory::Station.create(l, :type => "work") do |s|
+            CloudFactory::StandardInstruction.create(s, attrs) do |i|
+              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
             @got_instruction = s.get_instruction
             s.update_instruction({:title => "Enter phone number from a business card image", :description => "Call"})
@@ -98,11 +87,11 @@ describe CloudFactory::StandardInstruction do
         form_fields = []
   
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
-          l.stations = CloudFactory::Station.create(l, :type => "work") do |s|
-            s.instruction = CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              form_fields << CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              form_fields << CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              form_fields << CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+          CloudFactory::Station.create(l, :type => "work") do |s|
+            CloudFactory::StandardInstruction.create(s, attrs) do |i|
+              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
               i.form_fields = form_fields
             end
             @got_instruction = s.get_instruction
@@ -111,7 +100,7 @@ describe CloudFactory::StandardInstruction do
         @got_instruction.title.should eq("Enter text from a business card image")
         @got_instruction.description.should eq("Describe")
         
-        station = line.stations
+        station = line.stations[0]
         deleted_response = CloudFactory::StandardInstruction.delete_instruction(station)
         deleted_response.parsed_response["status"].should eq("Instruction deleted")
       end
