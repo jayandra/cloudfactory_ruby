@@ -210,7 +210,7 @@ describe CloudFactory::Line do
               CloudFactory::FormField.new(s, {:label => "Age", :field_type => "SA", :required => "true"})
             end
           end
-        end
+        end 
 
         line = CloudFactory::Line.info(line_1)
 
