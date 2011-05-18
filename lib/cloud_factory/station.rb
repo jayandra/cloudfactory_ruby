@@ -103,18 +103,6 @@ module CloudFactory
       @instruction_instance = instruction_instance
     end
     
-    # ==Updates a station 
-    # ===Usage example for update method is 
-    #   line = CloudFactory::Line.create("Digitize", "Survey") do |l|   
-    #     CloudFactory::Station.new(l, :type => "work")
-    #   end
-    #   line.stations[0].update(:type => "Tournament")
-    # ===This changes the type of the "station" object from "Work" to "Tournament"
-    def update(options={})
-      @type = options[:type]
-      resp = self.class.put("/lines/#{@line.id}/stations/#{self.id}.json", :body => {:station => {:type => @type}})
-    end
-    
     # ==Updates Standard Instruction of a station
     # ===Usage example
     #   attrs = {:title => "Enter text from a business card image",

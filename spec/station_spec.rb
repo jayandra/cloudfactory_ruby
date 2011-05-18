@@ -90,24 +90,7 @@ describe CloudFactory::Station do
       end
     end
   end
-
-  context "updating a station" do
-    xit "should update a station", :focus => true do
-      VCR.use_cassette "stations/update", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
-        CloudFactory::Station.new(line, {:type => "Tournament"})
-        station = line.stations.first.get
-        station._type.should eq("TournamentStation")
-        line.stations.first.update({:type => "Work"})
-        updated_station = line.stations.first.get
-        debugger
-        updated_station._type.should eq("WorkStation")
-        updated_station._type.should_not eq("TournamentStation")
-      end
-    end
-  end
-
+ 
   context "get station" do
     it "should get information about a single station" do
       VCR.use_cassette "stations/get-station", :record => :new_episodes do
