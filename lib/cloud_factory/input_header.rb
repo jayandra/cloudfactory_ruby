@@ -32,8 +32,9 @@ module CloudFactory
     #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
     #     :required => true,
     #     :validation_format => "url"} 
+    #   line = CloudFactory::Line.create("Digitize", "Survey")   
+    #   input_header = CloudFactory::InputHeader.new(line, attrs) 
     #
-    #   input_header = InputHeader.new(attrs)
     def initialize(line, options={})
       @label              = options[:label]
       @field_type         = options[:field_type]
@@ -44,6 +45,7 @@ module CloudFactory
           {:input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format}})
       @id = resp._id
       @line_id = line.id
+      line.input_headers = self
     end
     
     # ==Returns all the input headers of a specific line
@@ -63,12 +65,10 @@ module CloudFactory
     #   line = CloudFactory::Line.create("Digitize Card","4dc8ad6572f8be0600000001") do |l|
     #     input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
     #     input_header_2 = CloudFactory::InputHeader.new(l, attrs_2)
-    # 
-    #     l.input_headers = [input_header_1,input_header_2]
     #   end
-    #   input_headers_of_line = CloudFactory::InputHeader.get_input_headers_of_line(line)
+    #   input_headers_of_line = CloudFactory::InputHeader.all(line)
     # returns an array of input headers associated with line
-    def self.get_input_headers_of_line(line)
+    def self.all(line)
       get("/lines/#{line.id}/input_headers.json")
     end
     
@@ -82,12 +82,11 @@ module CloudFactory
     #   }
     #      
     #   line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
-    #   input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-    #     l.input_headers = [input_header_1]
+    #     CloudFactory::InputHeader.new(l, attrs_1)
     #   end
     #   input_header = line.input_headers[0]
-    #   got_input_header = input_header.get_input_header
-    def get_input_header
+    #   got_input_header = input_header.get
+    def get
       self.class.get("/lines/#{line_id}/input_headers/#{@id}.json")
     end
     
@@ -101,8 +100,7 @@ module CloudFactory
     #   }
     #   
     #   line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
-    #     input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-    #     l.input_headers = [input_header_1]
+    #     CloudFactory::InputHeader.new(l, attrs_1)
     #   end
     #   input_header = line.input_headers[0]
     #   updated_input_header = input_header.update({:label => "jackpot", :field_type => "lottery"})
@@ -126,8 +124,7 @@ module CloudFactory
     #   }
     #   
     #   line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
-    #     input_header = CloudFactory::InputHeader.new(l, attrs)
-    #     l.input_headers = [input_header]
+    #     CloudFactory::InputHeader.new(l, attrs)
     #   end
     #
     #   input_header = line.input_headers[0]

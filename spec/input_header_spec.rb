@@ -14,7 +14,7 @@ describe CloudFactory::InputHeader do
         line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
         input_header = CloudFactory::InputHeader.new(line, attrs)
-        input_header.label.should eq("image_url")
+        line.input_headers[0].label.should eq("image_url")
         input_header.field_type.should eq("text_data")
         input_header.value.should eq("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
         input_header.required.should eq(true)
@@ -40,12 +40,10 @@ describe CloudFactory::InputHeader do
         }
         
         line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-          input_header_2 = CloudFactory::InputHeader.new(l, attrs_2)
-          
-          l.input_headers = [input_header_1,input_header_2]
+          CloudFactory::InputHeader.new(l, attrs_1)
+          CloudFactory::InputHeader.new(l, attrs_2)
         end
-        input_headers_of_line = CloudFactory::InputHeader.get_input_headers_of_line(line)
+        input_headers_of_line = CloudFactory::InputHeader.all(line)
         input_headers_of_line.map(&:label).should include("image_url")
         input_headers_of_line.map(&:label).should include("text_url")
         input_headers_of_line.map(&:value).should include("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
@@ -69,11 +67,10 @@ describe CloudFactory::InputHeader do
         }
         
         line = CloudFactory::Line.create("Digitize","Digitization") do |l|
-          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-          input_header_2 = CloudFactory::InputHeader.new(l, attrs_2)
-          l.input_headers = [input_header_1, input_header_2]
+          CloudFactory::InputHeader.new(l, attrs_1)
+          CloudFactory::InputHeader.new(l, attrs_2)
         end
-        got_input_header = line.input_headers[0].get_input_header 
+        got_input_header = line.input_headers[0].get 
         got_input_header.label.should eq("image_url_type")
         got_input_header.field_type.should eq("text_data")
         got_input_header.value.should eq("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
@@ -92,12 +89,12 @@ describe CloudFactory::InputHeader do
         }
         
         line = CloudFactory::Line.create("Digitize","Digitization") do |l|
-          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-          l.input_headers = [input_header_1]
+          CloudFactory::InputHeader.new(l, attrs_1)
         end
-        updated_input_header = line.input_headers.last.update({:label => "jackpot", :field_type => "lottery"})
-        updated_input_header.parsed_response['label'].should eq("jackpot")
-        updated_input_header.parsed_response['field_type'].should eq("lottery")
+        line.input_headers.last.update({:label => "jackpot", :field_type => "lottery"})
+        updated_input_header = line.input_headers.last.get
+        updated_input_header.label.should eq("jackpot")
+        updated_input_header.field_type.should eq("lottery")
       end
     end
   end
@@ -125,16 +122,15 @@ describe CloudFactory::InputHeader do
         }
         
         line = CloudFactory::Line.create("Digitize","Digitization") do |l|
-          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-          input_header_2 = CloudFactory::InputHeader.new(l, attrs_2)
-          input_header_3 = CloudFactory::InputHeader.new(l, attrs_3)
-          l.input_headers = [input_header_1, input_header_2, input_header_3]
+          CloudFactory::InputHeader.new(l, attrs_1)
+          CloudFactory::InputHeader.new(l, attrs_2)
+          CloudFactory::InputHeader.new(l, attrs_3)
         end
         
         CloudFactory::InputHeader.delete_all(line)
         
         begin
-          CloudFactory::InputHeader.get_input_headers_of_line(line)
+          CloudFactory::InputHeader.all(line)
         rescue Exception => exec
           exec.class.should eql(NoMethodError)
         end
@@ -153,14 +149,13 @@ describe CloudFactory::InputHeader do
         }
         
         line = CloudFactory::Line.create("Digitize","Digitization") do |l|
-          input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-          l.input_headers = [input_header_1]
+          CloudFactory::InputHeader.new(l, attrs_1)
         end
         
         line.input_headers[0].delete
         
         begin
-          line.input_headers[0].get_input_header
+          line.input_headers[0].get
         rescue Exception => exec
           exec.class.should eql(Crack::ParseError)
         end

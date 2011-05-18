@@ -20,7 +20,13 @@ module CloudFactory
     
     # ==Initializes a new "form_field" object
     # ==Usage of form_field.new(hash):
-    #     form_field = FormField.new(:label => "First Name", :field_type => "SA", :required => "true")
+    #   line = CloudFactory::Line.create("Digitize", "Survey") do |l|   
+    #     CloudFactory::Station.create(l, :type => "work") do |s|
+    #       CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #         CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
+    #       end
+    #     end
+    #   end
     def initialize(station, options={})
       @station    = station
       @label      = options[:label]
@@ -29,6 +35,7 @@ module CloudFactory
       resp = self.class.post("/stations/#{station.id}/instruction/form_fields.json", :body => {:form_field => 
         {:label => @label, :field_type => @field_type, :required => @required}})
       @id = resp._id
+      station.instruction.form_fields = self
     end
   end
 end
