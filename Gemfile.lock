@@ -6,6 +6,7 @@ PATH
       hashie (~> 1.0.0)
       httparty (~> 0.7.7)
       i18n
+      json
       rest-client
 
 GEM

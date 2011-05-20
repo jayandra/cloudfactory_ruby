@@ -2,7 +2,7 @@ module CloudFactory
   class Run
     include Client
     include ClientRequestResponse
-    
+    require 'json'
     # title of the "run" object
     attr_accessor :title
 
@@ -39,7 +39,7 @@ module CloudFactory
       @input_data =[]
       uri = "http://#{CloudFactory.api_url}/#{CloudFactory.api_version}/lines/#{line.id}/runs.json?api_key=#{CloudFactory.api_key}&email=#{CloudFactory.email}"
       resp = RestClient.post uri, {:title => @title, :file => File.new(@file, 'rb')}
-      @id = resp.split(",").first.split(":").last.gsub('"','')
+      @id = Hashie::Mash.new(JSON.load(resp))._id
     end
     
     # ==Creates a new Run
