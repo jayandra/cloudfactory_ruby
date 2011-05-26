@@ -128,6 +128,9 @@ module CloudFactory
       get("/lines/#{line.id}.json")
     end
     
+    def self.get_line(line_id)
+      get("/lines/#{line_id}.json")
+    end
     # ==Returns all the lines of an account
     # ===Syntax for my_lines method is 
     #   CloudFactory::Line.all

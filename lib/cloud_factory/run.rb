@@ -38,7 +38,7 @@ module CloudFactory
       @file = file
       @input_data =[]
       uri = "http://#{CloudFactory.api_url}/#{CloudFactory.api_version}/lines/#{line.id}/runs.json?api_key=#{CloudFactory.api_key}&email=#{CloudFactory.email}"
-      resp = RestClient.post uri, {:title => @title, :file => File.new(@file, 'rb')}
+      resp = RestClient.post uri,{:run => {:title => @title}, :file => File.new(@file, 'rb')}
       @id = Hashie::Mash.new(JSON.load(resp))._id
     end
     
@@ -63,11 +63,20 @@ module CloudFactory
       Run.new(line, title, file)
     end
     
+    def self.use_line(line, title, file)
+      @line = line
+      @title = title
+      @file = file
+      uri = "http://#{CloudFactory.api_url}/#{CloudFactory.api_version}/lines/#{line._id}/runs.json?api_key=#{CloudFactory.api_key}&email=#{CloudFactory.email}"
+      resp = RestClient.post uri, {:run => {:title => title}, :file => File.new(file, 'rb')}
+      @id = Hashie::Mash.new(JSON.load(resp))._id
+      resp
+    end
     #Line.fire_run(@input_data, )
     #  POST http://cf.com/api/v1/lines/:id/runs
     #	 file.csv
     #  InputHeader.new(:label => "file")
-  	#  InputHeader.new(:label => "duration")
+    #  InputHeader.new(:label => "duration")
     # 
     #  FormField.new(:lable => "duration", :value => 300)
     # 
