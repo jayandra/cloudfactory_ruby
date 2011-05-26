@@ -216,9 +216,8 @@ describe CloudFactory::Line do
 
         line.title.should eq("digitize-card")
         stations = CloudFactory::Station.all(line_1)
+        
         stations[0]._type.should eq("WorkStation")
-        #stations[0].worker.number.should eq(2)
-        #stations[0].worker.reward.should eq(0.2)
         instruction_1 = line_1.stations[0].get_instruction
         instruction_1.title.should eq("Enter text from a business card image")
         instruction_1.description.should eq("Describe")
@@ -232,9 +231,6 @@ describe CloudFactory::Line do
         instruction_1.form_fields[2].field_type.should eq("SA")
         instruction_1.form_fields[2].required.should eq(true)
 
-        stations[3]._type.should eq("TournamentStation")
-        #stations[1].worker.number.should eq(3)
-        #stations[1].worker.reward.should eq(0.3)
         instruction_2 = line_1.stations[1].get_instruction
         instruction_2.title.should eq("Enter Name of Actor from the image")
         instruction_2.description.should eq("Enter name of an Actor")
