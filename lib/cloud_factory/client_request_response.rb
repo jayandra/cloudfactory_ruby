@@ -4,9 +4,12 @@ module CloudFactory
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def get(*args); handle_response super end
+      def get(*args)
+        debugger
+        handle_response(super)
+      end
 
-      def post(*args); handle_response super end
+      def post(*args); handle_response(super) end
 
       def handle_response(response)
         case response.code
