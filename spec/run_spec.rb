@@ -6,14 +6,14 @@ module CloudFactory
       it "the plain ruby way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "run/create-run", :record => :new_episodes do
-          
+
           attrs_1 = {:label => "Company",
             :field_type => "text_data",
             :value => "Apple", 
             :required => true, 
             :validation_format => "general"
           }
-          
+
           attrs_2 = {:label => "Website",
             :field_type => "text_data",
             :value => "apple.com", 
@@ -57,6 +57,41 @@ module CloudFactory
           run.title.should eq("run name")
           runfile = File.read(run.file)
           runfile.should == File.read(File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+        end
+      end
+
+      it "should create a run for an existing line" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/create-run-of-an-existing-line", :record => :new_episodes do
+          attrs_1 = {:label => "Company",
+            :field_type => "text_data",
+            :value => "Apple", 
+            :required => true, 
+            :validation_format => "general"
+          }
+
+          attrs_2 = {:label => "Website",
+            :field_type => "text_data",
+            :value => "apple.com", 
+            :required => true, 
+            :validation_format => "url"
+          }
+
+          line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
+            CloudFactory::InputHeader.new(l, attrs_1)
+            CloudFactory::InputHeader.new(l, attrs_2) 
+            CloudFactory::Station.create(l, :type => "work") do |s|
+              CloudFactory::HumanWorker.new(s, 2, 0.2)
+              CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
+                CloudFactory::FormField.new(s, {:label => "Company Name", :field_type => "SA", :required => "true"})
+                CloudFactory::FormField.new(s, {:label => "Website URL", :field_type => "SA", :required => "true"})
+              end
+            end
+          end
+
+          old_line = CloudFactory::Line.get_line(line.id)
+          run = CloudFactory::Run.use_line(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          JSON.load(run)['title'].should eq("Run Using Line")
         end
       end
     end
