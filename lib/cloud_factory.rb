@@ -4,14 +4,14 @@ require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
 require "rest_client"
 
-
 directory = File.expand_path(File.dirname(__FILE__))
 
 Hash.send :include, Hashie::HashExtensions
 
 
 module CloudFactory  
-  
+
+
   class << self
     attr_accessor :api_key, :api_url, :api_version, :email
     
@@ -22,9 +22,6 @@ module CloudFactory
   end
   
   # Configuring the defaults
-  CloudFactory.api_url = "cloudfactory.com/api/"
-  CloudFactory.api_version = "v1"
-  
   # Set ENV['TEST'] is true for testing against the api
   # TEST=true bundle exec rspec spec/.....
   if ENV['TEST']
@@ -34,7 +31,7 @@ module CloudFactory
   end
   class CloudFactoryError < StandardError
     attr_reader :data
-
+  
     def initialize(data)
       @data = data
       super
@@ -47,8 +44,15 @@ module CloudFactory
   
   class Unauthorized < ClientError; end
   class NotFound     < ClientError; end
-
+  
   class Unavailable  < StandardError; end
+end
+
+CloudFactory.configure do |config|
+  config.api_version = "v1"
+  config.api_url = "sprout.lvh.me:3000/api/"
+  config.api_key = "133fcabc51e35903e616c25aace7ffccc819c8f0"
+  config.email = "sachin@sproutify.com"
 end
 
 require 'cloud_factory/client'
@@ -64,5 +68,3 @@ require 'cloud_factory/form_field'
 require 'cloud_factory/custom_instruction'
 require 'cloud_factory/run'
 require 'cloud_factory/category'
-
-
