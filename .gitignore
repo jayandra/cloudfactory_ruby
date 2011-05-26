@@ -4,3 +4,4 @@ pkg/*
 tmp
 rdoc
 !bin/cf
+vendor/*
