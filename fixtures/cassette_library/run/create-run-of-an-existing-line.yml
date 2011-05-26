@@ -13,7 +13,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde8f572f8be1951000099
+      - http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde99472f8be19510000c2
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -21,19 +21,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.335813"
+      - "1.328670"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:25 GMT
+      - Thu, 26 May 2011 05:48:04 GMT
       content-length: 
       - "295"
-    body: "{\"_id\":\"4ddde8f572f8be1951000099\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-26T11:30:25+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-26T11:30:25+05:45\"}"
+    body: "{\"_id\":\"4ddde99472f8be19510000c2\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-26T11:33:04+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-26T11:33:04+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde8f572f8be1951000099/input_headers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde99472f8be19510000c2/input_headers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: input_header[label]=Company&input_header[field_type]=text_data&input_header[value]=Apple&input_header[required]=true&input_header[validation_format]=general
     headers: 
       accept: 
@@ -44,7 +44,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde8f572f8be1951000099/input_headers/4ddde8f772f8be195100009a
+      - http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde99472f8be19510000c2/input_headers/4ddde99672f8be19510000c3
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -52,19 +52,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.316731"
+      - "1.316613"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:27 GMT
+      - Thu, 26 May 2011 05:48:06 GMT
       content-length: 
       - "277"
-    body: "{\"_id\":\"4ddde8f772f8be195100009a\",\"created_at\":\"2011-05-26T11:30:27+05:45\",\"field_type\":\"text_data\",\"label\":\"Company\",\"line_id\":\"4ddde8f572f8be1951000099\",\"required\":\"true\",\"station_ids\":[],\"updated_at\":\"2011-05-26T11:30:27+05:45\",\"validation_format\":\"general\",\"value\":\"Apple\"}"
+    body: "{\"_id\":\"4ddde99672f8be19510000c3\",\"created_at\":\"2011-05-26T11:33:06+05:45\",\"field_type\":\"text_data\",\"label\":\"Company\",\"line_id\":\"4ddde99472f8be19510000c2\",\"required\":\"true\",\"station_ids\":[],\"updated_at\":\"2011-05-26T11:33:06+05:45\",\"validation_format\":\"general\",\"value\":\"Apple\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde8f572f8be1951000099/input_headers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde99472f8be19510000c2/input_headers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: input_header[label]=Website&input_header[field_type]=text_data&input_header[value]=apple.com&input_header[required]=true&input_header[validation_format]=url
     headers: 
       accept: 
@@ -75,7 +75,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde8f572f8be1951000099/input_headers/4ddde8f872f8be195100009b
+      - http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde99472f8be19510000c2/input_headers/4ddde99772f8be19510000c4
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -83,19 +83,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.321924"
+      - "1.322558"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:28 GMT
+      - Thu, 26 May 2011 05:48:07 GMT
       content-length: 
       - "277"
-    body: "{\"_id\":\"4ddde8f872f8be195100009b\",\"created_at\":\"2011-05-26T11:30:28+05:45\",\"field_type\":\"text_data\",\"label\":\"Website\",\"line_id\":\"4ddde8f572f8be1951000099\",\"required\":\"true\",\"station_ids\":[],\"updated_at\":\"2011-05-26T11:30:28+05:45\",\"validation_format\":\"url\",\"value\":\"apple.com\"}"
+    body: "{\"_id\":\"4ddde99772f8be19510000c4\",\"created_at\":\"2011-05-26T11:33:07+05:45\",\"field_type\":\"text_data\",\"label\":\"Website\",\"line_id\":\"4ddde99472f8be19510000c2\",\"required\":\"true\",\"station_ids\":[],\"updated_at\":\"2011-05-26T11:33:07+05:45\",\"validation_format\":\"url\",\"value\":\"apple.com\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde8f572f8be1951000099/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde99472f8be19510000c2/stations.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: station[type]=Work
     headers: 
       accept: 
@@ -108,25 +108,25 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"f1d08db23caf767fb8d34a6532a3c2a1\""
+      - "\"cf660df7a3b6361470fb60a123847bff\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.315436"
+      - "1.318318"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:29 GMT
+      - Thu, 26 May 2011 05:48:08 GMT
       content-length: 
       - "197"
-    body: "{\"_id\":\"4ddde8f972f8be195100009c\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-26T11:30:29+05:45\",\"input_header_ids\":[],\"line_id\":\"4ddde8f572f8be1951000099\",\"updated_at\":\"2011-05-26T11:30:29+05:45\"}"
+    body: "{\"_id\":\"4ddde99872f8be19510000c5\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-26T11:33:08+05:45\",\"input_header_ids\":[],\"line_id\":\"4ddde99472f8be19510000c2\",\"updated_at\":\"2011-05-26T11:33:08+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/workers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde99872f8be19510000c5/workers.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: worker[number]=2&worker[reward]=0.2&worker[type]=HumanWorker
     headers: 
       accept: 
@@ -143,19 +143,19 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.324171"
+      - "1.326500"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:31 GMT
+      - Thu, 26 May 2011 05:48:10 GMT
       content-length: 
       - "197"
-    body: "{\"_id\":\"4ddde8f972f8be195100009c\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-26T11:30:29+05:45\",\"input_header_ids\":[],\"line_id\":\"4ddde8f572f8be1951000099\",\"updated_at\":\"2011-05-26T11:30:29+05:45\"}"
+    body: "{\"_id\":\"4ddde99872f8be19510000c5\",\"_type\":\"WorkStation\",\"created_at\":\"2011-05-26T11:33:08+05:45\",\"input_header_ids\":[],\"line_id\":\"4ddde99472f8be19510000c2\",\"updated_at\":\"2011-05-26T11:33:08+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/instruction.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde99872f8be19510000c5/instruction.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: instruction[title]=Enter%20text%20from%20a%20business%20card%20image&instruction[description]=Describe&instruction[_type]=StandardInstruction
     headers: 
       accept: 
@@ -166,7 +166,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/instruction
+      - http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde99872f8be19510000c5/instruction
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -174,20 +174,20 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.338927"
+      - "1.370461"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:32 GMT
+      - Thu, 26 May 2011 05:48:11 GMT
       content-length: 
       - "219"
-    body: "{\"_id\":\"4ddde8fc72f8be195100009f\",\"_type\":\"StandardInstruction\",\"created_at\":\"2011-05-26T11:30:32+05:45\",\"description\":\"Describe\",\"title\":\"Enter text from a business card image\",\"updated_at\":\"2011-05-26T11:30:32+05:45\"}"
+    body: "{\"_id\":\"4ddde99b72f8be19510000c8\",\"_type\":\"StandardInstruction\",\"created_at\":\"2011-05-26T11:33:11+05:45\",\"description\":\"Describe\",\"title\":\"Enter text from a business card image\",\"updated_at\":\"2011-05-26T11:33:11+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/instruction/form_fields.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
-    body: form_field[label]=First%20Name&form_field[field_type]=SA&form_field[required]=true
+    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde99872f8be19510000c5/instruction/form_fields.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: form_field[label]=Company%20Name&form_field[field_type]=SA&form_field[required]=true
     headers: 
       accept: 
       - application/json
@@ -197,7 +197,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/instruction/form_fields/4ddde8fd72f8be19510000a0
+      - http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde99872f8be19510000c5/instruction/form_fields/4ddde99c72f8be19510000c9
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -205,20 +205,20 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.350991"
+      - "1.408979"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:33 GMT
+      - Thu, 26 May 2011 05:48:12 GMT
       content-length: 
-      - "219"
-    body: "{\"_id\":\"4ddde8fd72f8be19510000a0\",\"created_at\":\"2011-05-26T11:30:33+05:45\",\"field_type\":\"SA\",\"label\":\"First Name\",\"parameterized_label\":\"first-name\",\"position\":1,\"required\":true,\"updated_at\":\"2011-05-26T11:30:33+05:45\"}"
+      - "223"
+    body: "{\"_id\":\"4ddde99c72f8be19510000c9\",\"created_at\":\"2011-05-26T11:33:12+05:45\",\"field_type\":\"SA\",\"label\":\"Company Name\",\"parameterized_label\":\"company-name\",\"position\":1,\"required\":true,\"updated_at\":\"2011-05-26T11:33:12+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/instruction/form_fields.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
-    body: form_field[label]=Middle%20Name&form_field[field_type]=SA&form_field[required]=
+    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde99872f8be19510000c5/instruction/form_fields.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: form_field[label]=Website%20URL&form_field[field_type]=SA&form_field[required]=true
     headers: 
       accept: 
       - application/json
@@ -228,7 +228,7 @@
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/instruction/form_fields/4ddde8ff72f8be19510000a1
+      - http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde99872f8be19510000c5/instruction/form_fields/4ddde99e72f8be19510000ca
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -236,56 +236,56 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.358526"
+      - "1.335492"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:35 GMT
+      - Thu, 26 May 2011 05:48:14 GMT
       content-length: 
       - "221"
-    body: "{\"_id\":\"4ddde8ff72f8be19510000a1\",\"created_at\":\"2011-05-26T11:30:35+05:45\",\"field_type\":\"SA\",\"label\":\"Middle Name\",\"parameterized_label\":\"middle-name\",\"position\":2,\"required\":null,\"updated_at\":\"2011-05-26T11:30:35+05:45\"}"
+    body: "{\"_id\":\"4ddde99e72f8be19510000ca\",\"created_at\":\"2011-05-26T11:33:14+05:45\",\"field_type\":\"SA\",\"label\":\"Website URL\",\"parameterized_label\":\"website-url\",\"position\":2,\"required\":true,\"updated_at\":\"2011-05-26T11:33:14+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/instruction/form_fields.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
-    body: form_field[label]=Last%20Name&form_field[field_type]=SA&form_field[required]=true
+    method: :get
+    uri: http://manishlaldas.lvh.me:3000/api/v1/lines/4ddde99472f8be19510000c2.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    body: 
     headers: 
       accept: 
       - application/json
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
-      code: 201
-      message: Created
+      code: 200
+      message: OK
     headers: 
-      location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/stations/4ddde8f972f8be195100009c/instruction/form_fields/4ddde90072f8be19510000a2
       content-type: 
       - application/json; charset=utf-8
+      etag: 
+      - "\"5b06d27c7189740188d1f9890a017f22\""
       cache-control: 
-      - no-cache
+      - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.365860"
+      - "1.319463"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:36 GMT
+      - Thu, 26 May 2011 05:48:15 GMT
       content-length: 
-      - "217"
-    body: "{\"_id\":\"4ddde90072f8be19510000a2\",\"created_at\":\"2011-05-26T11:30:36+05:45\",\"field_type\":\"SA\",\"label\":\"Last Name\",\"parameterized_label\":\"last-name\",\"position\":3,\"required\":true,\"updated_at\":\"2011-05-26T11:30:36+05:45\"}"
+      - "295"
+    body: "{\"_id\":\"4ddde99472f8be19510000c2\",\"account_id\":\"4dd0d71272f8be0499000009\",\"category_id\":\"4db9319f703cf14825000001\",\"complete\":false,\"created_at\":\"2011-05-26T11:33:04+05:45\",\"description\":\"\",\"public\":null,\"rate\":0,\"rating_value\":0,\"title\":\"digitize-card\",\"updated_at\":\"2011-05-26T11:33:04+05:45\"}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://manishlaldas.lvh.me:3000/api//v1/lines/4ddde8f572f8be1951000099/runs.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
+    uri: http://manishlaldas.lvh.me:3000/api//v1/lines/4ddde99472f8be19510000c2/runs.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das@sprout-technology.com
     body: |
-      --743447
+      --419619
       Content-Disposition: form-data; name="run[title]"
       
-      run name
-      --743447
+      Run Using Line
+      --419619
       Content-Disposition: form-data; name="file"; filename="test.csv"
       Content-Type: text/csv
       
@@ -293,7 +293,7 @@
       Apple,apple.com
       Facebook,facebook.com
       Gmail,gmail.com
-      --743447--
+      --419619--
 
     headers: 
       accept: 
@@ -301,16 +301,16 @@
       accept-encoding: 
       - gzip, deflate
       content-length: 
-      - "258"
+      - "264"
       content-type: 
-      - multipart/form-data; boundary=743447
+      - multipart/form-data; boundary=419619
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 201
       message: Created
     headers: 
       location: 
-      - http://manishlaldas.lvh.me:3000/api/v1/runs/4ddde90172f8be19510000a3
+      - http://manishlaldas.lvh.me:3000/api/v1/runs/4ddde9a072f8be19510000cb
       content-type: 
       - application/json; charset=utf-8
       cache-control: 
@@ -318,12 +318,12 @@
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "1.490958"
+      - "1.444216"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 26 May 2011 05:45:38 GMT
+      - Thu, 26 May 2011 05:48:16 GMT
       content-length: 
-      - "308"
-    body: "{\"_id\":\"4ddde90172f8be19510000a3\",\"account_id\":\"4dd0d71272f8be0499000009\",\"created_at\":\"2011-05-26T11:30:37+05:45\",\"line_id\":\"4ddde8f572f8be1951000099\",\"owner_id\":\"4dd0d71272f8be0499000008\",\"tenant_id\":\"4dca3f8e72f8be2950000003\",\"through_api\":true,\"title\":\"run name\",\"updated_at\":\"2011-05-26T11:30:37+05:45\"}"
+      - "314"
+    body: "{\"_id\":\"4ddde9a072f8be19510000cb\",\"account_id\":\"4dd0d71272f8be0499000009\",\"created_at\":\"2011-05-26T11:33:16+05:45\",\"line_id\":\"4ddde99472f8be19510000c2\",\"owner_id\":\"4dd0d71272f8be0499000008\",\"tenant_id\":\"4dca3f8e72f8be2950000003\",\"through_api\":true,\"title\":\"Run Using Line\",\"updated_at\":\"2011-05-26T11:33:16+05:45\"}"
     http_version: "1.1"
