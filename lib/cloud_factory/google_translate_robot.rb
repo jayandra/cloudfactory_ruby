@@ -11,7 +11,7 @@ module CloudFactory
   #     end
   #   end
   #
-  class GoogleTranslator
+  class GoogleTranslateRobot
     
     include Worker
 
