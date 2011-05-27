@@ -20,7 +20,7 @@ module CloudFactory
       when "HumanWorker"
 
         # Initializes new worker
-        def initialize( station, number=1, reward )
+        def initialize(station, number=1, reward)
           # @station =  station
           @number = number
           @reward = reward
@@ -32,14 +32,16 @@ module CloudFactory
       else
 
         # Creates new worker 
-        def self.create
+        def self.create(station)
           worker = self.new
           worker.instance_eval do
             @number = 1
-            @reward = nil
+            @reward = 0
           end
-          worker
-          #POST http://cf.com/api/v1/stations/1/worker
+          type = self.to_s.split("::").last.underscore
+          self.post("/stations/#{station.id}/workers.json", :body => 
+          {:worker => {:number => 1, :reward => 0, :type => type}})
+          station.worker = worker
         end
       end
     end

@@ -4,10 +4,10 @@ module CloudFactory
     
     included do |base|
       base.send(:include, HTTParty)
-      base.send(:base_uri, "#{CloudFactory.api_url}#{CloudFactory.api_version}")
+      base.send(:base_uri, "manishlaldas.lvh.me:3000/api/v1")
       base.send(:headers, "accept" => "application/json")
       base.send(:format, :json)
-      base.send(:default_params, {:api_key => CloudFactory.api_key, :email => CloudFactory.email})
+      base.send(:default_params, {:api_key => "5c99665131ad4044968de3ca0b984c8c0d45e9a2", :email => "manish.das@sprout-technology.com"})
       # base.extend(ClassMethods)
     end
     

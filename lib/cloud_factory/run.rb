@@ -37,7 +37,7 @@ module CloudFactory
       @title = title
       @file = file
       @input_data =[]
-      uri = "http://#{CloudFactory.api_url}/#{CloudFactory.api_version}/lines/#{line.id}/runs.json?api_key=#{CloudFactory.api_key}&email=#{CloudFactory.email}"
+      uri = "http://manishlaldas.lvh.me:3000/api/v1/lines/#{line.id}/runs.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das%40sprout-technology.com"
       resp = RestClient.post uri,{:run => {:title => @title}, :file => File.new(@file, 'rb')}
       @id = Hashie::Mash.new(JSON.load(resp))._id
     end
@@ -67,7 +67,7 @@ module CloudFactory
       @line = line
       @title = title
       @file = file
-      uri = "http://#{CloudFactory.api_url}/#{CloudFactory.api_version}/lines/#{line._id}/runs.json?api_key=#{CloudFactory.api_key}&email=#{CloudFactory.email}"
+      uri = "http://manishlaldas.lvh.me:3000/api/v1/lines/#{line._id}/runs.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das%40sprout-technology.com"
       resp = RestClient.post uri, {:run => {:title => title}, :file => File.new(file, 'rb')}
       @id = Hashie::Mash.new(JSON.load(resp))._id
       resp

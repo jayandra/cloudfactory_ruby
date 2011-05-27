@@ -1,14 +1,21 @@
 require 'spec_helper'
 
-describe CloudFactory::Category do
+describe "CloudFactory::Category" do
   context "return category" do
     it "should get all the categories" do
-      VCR.use_cassette "category/all", :record => :new_episodes do
+      WebMock.allow_net_connect!
+      CloudFactory.configure do |c|
+        c.api_key = '5c99665131ad4044968de3ca0b984c8c0d45e9a2'
+        c.email = 'manish.das@sprout-technology.com'
+        c.api_url = "manishlaldas.lvh.me:3000/api/"
+        c.api_version = "v1"
+      end
+      # VCR.use_cassette "category/all", :record => :new_episodes do
         categories = CloudFactory::Category.all
         categories.map(&:name).should include("Digitization")
         categories.map(&:name).should include("Data Processing")
         categories.map(&:name).should include("Survey")
-      end
+      # end
     end
   end
   

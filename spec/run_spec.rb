@@ -60,9 +60,9 @@ module CloudFactory
         end
       end
 
-      it "should create a run for an existing line" do
-        # WebMock.allow_net_connect!
-        VCR.use_cassette "run/create-run-of-an-existing-line", :record => :new_episodes do
+      it "should create a run for an existing line", :focus => true do
+        WebMock.allow_net_connect!
+        # VCR.use_cassette "run/create-run-of-an-existing-line", :record => :new_episodes do
           attrs_1 = {:label => "Company",
             :field_type => "text_data",
             :value => "Apple", 
@@ -89,10 +89,14 @@ module CloudFactory
             end
           end
 
-          old_line = CloudFactory::Line.get_line(line.id)
+          old_line = CloudFactory::Line.find(line.id)
           run = CloudFactory::Run.use_line(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
           JSON.load(run)['title'].should eq("Run Using Line")
-        end
+        # end
+      end
+    
+      it "should create a run for google_translator robot" do
+        
       end
     end
   end
