@@ -4,27 +4,31 @@ require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
 require "rest_client"
 
-
 directory = File.expand_path(File.dirname(__FILE__))
 
 Hash.send :include, Hashie::HashExtensions
 
 
 module CloudFactory  
-  
+
   class << self
     attr_accessor :api_key, :api_url, :api_version, :email
-    
-    def configure
-      yield self
-    end
-    
+
+    # def configure
+    #       yield self
+    #     end
+    #configure do |c|
+    api_key = "5c99665131ad4044968de3ca0b984c8c0d45e9a2"
+    email 	 = "manish.das@sprout-technology.com"
+    api_url = "manishlaldas.lvh.me:3000/api/"
+    api_version = "v1"
+    #end
   end
-  
+
   # Configuring the defaults
-  CloudFactory.api_url = "cloudfactory.com/api/"
-  CloudFactory.api_version = "v1"
-  
+  # CloudFactory.api_url = "cloudfactory.com/api/"
+  #   CloudFactory.api_version = "v1"
+
   # Set ENV['TEST'] is true for testing against the api
   # TEST=true bundle exec rspec spec/.....
   if ENV['TEST']
@@ -40,11 +44,11 @@ module CloudFactory
       super
     end
   end
-  
+
   class ClientError < StandardError; end
   class ServerError < CloudFactoryError; end
   class General     < CloudFactoryError; end
-  
+
   class Unauthorized < ClientError; end
   class NotFound     < ClientError; end
 
@@ -57,7 +61,8 @@ require 'cloud_factory/line'
 require 'cloud_factory/input_header'
 require 'cloud_factory/worker'
 require 'cloud_factory/human_worker'
-require 'cloud_factory/google_translator'
+require 'cloud_factory/google_translate_robot'
+require 'cloud_factory/media_converter_robot'
 require 'cloud_factory/station'
 require 'cloud_factory/standard_instruction'
 require 'cloud_factory/form_field'
