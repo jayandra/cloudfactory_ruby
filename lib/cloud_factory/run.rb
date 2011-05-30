@@ -37,10 +37,10 @@ module CloudFactory
       @title = title
       @file = file
       @input_data =[]
-      if (line.id).nil? == false
-        line_id = line.id
-      else
+      if line.id.nil?
         line_id = line._id
+      else
+        line_id = line.id
       end
       uri = "http://manishlaldas.lvh.me:3000/api/v1/lines/#{line_id}/runs.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das%40sprout-technology.com"
       resp = RestClient.post uri,{:run => {:title => @title}, :file => File.new(@file, 'rb')}
