@@ -34,9 +34,9 @@ describe CloudFactory::Line do
           CloudFactory::Station.create(self,{:type => "work"}) do |station|
             CloudFactory::HumanWorker.new(station, 2, 0.2)
             CloudFactory::StandardInstruction.create(station,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new(station, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(station, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(station, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -68,9 +68,9 @@ describe CloudFactory::Line do
           CloudFactory::Station.create(l, :type => "work") do |station|
             CloudFactory::HumanWorker.new(station, 2, 0.2)
             CloudFactory::StandardInstruction.create(station,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new(station, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(station, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(station, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -159,15 +159,15 @@ describe CloudFactory::Line do
   end
 
   context "create a basic line" do
-    it "should create a basic line with one station" do
+    it "should create a basic line with one station", :focus => true do
       VCR.use_cassette "lines/create-basic-line", :record => :new_episodes do
         line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
           CloudFactory::Station.create(l, :type => "work") do |s|
             CloudFactory::HumanWorker.new(s, 2, 0.2)
             CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})            
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})            
             end
           end
         end
@@ -195,19 +195,19 @@ describe CloudFactory::Line do
           CloudFactory::Station.create(l, :type => "work") do |s|
             CloudFactory::HumanWorker.new(s, 2, 0.2)
             CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
 
           CloudFactory::Station.create(l, :type => "Tournament") do |s|
             CloudFactory::HumanWorker.new(s, 3, 0.3)
             CloudFactory::StandardInstruction.create(s,{:title => "Enter Name of Actor from the image", :description => "Enter name of an Actor"}) do |i|
-              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Age", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Age", :field_type => "SA", :required => "true"})
             end
           end
         end 

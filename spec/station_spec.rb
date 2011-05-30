@@ -20,9 +20,9 @@ describe CloudFactory::Station do
         station = CloudFactory::Station.create(line, :type => "work") do |s|
           CloudFactory::HumanWorker.new(s, 2, 0.2)
           CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-            CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-            CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-            CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+            CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+            CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+            CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
           end
         end
         line.stations.first.type.should eq("Work")
@@ -43,11 +43,10 @@ describe CloudFactory::Station do
 
         station_1 = CloudFactory::Station.create(line, :type => "Work") do 
           human_worker = CloudFactory::HumanWorker.new(self, 2, 0.2)
-          s = self
           CloudFactory::StandardInstruction.create(self,{:title => "Enter text from a business card image", :description => "Describe"}) do 
-            CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-            CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-            CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+            CloudFactory::FormField.new(self, {:label => "First Name", :field_type => "SA", :required => "true"})
+            CloudFactory::FormField.new(self, {:label => "Middle Name", :field_type => "SA"})
+            CloudFactory::FormField.new(self, {:label => "Last Name", :field_type => "SA", :required => "true"})
           end 
         end
         line.stations.first.type.should eq("Work")
