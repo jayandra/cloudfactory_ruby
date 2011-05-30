@@ -11,9 +11,9 @@ describe CloudFactory::StandardInstruction do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
           CloudFactory::Station.create(l, :type => "work") do |s|
             CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -37,9 +37,9 @@ describe CloudFactory::StandardInstruction do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
           CloudFactory::Station.create(l, :type => "work") do |s|
             CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
             @got_instruction = s.get_instruction
           end
@@ -60,9 +60,9 @@ describe CloudFactory::StandardInstruction do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
           CloudFactory::Station.create(l, :type => "work") do |s|
             CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
             @got_instruction = s.get_instruction
             s.update_instruction({:title => "Enter phone number from a business card image", :description => "Call"})
@@ -89,9 +89,9 @@ describe CloudFactory::StandardInstruction do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
           CloudFactory::Station.create(l, :type => "work") do |s|
             CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
               i.form_fields = form_fields
             end
             @got_instruction = s.get_instruction

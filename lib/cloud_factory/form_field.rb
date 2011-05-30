@@ -15,8 +15,8 @@ module CloudFactory
     # ID of form field
     attr_accessor :id
     
-    # station attribute required for API Calls
-    attr_accessor :station
+    # station id attribute required for API Calls
+    attr_accessor :station_id
     
     # ==Initializes a new "form_field" object
     # ==Usage of form_field.new(hash):
@@ -27,15 +27,15 @@ module CloudFactory
     #       end
     #     end
     #   end
-    def initialize(station, options={})
-      @station    = station
+    def initialize(instruction, options={})
+      @station_id = instruction.station.id
       @label      = options[:label]
       @field_type = options[:field_type]
       @required   = options[:required]
-      resp = self.class.post("/stations/#{station.id}/instruction/form_fields.json", :body => {:form_field => 
+      resp = self.class.post("/stations/#{@station_id}/instruction/form_fields.json", :body => {:form_field => 
         {:label => @label, :field_type => @field_type, :required => @required}})
       @id = resp._id
-      station.instruction.form_fields = self
+      instruction.station.instruction.form_fields = self
     end
   end
 end
