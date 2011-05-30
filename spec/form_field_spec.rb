@@ -14,9 +14,9 @@ describe CloudFactory::FormField do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
           CloudFactory::Station.create(l, :type => "work") do |s|
             CloudFactory::StandardInstruction.create(s, attrs) do |i|
-              CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end

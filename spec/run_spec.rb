@@ -3,7 +3,7 @@ require 'spec_helper'
 module CloudFactory
   describe CloudFactory::Run do
     context "create a new run" do
-      it "the plain ruby way", :focus => true do
+      it "the plain ruby way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "run/create-run", :record => :new_episodes do
 
@@ -61,8 +61,8 @@ module CloudFactory
       end
 
       it "should create a run for an existing line" do
-        WebMock.allow_net_connect!
-        # VCR.use_cassette "run/create-run-of-an-existing-line", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/create-run-of-an-existing-line", :record => :new_episodes do
           attrs_1 = {:label => "Company",
             :field_type => "text_data",
             :value => "Apple", 
@@ -91,12 +91,11 @@ module CloudFactory
 
           old_line = CloudFactory::Line.find(line.id)
           run = CloudFactory::Run.create(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
-          debugger
           run.title.should eq("Run Using Line")
-        # end
+        end
       end
     
-      it "should create a run for google_translator robot" do
+      xit "should create a run for google_translator robot" do
         
       end
     end
