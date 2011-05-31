@@ -3,14 +3,18 @@ require 'spec_helper'
 describe CloudFactory do
   context "configuration" do
     it "be able to configure the api key" do
-      # Webmock.allow_net_connect!
-      CloudFactory.configure do |c|
-        c.api_key = "6bbf1bf58c56119aa22801484a8700071c35fe1d"
-        c.api_url = "sachin.lvh.me:3000/api/"
+      API_CONFIG = YAML.load_file(File.expand_path("../../fixtures/api_credentials.yml", __FILE__))
+      CloudFactory.configure do |config|
+        config.api_version = API_CONFIG['api_version']
+        config.api_url = API_CONFIG['api_url']
+        config.api_key = API_CONFIG['api_key']
+        config.email = API_CONFIG['email']
       end
-      CloudFactory.api_key.should eq("6bbf1bf58c56119aa22801484a8700071c35fe1d")
-      CloudFactory.api_url.should eq("sachin.lvh.me:3000/api/")
-      CloudFactory.api_version.should eq("v1")
+      
+      CloudFactory.api_key.should eq(API_CONFIG['api_key'])
+      CloudFactory.api_url.should eq(API_CONFIG['api_url'])
+      CloudFactory.api_version.should eq(API_CONFIG['api_version'])
+      CloudFactory.email.should eq(API_CONFIG['email'])
     end
   end
 end

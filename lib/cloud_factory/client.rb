@@ -1,28 +1,31 @@
 module CloudFactory
   module Client
-    extend ActiveSupport::Concern
-    
-    included do |base|
-      base.send(:include, HTTParty)
-      base.send(:base_uri, "manishlaldas.lvh.me:3000/api/v1")
-      base.send(:headers, "accept" => "application/json")
-      base.send(:format, :json)
-      base.send(:default_params, {:api_key => "5c99665131ad4044968de3ca0b984c8c0d45e9a2", :email => "manish.das@sprout-technology.com"})
-      # base.extend(ClassMethods)
-    end
-    
-    # def subscriptions(query={})
-    #   self.class.get("/users/subscriptions.json", :query => query)
-    # end
-    
-    
-    module ClassMethods
-    # class << self
-      def get(*args); handle_response super end
 
-      def post(*args); handle_response super end
-    
+    extend ActiveSupport::Concern
+
+    module ClassMethods      
+      def default_params
+        {:api_key => CloudFactory.api_key, :email => CloudFactory.email}
+      end
+
+      def get(*args)
+        handle_response RestClient.get("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}", :params => default_params, :accept => 'json')
+      end
+
+      def post(*args)
+        handle_response  RestClient.post("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}", args.last.merge!(default_params), :accept => 'json')
+      end
+
+      def put(*args)
+        handle_response  RestClient.put("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}", args.last.merge!(default_params), :accept => 'json')
+      end
+
+      def delete(*args)
+        handle_response  RestClient.delete("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}?api_key=#{CloudFactory.api_key}&email=#{CloudFactory.email}", :accept => 'json')
+      end
+
       def handle_response(response)
+
         case response.code
         when 401; raise Unauthorized.new
         when 403; raise RateLimitExceeded.new
@@ -31,14 +34,19 @@ module CloudFactory
         when 500...600; raise ServerError.new(response.code)
         else; response
         end
-        if response.is_a?(Array)
-          response.map{|item| Hashie::Mash.new(item)}
+        
+        unless response.length == 2
+          parsed_response = JSON.load(response)
+          # debugger
+          if parsed_response.is_a?(Array)
+            parsed_response.map{|item| Hashie::Mash.new(item)}
+          else
+            Hashie::Mash.new(parsed_response)
+          end
         else
-          Hashie::Mash.new(response)
+          response
         end
       end
-    end
-    
-    
+    end    
   end
 end
