@@ -18,7 +18,7 @@ describe CloudFactory::Station do
         line.title.should eq("Digitize Card")
 
         station = CloudFactory::Station.create(line, :type => "work") do |s|
-          CloudFactory::HumanWorker.new(s, 2, 0.2)
+          CloudFactory::HumanWorker.new(s, 2, 20)
           CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
             CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
             CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
@@ -27,7 +27,7 @@ describe CloudFactory::Station do
         end
         line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should == 2
-        line.stations.first.worker.reward.should == 0.2
+        line.stations.first.worker.reward.should == 20
         line.stations.first.instruction.title.should eq("Enter text from a business card image")
         line.stations.first.instruction.description.should eq("Describe")
         line.stations.first.instruction.form_fields[0].label.should eq("First Name")
@@ -42,7 +42,7 @@ describe CloudFactory::Station do
         line.title.should eq("Digitize Card")
 
         station_1 = CloudFactory::Station.create(line, :type => "Work") do 
-          human_worker = CloudFactory::HumanWorker.new(self, 2, 0.2)
+          human_worker = CloudFactory::HumanWorker.new(self, 2, 20)
           CloudFactory::StandardInstruction.create(self,{:title => "Enter text from a business card image", :description => "Describe"}) do 
             CloudFactory::FormField.new(self, {:label => "First Name", :field_type => "SA", :required => "true"})
             CloudFactory::FormField.new(self, {:label => "Middle Name", :field_type => "SA"})
@@ -51,7 +51,7 @@ describe CloudFactory::Station do
         end
         line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should == 2
-        line.stations.first.worker.reward.should == 0.2
+        line.stations.first.worker.reward.should == 20
         line.stations.first.instruction.title.should eq("Enter text from a business card image")
         line.stations.first.instruction.description.should eq("Describe")
         line.stations.first.instruction.form_fields[0].label.should eq("First Name")
@@ -104,10 +104,7 @@ describe CloudFactory::Station do
     it "should get all existing stations of a line" do
       VCR.use_cassette "stations/get-all-stations", :record => :new_episodes do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
-          station = []
-          station << CloudFactory::Station.new(l, :type => "work")
-          station << CloudFactory::Station.new(l, :type => "Tournament")
-          l.stations = station
+          CloudFactory::Station.new(l, :type => "work")
         end
         stations = CloudFactory::Station.all(line)
         stations[0]._type.should eq("WorkStation")

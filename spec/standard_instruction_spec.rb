@@ -52,7 +52,9 @@ describe CloudFactory::StandardInstruction do
   
   context "update instruction" do
     it "should update instruction information of a station" do
-      VCR.use_cassette "standard_instruction/update-instruction", :record => :new_episodes do
+      pending "Instruction update is not implemented in the RESTful API"
+      # VCR.use_cassette "standard_instruction/update-instruction", :record => :new_episodes do
+      
         attrs = {:title => "Enter text from a business card image",
           :description => "Describe"
         }
@@ -73,12 +75,13 @@ describe CloudFactory::StandardInstruction do
         @got_instruction.description.should eq("Describe")
         @updated_instruction.title.should eq("Enter phone number from a business card image")
         @updated_instruction.description.should eq("Call")
-      end
+      # end
     end
   end
   
   context "Delete instruction" do
     it "should delete instruction of a station" do
+      # WebMock.allow_net_connect!
       VCR.use_cassette "standard_instruction/delete-instruction", :record => :new_episodes do
         attrs = {:title => "Enter text from a business card image",
           :description => "Describe"
@@ -102,7 +105,7 @@ describe CloudFactory::StandardInstruction do
         
         station = line.stations[0]
         deleted_response = CloudFactory::StandardInstruction.delete_instruction(station)
-        deleted_response.parsed_response["status"].should eq("Instruction deleted")
+        deleted_response.code.should eq(200)
       end
     end
   end

@@ -4,7 +4,6 @@ module CloudFactory
   describe CloudFactory::Run do
     context "create a new run" do
       it "the plain ruby way" do
-        # WebMock.allow_net_connect!
         VCR.use_cassette "run/create-run", :record => :new_episodes do
 
           attrs_1 = {:label => "Company",
@@ -25,7 +24,7 @@ module CloudFactory
             CloudFactory::InputHeader.new(l, attrs_1)
             CloudFactory::InputHeader.new(l, attrs_2) 
             CloudFactory::Station.create(l, :type => "work") do |s|
-              CloudFactory::HumanWorker.new(s, 2, 0.2)
+              CloudFactory::HumanWorker.new(s, 2, 20)
               CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
                 CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
                 CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
@@ -45,7 +44,7 @@ module CloudFactory
           line.stations[0].type.should eq("Work") 
 
           line.stations[0].worker.number.should eq(2)
-          line.stations[0].worker.reward.should eq(0.2)
+          line.stations[0].worker.reward.should eq(20)
 
           line.stations[0].instruction.title.should eq("Enter text from a business card image")
           line.stations[0].instruction.description.should eq("Describe")

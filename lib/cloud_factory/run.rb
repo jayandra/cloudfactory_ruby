@@ -1,8 +1,7 @@
 module CloudFactory
   class Run
     include Client
-    include ClientRequestResponse
-    require 'json'
+
     # title of the "run" object
     attr_accessor :title
 
@@ -42,9 +41,8 @@ module CloudFactory
       else
         line_id = line.id
       end
-      uri = "http://manishlaldas.lvh.me:3000/api/v1/lines/#{line_id}/runs.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das%40sprout-technology.com"
-      resp = RestClient.post uri,{:run => {:title => @title}, :file => File.new(@file, 'rb')}
-      @id = Hashie::Mash.new(JSON.load(resp))._id
+      resp = self.class.post("/lines/#{line.id}/runs.json", {:run => {:title => @title}, :file => File.new(@file, 'rb')})
+      @id = resp._id
     end
     
     # ==Creates a new Run
@@ -67,53 +65,6 @@ module CloudFactory
     def self.create(line, title, file)
       Run.new(line, title, file)
     end
-    
-    def self.use_line(line, title, file)
-      @line = line
-      @title = title
-      @file = file
-      uri = "http://manishlaldas.lvh.me:3000/api/v1/lines/#{line._id}/runs.json?api_key=5c99665131ad4044968de3ca0b984c8c0d45e9a2&email=manish.das%40sprout-technology.com"
-      resp = RestClient.post uri, {:run => {:title => title}, :file => File.new(file, 'rb')}
-      @id = Hashie::Mash.new(JSON.load(resp))._id
-      resp
-    end
-    #Line.fire_run(@input_data, )
-    #  POST http://cf.com/api/v1/lines/:id/runs
-    #	 file.csv
-    #  InputHeader.new(:label => "file")
-    #  InputHeader.new(:label => "duration")
-    # 
-    #  FormField.new(:lable => "duration", :value => 300)
-    # 
-    #  file, duration
-    #www., 100
-    
-    ## ==Usage of input_headers.input_data << input_data_value
-    #     #   attrs = {:label => "image_url",
-    #     #     :field_type => "text_data",
-    #     #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
-    #     #     :required => true,
-    #     #     :validation_format => "url"
-    #     #   }
-    #     #
-    #     #   line = Line.new("line name") do |l|
-    #     #     input_headers = CloudFactory::InputHeader.new(line, "attrs")
-    #     #     l.input_headers = [input_headers]
-    #     #     l.input_headers.input_data << input_data_value
-    #     #   end
-    #     # 
-    #     # returns 
-    #     #     line.input_headers.input_data
-    #     def input_data input_data = nil
-    #       if input_data
-    #         input_data.each do |i|
-    #           @input_data << i
-    #         end
-    #       else
-    #         @input_data
-    #       end
-    #end
-    
     
     def get
       self.class.get("/lines/#{@line.id}/runs/#{@id}.json")

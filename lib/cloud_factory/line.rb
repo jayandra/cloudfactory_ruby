@@ -1,7 +1,6 @@
 module CloudFactory
   class Line
     include Client
-    include ClientRequestResponse
     
     # Title of the Line
     attr_accessor :title
@@ -40,7 +39,7 @@ module CloudFactory
       @category_name = category_name
       @public = options[:public]
       @description = options[:description]
-      resp = self.class.post("/lines.json", :body => {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
+      resp = self.class.post("/lines.json", {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
       self.id = resp._id
     end
     
@@ -135,14 +134,14 @@ module CloudFactory
     # ===Syntax for my_lines method is 
     #   CloudFactory::Line.all
     def self.all
-      get("/lines.json", :body => {:public => false})
+      get("/lines.json")
     end
     
     # ==Return all the lines whose public value is set true
     # ===Syntax for public_lines method is 
     #   CloudFactory::Line.public
-    def self.public
-      get("/lines.json", :body => {:public => true})
+    def self.public_lines
+      get("/public_lines.json")
     end
     
     # ==Updates a line 
@@ -155,7 +154,7 @@ module CloudFactory
       @category_name = options[:category_name]
       @public = options[:public]
       @description = options[:description]
-      self.class.put("/lines/#{id}.json", :body => {:line => {:title => @title, :category_name => @category_name, :public => @public, :description => @description}})
+      self.class.put("/lines/#{id}.json", :line => {:title => @title, :category_name => @category_name, :public => @public, :description => @description})
     end
     
     # ==Deletes a line
