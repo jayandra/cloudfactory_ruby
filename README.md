@@ -12,3 +12,7 @@ gem install cloudfactory
 
 ```
 
+## Development
+```ruby
+RESTCLIENT_LOG=stdout TEST=1 be rspec spec/line_spec.rb -d
+```
