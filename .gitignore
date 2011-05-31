@@ -5,3 +5,4 @@ tmp
 rdoc
 !bin/cf
 vendor/*
+fixtures/api_credentials.yml

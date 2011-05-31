@@ -1,8 +1,6 @@
 module CloudFactory
   class Station
     include Client
-    include ClientRequestResponse
-    
     
     # type of the station, e.g. station = Station.new(line, {:type => "Work"})
     attr_accessor :type
@@ -20,7 +18,7 @@ module CloudFactory
     def initialize(line, options={})
       @line = line
       @type = options[:type].camelize
-      resp = self.class.post("/lines/#{@line.id}/stations.json", :body => {:station => {:type => @type}})
+      resp = self.class.post("/lines/#{@line.id}/stations.json", :station => {:type => @type})
       @id = resp._id
       line.stations = self
     end
@@ -122,7 +120,7 @@ module CloudFactory
     def update_instruction(options={})
       @title       = options[:title]
       @description = options[:description]
-      self.class.put("/stations/#{self.id}/instruction.json", :body => {:instruction => {:title => @title, :description => @description, :type => "StandardInstruction"}})
+      self.class.put("/stations/#{self.id}/instruction.json", :instruction => {:title => @title, :description => @description, :type => "StandardInstruction"})
     end
     # ==Returns a particular station of a line
     # ===Usage example for get_station() method
