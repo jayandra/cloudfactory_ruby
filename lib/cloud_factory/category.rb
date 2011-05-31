@@ -1,8 +1,7 @@
 module CloudFactory
   class Category
     include Client
-    include ClientRequestResponse
-    
+
     # Id of the specific Category
     attr_accessor :category_id 
     
