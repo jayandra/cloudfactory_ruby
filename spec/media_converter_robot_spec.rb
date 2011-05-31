@@ -3,7 +3,7 @@ require 'spec_helper'
 module CloudFactory
   describe CloudFactory::MediaConverterRobot do
     context "create a google translator worker" do
-      it "the plain ruby way" do
+      xit "the plain ruby way" do
         WebMock.allow_net_connect!
         
         attrs_1 = {:label => "url",

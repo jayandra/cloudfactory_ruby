@@ -160,7 +160,7 @@ describe CloudFactory::Line do
   end
 
   context "create a basic line" do
-    it "should create a basic line with one station", :focus => true do
+    it "should create a basic line with one station" do
       VCR.use_cassette "lines/create-basic-line", :record => :new_episodes do
         line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
           CloudFactory::Station.create(l, :type => "work") do |s|

@@ -26,9 +26,9 @@ module CloudFactory
             CloudFactory::Station.create(l, :type => "work") do |s|
               CloudFactory::HumanWorker.new(s, 2, 20)
               CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-                CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
-                CloudFactory::FormField.new(s, {:label => "Middle Name", :field_type => "SA"})
-                CloudFactory::FormField.new(s, {:label => "Last Name", :field_type => "SA", :required => "true"})            
+                CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
+                CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
+                CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})            
               end
             end
           end
@@ -60,8 +60,8 @@ module CloudFactory
       end
 
       it "should create a run for an existing line" do
-        # WebMock.allow_net_connect!
-        VCR.use_cassette "run/create-run-of-an-existing-line", :record => :new_episodes do
+        WebMock.allow_net_connect!
+        # VCR.use_cassette "run/create-run-of-an-existing-line", :record => :new_episodes do
           attrs_1 = {:label => "Company",
             :field_type => "text_data",
             :value => "Apple", 
@@ -80,10 +80,10 @@ module CloudFactory
             CloudFactory::InputHeader.new(l, attrs_1)
             CloudFactory::InputHeader.new(l, attrs_2) 
             CloudFactory::Station.create(l, :type => "work") do |s|
-              CloudFactory::HumanWorker.new(s, 2, 0.2)
+              CloudFactory::HumanWorker.new(s, 2, 20)
               CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-                CloudFactory::FormField.new(s, {:label => "Company Name", :field_type => "SA", :required => "true"})
-                CloudFactory::FormField.new(s, {:label => "Website URL", :field_type => "SA", :required => "true"})
+                CloudFactory::FormField.new(i, {:label => "Company Name", :field_type => "SA", :required => "true"})
+                CloudFactory::FormField.new(i, {:label => "Website URL", :field_type => "SA", :required => "true"})
               end
             end
           end
@@ -92,7 +92,7 @@ module CloudFactory
           run = CloudFactory::Run.create(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
           run.title.should eq("Run Using Line")
         end
-      end
+      # end
     
       xit "should create a run for google_translator robot" do
         
