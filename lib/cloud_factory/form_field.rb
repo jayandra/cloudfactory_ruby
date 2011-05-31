@@ -31,7 +31,7 @@ module CloudFactory
       @label      = options[:label]
       @field_type = options[:field_type]
       @required   = options[:required]
-      resp = self.class.post("/stations/#{station.id}/instruction/form_fields.json", :form_field => 
+      resp = self.class.post("/stations/#{@station_id}/instruction/form_fields.json", :form_field => 
         {:label => @label, :field_type => @field_type, :required => @required})
       @id = resp._id
       instruction.station.instruction.form_fields = self

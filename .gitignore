@@ -6,3 +6,4 @@ rdoc
 !bin/cf
 vendor/*
 fixtures/api_credentials.yml
+fixtures/cassette_library/*

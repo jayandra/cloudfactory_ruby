@@ -3,7 +3,7 @@ require 'spec_helper'
 module CloudFactory
   describe CloudFactory::GoogleTranslateRobot do
     context "create a google translator worker" do
-      it "the plain ruby way" do
+      xit "the plain ruby way" do
         WebMock.allow_net_connect!
         line = CloudFactory::Line.new("Digitize Card","Digitization")
         station = CloudFactory::Station.new(line, :type => "work")
