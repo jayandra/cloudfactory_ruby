@@ -1,7 +1,6 @@
 module CloudFactory
   class InputHeader
     include Client
-    include ClientRequestResponse
 
     # label for the input_header, e.g. :label => "image_url"
     attr_accessor :label
@@ -41,8 +40,7 @@ module CloudFactory
       @value              = options[:value]
       @required           = options[:required]
       @validation_format  = options[:validation_format]
-      resp = self.class.post("/lines/#{line.id}/input_headers.json", :body => 
-          {:input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format}})
+      resp = self.class.post("/lines/#{line.id}/input_headers.json", :input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format})
       @id = resp._id
       @line_id = line.id
       line.input_headers = self
@@ -110,8 +108,7 @@ module CloudFactory
       @value              = options[:value]
       @required           = options[:required]
       @validation_format  = options[:validation_format]
-      self.class.put("/lines/#{line_id}/input_headers/#{id}.json", :body => 
-          {:input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format}})
+      self.class.put("/lines/#{line_id}/input_headers/#{id}.json", :input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format})
     end
     
     # ==Deletes an input header of a specific line

@@ -1,8 +1,10 @@
-require 'httparty'
+# require 'httparty'
 require 'hashie'
 require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
+require 'active_support/core_ext/object/blank'
 require "rest_client"
+require 'json'
 
 directory = File.expand_path(File.dirname(__FILE__))
 
@@ -13,26 +15,24 @@ module CloudFactory
 
   class << self
     attr_accessor :api_key, :api_url, :api_version, :email
-
-    # def configure
-    #       yield self
-    #     end
-    #configure do |c|
-    api_key = "5c99665131ad4044968de3ca0b984c8c0d45e9a2"
-    email 	 = "manish.das@sprout-technology.com"
-    api_url = "manishlaldas.lvh.me:3000/api/"
-    api_version = "v1"
-    #end
+    def configure
+      yield self
+    end    
   end
 
   # Configuring the defaults
   # Set ENV['TEST'] is true for testing against the api
   # TEST=true bundle exec rspec spec/.....
   if ENV['TEST']
-    CloudFactory.api_key = '5c99665131ad4044968de3ca0b984c8c0d45e9a2'
-    CloudFactory.email = 'manish.das@sprout-technology.com'
-    CloudFactory.api_url = "manishlaldas.lvh.me:3000/api/"
+    API_CONFIG = YAML.load_file(File.expand_path("../../fixtures/api_credentials.yml", __FILE__))
+    CloudFactory.configure do |config|
+      config.api_version = API_CONFIG['api_version']
+      config.api_url = API_CONFIG['api_url']
+      config.api_key = API_CONFIG['api_key']
+      config.email = API_CONFIG['email']
+    end
   end
+  
   class CloudFactoryError < StandardError
     attr_reader :data
   
@@ -60,7 +60,6 @@ CloudFactory.configure do |config|
 end
 
 require 'cloud_factory/client'
-require 'cloud_factory/client_request_response'
 require 'cloud_factory/line'
 require 'cloud_factory/input_header'
 require 'cloud_factory/worker'

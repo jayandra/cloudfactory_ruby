@@ -2,11 +2,13 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://manishdas.lvh.me:3000/api/v1/categories.json?api_key=6bbf1bf58c56119aa22801484a8700071c35fe1d
+    uri: http://sprout.lvh.me:3000/api/v1/categories.json?api_key=133fcabc51e35903e616c25aace7ffccc819c8f0&email=sachin@sproutify.com
     body: 
     headers: 
       accept: 
       - application/json
+      accept-encoding: 
+      - gzip, deflate
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -15,18 +17,18 @@
       content-type: 
       - application/json; charset=utf-8
       etag: 
-      - "\"906047ea946e48b9c599de8d054eea41\""
+      - "\"b151bef6e7adaaeb7cb0f68e6ca2cfd6\""
       cache-control: 
       - max-age=0, private, must-revalidate
       x-ua-compatible: 
       - IE=Edge
       x-runtime: 
-      - "0.845168"
+      - "1.311196"
       server: 
       - WEBrick/1.3.1 (Ruby/1.9.2/2011-02-18)
       date: 
-      - Thu, 12 May 2011 09:58:41 GMT
+      - Tue, 31 May 2011 09:13:03 GMT
       content-length: 
       - "1562"
-    body: "[{\"_id\":\"4db9319f703cf14825000001\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Digitization\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf14825000002\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Data Processing\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf14825000003\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Content Creation\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf14825000004\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Content Moderation\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf14825000005\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Content Reviewing/Editing\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf14825000006\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Tagging/Categorization\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf14825000007\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Web Research\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf14825000008\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Survey\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf14825000009\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Language Translation\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf1482500000a\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Transcription\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"},{\"_id\":\"4db9319f703cf1482500000b\",\"created_at\":\"2011-04-28T15:06:35+05:45\",\"name\":\"Other\",\"updated_at\":\"2011-04-28T15:06:35+05:45\"}]"
+    body: "[{\"_id\":\"4dbe4b9e1e47db14b7000001\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Digitization\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b7000002\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Data Processing\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b7000003\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Content Creation\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b7000004\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Content Moderation\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b7000005\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Content Reviewing/Editing\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b7000006\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Tagging/Categorization\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b7000007\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Web Research\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b7000008\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Survey\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b7000009\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Language Translation\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9e1e47db14b700000a\",\"created_at\":\"2011-05-02T11:58:50+05:45\",\"name\":\"Transcription\",\"updated_at\":\"2011-05-02T11:58:50+05:45\"},{\"_id\":\"4dbe4b9f1e47db14b700000b\",\"created_at\":\"2011-05-02T11:58:51+05:45\",\"name\":\"Other\",\"updated_at\":\"2011-05-02T11:58:51+05:45\"}]"
     http_version: "1.1"
