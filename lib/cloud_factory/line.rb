@@ -82,6 +82,15 @@ module CloudFactory
         @stations
       end
     end
+    
+    def << stations
+      @type = stations.type
+      @stations << stations
+      resp = CloudFactory::Station.post("/lines/#{id}/stations.json", :station => {:type => @type})
+      @station_id = resp._id
+    end
+    
+    
     def stations=(stations) # :nodoc:
       @stations << stations
       #resp = CloudFactory::Station.post("/lines/#{id}/stations.json", :station => {:type => stations.type})
