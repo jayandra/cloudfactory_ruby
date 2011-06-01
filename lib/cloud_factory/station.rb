@@ -15,12 +15,14 @@ module CloudFactory
     # ===Usage Example
     #   line = Line.new("Digitize", "Survey")
     #   station = Station.new(line,{:type => "Work"})
-    def initialize(line, options={})
-      @line = line
+    def initialize(options={})
+      @line = options[:line]
       @type = options[:type].camelize
-      resp = self.class.post("/lines/#{@line.id}/stations.json", :station => {:type => @type})
-      @id = resp._id
-      line.stations = self
+      if !@line.nil?
+        resp = self.class.post("/lines/#{@line.id}/stations.json", :station => {:type => @type})
+        @id = resp._id
+        line.stations = self
+      end
     end
 
     # ==Initializes a new station within block 
@@ -49,8 +51,8 @@ module CloudFactory
     #         end 
     #       end
     #     end
-    def self.create(line, options, &block)
-      station = Station.new(line, options)
+    def self.create(options, &block)
+      station = Station.new(options)
       if block.arity >= 1
         block.call(station)
       else
