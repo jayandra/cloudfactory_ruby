@@ -23,6 +23,7 @@ module CloudFactory
     
     # station_id is required to be stored for making Api calls
     attr_accessor :station_id
+    attr_accessor :stations, :type
     #attr_accessor :input_headers 
     #attr_accessor :input_header_instance
     #attr_accessor :station_instance
@@ -73,13 +74,18 @@ module CloudFactory
     # line.stations as an array of stations
     def stations stations = nil
       if stations
+        @type = stations.type
         @stations << stations
+        resp = CloudFactory::Station.post("/lines/#{id}/stations.json", :station => {:type => @type})
+        @station_id = resp._id
       else
         @stations
       end
     end
     def stations=(stations) # :nodoc:
       @stations << stations
+      #resp = CloudFactory::Station.post("/lines/#{id}/stations.json", :station => {:type => stations.type})
+      #@station_id = resp._id
     end
     # ==Initializes a new line
     # ==Usage of line.create("line_name") do |block|
