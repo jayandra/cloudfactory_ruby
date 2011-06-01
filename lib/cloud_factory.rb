@@ -52,13 +52,6 @@ module CloudFactory
   class Unavailable  < StandardError; end
 end
 
-CloudFactory.configure do |config|
-  config.api_version = "v1"
-  config.api_url = "sprout.lvh.me:3000/api/"
-  config.api_key = "133fcabc51e35903e616c25aace7ffccc819c8f0"
-  config.email = "sachin@sproutify.com"
-end
-
 require 'cloud_factory/client'
 require 'cloud_factory/line'
 require 'cloud_factory/input_header'
