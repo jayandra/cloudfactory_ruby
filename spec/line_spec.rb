@@ -192,11 +192,10 @@ describe CloudFactory::Line do
 
   context "create line using plain ruby way" do
     it "should create a station " do
-      # WebMock.allow_net_connect!
       VCR.use_cassette "lines/plain-ruby/create-station", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
         station = CloudFactory::Station.new({:line => line ,:type => "work"})
-        line.stations station
+        line.stations << station
         line.stations.first.type.should eql("Work")
       end
     end
