@@ -13,16 +13,18 @@ describe CloudFactory::Line do
     end
 
     it "using block with variable" do
+      # WebMock.allow_net_connect!
       VCR.use_cassette "lines/block/create-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-          CloudFactory::InputHeader.new(l, {:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-          CloudFactory::InputHeader.new(l, {:label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})  
-          CloudFactory::Station.new({:line => l, :type => "work"})
+        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l| 
+          CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
+            CloudFactory::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CloudFactory::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+          end
         end
         line.title.should eq("Digitize Card")
         line.category_name.should eq("Digitization")
-        line.input_headers[0].label.should eql("image_url")
-        line.input_headers[1].label.should eql("image")
+        line.stations.first.input_headers[0].label.should eql("image_url")
+        line.stations.first.input_headers[1].label.should eql("image")
         line.stations.first.type.should eq("Work")
       end
     end
@@ -30,8 +32,8 @@ describe CloudFactory::Line do
     it "using block without variable" do
       VCR.use_cassette "lines/block/create-without-block-var", :record => :new_episodes do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do
-          CloudFactory::InputHeader.new(self, {:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
           CloudFactory::Station.create({:line => self, :type => "work"}) do |station|
+            CloudFactory::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             CloudFactory::HumanWorker.new({:station => station, :number => 2, :reward => 20})
             CloudFactory::StandardInstruction.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
@@ -42,7 +44,7 @@ describe CloudFactory::Line do
         end
         line.title.should eq("Digitize Card")
         line.category_name.should eq("Digitization")
-        line.input_headers.first.label.should eql("image_url")
+        line.stations.first.input_headers.first.label.should eql("image_url")
         line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.instruction.description.should eq("Describe")
@@ -66,7 +68,7 @@ describe CloudFactory::Line do
       VCR.use_cassette "lines/block/create-one-station", :record => :new_episodes do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
           CloudFactory::Station.create({:line => l, :type => "work"}) do |station|
-            CloudFactory::HumanWorker.new({:station => station, :number => 2, :reward => 20})
+            CloudFactory::HumanWorker.new({:line => l, :station => station, :number => 2, :reward => 20})
             CloudFactory::StandardInstruction.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
               CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
@@ -214,7 +216,6 @@ describe CloudFactory::Line do
     end
     
     it "should create a StandardInstruciton within station" do
-      # WebMock.allow_net_connect!
       VCR.use_cassette "lines/plain-ruby/create-form", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
         station = CloudFactory::Station.new({:type => "work"})
@@ -227,6 +228,22 @@ describe CloudFactory::Line do
         line.stations.first.instruction = form
         line.stations.first.instruction.title.should eql("Enter text from a business card image")
         line.stations.first.instruction.description.should eql("Describe")
+      end
+    end
+    
+    it "should create an input header within line" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "lines/plain-ruby/create-input-header", :record => :new_episodes do
+        line = CloudFactory::Line.new("Digitize Card", "Digitization")
+        station = CloudFactory::Station.new({:type => "work"})
+        line.stations station
+        input_header = CloudFactory::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+        line.stations.first.input_headers input_header
+        line.stations.first.input_headers.first.label.should eq("image_url")
+        line.stations.first.input_headers.first.field_type.should eq("text_data")
+        line.stations.first.input_headers.first.value.should eq("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
+        line.stations.first.input_headers.first.required.should eq("true")
+        line.stations.first.input_headers.first.validation_format.should eq("url")
       end
     end
   end
