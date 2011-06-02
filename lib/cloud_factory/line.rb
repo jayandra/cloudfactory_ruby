@@ -34,7 +34,6 @@ module CloudFactory
     #     line = Line.new("Digit", "Survey")
 
     def initialize(title, category_name, options={})
-      @input_headers =[]
       @stations =[]
       @title = title
       @category_name = category_name
@@ -42,28 +41,6 @@ module CloudFactory
       @description = options[:description]
       resp = self.class.post("/lines.json", {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
       self.id = resp.id
-    end
-    
-    # ==Usage of line.input_headers(input_header)
-    #   attrs = {:label => "image_url",
-    #     :field_type => "text_data",
-    #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
-    #     :required => true,
-    #     :validation_format => "url"}
-    #
-    #     line = Line.new("line name", "Survey")
-    #     input_headers = InputHeader.new(line, attrs)
-    # * returns 
-    # line.input_headers as an array of input_headers
-    def input_headers input_headers_value = nil
-      if input_headers_value
-        @input_headers << input_headers_value
-      else
-        @input_headers
-      end
-    end
-    def input_headers=(input_headers_value) # :nodoc:
-      @input_headers << input_headers_value
     end
     
     # ==Usage of line.stations << station

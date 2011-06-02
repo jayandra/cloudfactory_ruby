@@ -34,16 +34,19 @@ module CloudFactory
     #   line = CloudFactory::Line.create("Digitize", "Survey")   
     #   input_header = CloudFactory::InputHeader.new(line, attrs) 
     #
-    def initialize(line, options={})
+    def initialize(options={})
+      @station            = options[:station]
       @label              = options[:label]
       @field_type         = options[:field_type]
       @value              = options[:value]
       @required           = options[:required]
       @validation_format  = options[:validation_format]
-      resp = self.class.post("/lines/#{line.id}/input_headers.json", :input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format})
-      @id = resp._id
-      @line_id = line.id
-      line.input_headers = self
+      if !@station.nil?
+        resp = self.class.post("/lines/#{@station.line_id}/input_headers.json", :input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format})
+        @id = resp._id
+        @line_id = @station.line_id
+        @station.input_headers = self
+      end
     end
     
     # ==Returns all the input headers of a specific line
