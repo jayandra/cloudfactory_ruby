@@ -9,17 +9,20 @@ module CloudFactory
       attr_accessor :number
       # Amount of money assigned for worker
       attr_accessor :reward
-      # attr_accessor :station
+      attr_accessor :station
+      attr_accessor :id
 
       case host
       when "HumanWorker"
         # Initializes new worker
-        def initialize(station, number=1, reward)
-          # @station =  station
-          @number = number
-          @reward = reward
-          CloudFactory::HumanWorker.post("/stations/#{station.id}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
-          station.worker = self
+        def initialize(options={})
+          @station = options[:station]
+          @number  = options[:number].nil? ? 1 : options[:number]
+          @reward  = options[:reward]
+          if !@station.nil?
+            CloudFactory::HumanWorker.post("/stations/#{@station.id}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
+            station.worker = self
+          end
         end
       else
         # Creates new worker 
@@ -30,8 +33,7 @@ module CloudFactory
             @reward = 0
           end
           type = self.to_s.split("::").last.underscore
-          self.post("/stations/#{station.id}/workers.json", :body => 
-          {:worker => {:number => 1, :reward => 0, :type => type}})
+          self.post("/stations/#{station.id}/workers.json", :body => {:worker => {:number => 1, :reward => 0, :type => type}})
           station.worker = worker
         end
       end
