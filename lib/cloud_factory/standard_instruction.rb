@@ -28,7 +28,6 @@ module CloudFactory
       @title       = options[:title]
       @description = options[:description]
       if !@station.nil?
-        debugger
         resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "StandardInstruction"})
         @id = resp.id
         station.instruction = self
@@ -61,8 +60,8 @@ module CloudFactory
     #     end
     #   end
     #
-    def self.create(station, options, &block)
-      instruction = StandardInstruction.new(station, options)
+    def self.create(options, &block)
+      instruction = StandardInstruction.new(options)
       if block.arity >= 1
         block.call(instruction)
       else
