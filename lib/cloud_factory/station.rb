@@ -6,7 +6,7 @@ module CloudFactory
     attr_accessor :type
     
     # line attribute is parent attribute for station & is required for making Api call
-    attr_accessor :line
+    attr_accessor :line_id
     
     # ID of the station
     attr_accessor :id
@@ -16,13 +16,15 @@ module CloudFactory
     #   line = Line.new("Digitize", "Survey")
     #   station = Station.new(line,{:type => "Work"})
     def initialize(options={})
-      @line = options[:line]
-      @type = options[:type].camelize
-      if !@line.nil?
-        resp = self.class.post("/lines/#{@line.id}/stations.json", :station => {:type => @type})
-        @id = resp._id
-        line.stations = self
-      end
+      
+        @line_id = options[:line].nil? ? nil : options[:line].id
+        @type = options[:type].nil? ? nil : options[:type].camelize
+        if !@line_id.nil?
+          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type})
+          @id = resp.id
+          line = options[:line]
+          line.stations = self
+        end
     end
 
     # ==Initializes a new station within block 
@@ -75,8 +77,30 @@ module CloudFactory
         @worker_instance
       end
     end
+    
     def worker=(worker_instance) # :nodoc:
-      @worker_instance = worker_instance
+      worker_type = worker_instance.class.to_s.split("::").last
+      case worker_type
+      when "HumanWorker"
+        number = worker_instance.number
+        reward = worker_instance.reward
+        resp = CloudFactory::HumanWorker.post("/stations/#{self.id}/workers.json", :worker => {:number => number, :reward => reward, :type => "HumanWorker"})
+        worker = CloudFactory::HumanWorker.new({})
+        resp.to_hash.each_pair do |k,v|
+          worker.send("#{k}=",v) if worker.respond_to?(k)
+        end
+        @worker_instance = worker
+        
+      else
+        number = 1
+        reward = 0
+        resp = worker_instance.class.post("/stations/#{station.id}/workers.json", :body => {:worker => {:number => 1, :reward => 0, :type => type}})
+        worker = worker_instance.class.new({})
+        resp.to_hash.each_pair do |k,v|
+          worker.send("#{k}=",v) if worker.respond_to?(k)
+        end
+        @worker_instance = worker
+      end
     end
     
     # ==Creates new instruction for station object

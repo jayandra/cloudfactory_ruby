@@ -25,7 +25,6 @@ module CloudFactory
       end
 
       def handle_response(response)
-
         case response.code
         when 401; raise Unauthorized.new
         when 403; raise RateLimitExceeded.new
@@ -37,11 +36,14 @@ module CloudFactory
         
         unless response.length == 2
           parsed_response = JSON.load(response)
-          # debugger
           if parsed_response.is_a?(Array)
             parsed_response.map{|item| Hashie::Mash.new(item)}
           else
-            Hashie::Mash.new(parsed_response)
+            new_response = parsed_response.inject({ }) do |x, (k,v)| 
+                            x[k.sub(/\A_/, '')] = v
+                            x
+                          end
+            Hashie::Mash.new(new_response)
           end
         else
           response

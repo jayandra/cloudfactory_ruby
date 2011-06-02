@@ -41,7 +41,7 @@ module CloudFactory
       @public = options[:public]
       @description = options[:description]
       resp = self.class.post("/lines.json", {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
-      self.id = resp._id
+      self.id = resp.id
     end
     
     # ==Usage of line.input_headers(input_header)
@@ -75,9 +75,13 @@ module CloudFactory
     def stations stations = nil
       if stations
         @type = stations.type
-        @stations << stations
         resp = CloudFactory::Station.post("/lines/#{id}/stations.json", :station => {:type => @type})
-        @station_id = resp._id
+        station = CloudFactory::Station.new()
+        resp.to_hash.each_pair do |k,v|
+          station.send("#{k}=",v) if station.respond_to?(k)
+        end
+        @stations << station
+        #@station_id = resp.id
       else
         @stations
       end
@@ -87,7 +91,8 @@ module CloudFactory
       @type = stations.type
       @stations << stations
       resp = CloudFactory::Station.post("/lines/#{id}/stations.json", :station => {:type => @type})
-      @station_id = resp._id
+      
+      @station_id = resp.id
     end
     
     
