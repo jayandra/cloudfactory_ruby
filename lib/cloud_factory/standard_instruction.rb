@@ -22,14 +22,17 @@ module CloudFactory
     #       :description => "Describe"}
     #
     #   instruction = StandardInstruction.new(attrs)
-    def initialize(station, options={})
+    def initialize(options={})
       @form_fields =[]
-      @station = station
+      @station     = options[:station]
       @title       = options[:title]
       @description = options[:description]
-      resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "StandardInstruction"})
-      @id = resp._id
-      station.instruction = self
+      if !@station.nil?
+        debugger
+        resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "StandardInstruction"})
+        @id = resp.id
+        station.instruction = self
+      end
     end
     
     # ==Initializes a new StandardInstruction within block using Variable

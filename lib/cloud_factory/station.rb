@@ -94,7 +94,7 @@ module CloudFactory
       else
         number = 1
         reward = 0
-        resp = worker_instance.class.post("/stations/#{station.id}/workers.json", :body => {:worker => {:number => 1, :reward => 0, :type => type}})
+        resp = worker_instance.class.post("/stations/#{self.id}/workers.json", :body => {:worker => {:number => 1, :reward => 0, :type => type}})
         worker = worker_instance.class.new({})
         resp.to_hash.each_pair do |k,v|
           worker.send("#{k}=",v) if worker.respond_to?(k)
@@ -124,7 +124,14 @@ module CloudFactory
       end
     end
     def instruction=(instruction_instance) # :nodoc:
-      @instruction_instance = instruction_instance
+      title = instruction_instance.title
+      description = instruction_instance.description
+      resp = CloudFactory::StandardInstruction.post("/stations/#{self.id}/instruction.json", :instruction => {:title => title, :description => description, :_type => "StandardInstruction"})
+      form = CloudFactory::StandardInstruction.new({})
+      resp.to_hash.each_pair do |k,v|
+        form.send("#{k}=",v) if form.respond_to?(k)
+      end
+      @instruction_instance = form
     end
     
     # ==Updates Standard Instruction of a station

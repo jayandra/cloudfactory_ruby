@@ -122,7 +122,7 @@ describe CloudFactory::Line do
         line = CloudFactory::Line.new("Digitize Card", "Digitization", {:public => true, :description => "this is description"})
         get_line = CloudFactory::Line.info(line)
         get_line.title.should eql("digitize-card")
-        get_line._id.should eql(line.id)
+        get_line.id.should eql(line.id)
         get_line.public.should eql(true)
         get_line.description.should eql("this is description")
       end
@@ -159,7 +159,7 @@ describe CloudFactory::Line do
   end
 
   context "create a basic line" do
-    it "should create a basic line with one station", :focus => true do
+    it "should create a basic line with one station" do
       VCR.use_cassette "lines/block/create-basic-line", :record => :new_episodes do
         line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
           CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
@@ -201,8 +201,7 @@ describe CloudFactory::Line do
     end
     
     it "should create a human worker within station" do
-      WebMock.allow_net_connect!
-      # VCR.use_cassette "lines/plain-ruby/create-station", :record => :new_episodes do
+      VCR.use_cassette "lines/plain-ruby/create-station", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
         station = CloudFactory::Station.new({:type => "work"})
         line.stations station
@@ -211,21 +210,24 @@ describe CloudFactory::Line do
         line.stations.first.type.should eql("WorkStation")
         line.stations.first.worker.number.should eql(2)
         line.stations.first.worker.reward.should eql(20)
-      # end
+      end
     end
     
-    it "should create a Form within station" do
-      line = CloudFactory::Line.new("Digitize Card", "Digitization")
-      station = CloudFactory::Station.new({:type => "work"})
-      line.stations station
-      
-      worker = CloudFactory::HumanWorker.new({:number => 2, :reward => 20})
-      line.stations.first.worker = worker
-      
-      form = CloudFactory::StandardInstruction.create({:title => "Enter text from a business card image", :description => "Describe"})
-      line.stations.first.instruction = form
-      line.stations.first.instruction.title.should eql("Enter text from a business card image")
-      line.stations.first.instruction.description.should eql("Describe")
+    it "should create a StandardInstruciton within station",:focus => true do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "lines/plain-ruby/create-form", :record => :new_episodes do
+        line = CloudFactory::Line.new("Digitize Card", "Digitization")
+        station = CloudFactory::Station.new({:type => "work"})
+        line.stations station
+
+        worker = CloudFactory::HumanWorker.new({:number => 2, :reward => 20})
+        line.stations.first.worker = worker
+
+        form = CloudFactory::StandardInstruction.new({:title => "Enter text from a business card image", :description => "Describe"})
+        line.stations.first.instruction = form
+        line.stations.first.instruction.title.should eql("Enter text from a business card image")
+        line.stations.first.instruction.description.should eql("Describe")
+      end
     end
   end
 end
