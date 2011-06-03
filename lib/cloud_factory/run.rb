@@ -10,6 +10,8 @@ module CloudFactory
     
     # line attribute with which run is associated
     attr_accessor :line
+
+    attr_accessor :id
     
     # ==Initializes a new Run
     # ==Usage Example:

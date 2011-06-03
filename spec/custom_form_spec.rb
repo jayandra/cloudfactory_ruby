@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CloudFactory::CustomInstruction do
+describe CloudFactory::CustomForm do
   context "create a stsandard_instruction" do
     it "the plain ruby way" do
       attrs = {:title => "Enter text from a business card image",
@@ -74,9 +74,9 @@ describe CloudFactory::CustomInstruction do
                         });
                       </script>'
 
-        instruction = CloudFactory::CustomInstruction.new(attrs)
+        instruction = CloudFactory::CustomForm.new(attrs)
 
-        instruction_1 = CloudFactory::CustomInstruction.create(attrs) do |i|
+        instruction_1 = CloudFactory::CustomForm.create(attrs) do |i|
           i.html = html 
           i.css = css
           i.javascript = javascript
