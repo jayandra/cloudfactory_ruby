@@ -15,21 +15,23 @@ module CloudFactory
     
     # ID of Standard Instruction
     attr_accessor :id
-    
+
     # ==Initializes a new StandardInstruction
     # ==Usage of standard_instruction.new
     #   attrs = {:title => "Enter text from a business card image",
     #       :description => "Describe"}
     #
     #   instruction = StandardInstruction.new(attrs)
-    def initialize(station, options={})
+    def initialize(options={})
       @form_fields =[]
-      @station = station
+      @station     = options[:station]
       @title       = options[:title]
       @description = options[:description]
-      resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "StandardInstruction"})
-      @id = resp._id
-      station.instruction = self
+      if !@station.nil?
+        resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "StandardInstruction"})
+        @id = resp.id
+        @station.instruction = self
+      end
     end
     
     # ==Initializes a new StandardInstruction within block using Variable
@@ -58,8 +60,8 @@ module CloudFactory
     #     end
     #   end
     #
-    def self.create(station, options, &block)
-      instruction = StandardInstruction.new(station, options)
+    def self.create(options, &block)
+      instruction = StandardInstruction.new(options)
       if block.arity >= 1
         block.call(instruction)
       else
@@ -84,7 +86,16 @@ module CloudFactory
     #
     def form_fields form_fields = nil
       if form_fields
-        @form_fields << form_fields
+        label = form_fields.label
+        field_type = form_fields.field_type
+        required = form_fields.required
+        resp = CloudFactory::FormField.post("/stations/#{self.station.id}/instruction/form_fields.json", :form_field => 
+          {:label => label, :field_type => field_type, :required => required})
+        form_field = CloudFactory::FormField.new({})
+        resp.to_hash.each_pair do |k,v|
+          form_field.send("#{k}=",v) if form_field.respond_to?(k)
+        end
+        @form_fields << form_field
       else
         @form_fields
       end

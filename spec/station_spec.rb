@@ -3,26 +3,47 @@ require 'spec_helper'
 describe CloudFactory::Station do
   context "create a station" do
     it "the plain ruby way" do
-      VCR.use_cassette "stations/create", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(line, :type => "Work")
-        station.type.should eq("Work")
-        line.stations.first.type.should eq("Work")
+      VCR.use_cassette "stations/plain-ruby/create", :record => :new_episodes do
+        line = CloudFactory::Line.new("Digitize Card", "Digitization")
+        station = CloudFactory::Station.new({:type => "work"})
+        line.stations station
+        line.stations.first.type.should eql("WorkStation")
       end
     end
 
     it "using the block variable" do
-      VCR.use_cassette "stations/create-with-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
+      VCR.use_cassette "stations/block/create-with-block-var", :record => :new_episodes do
+        line = CloudFactory::Line.create("Digitize Card", "Digitization") do
+          CloudFactory::Station.create({:line => self, :type => "work"}) do |s|
+            CloudFactory::HumanWorker.new({:station => s, :number => 2, :reward => 20})
+            CloudFactory::StandardInstruction.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+              CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+            end
+          end
+        end
+        line.stations.first.type.should eq("Work")
+        line.stations.first.worker.number.should eql(2)
+        line.stations.first.worker.reward.should eql(20)
+        line.stations.first.instruction.title.should eq("Enter text from a business card image")
+        line.stations.first.instruction.description.should eq("Describe")
+        line.stations.first.instruction.form_fields[0].label.should eq("First Name")
+        line.stations.first.instruction.form_fields[1].label.should eq("Middle Name")
+        line.stations.first.instruction.form_fields[2].label.should eq("Last Name")
+      end
+    end
 
-        station = CloudFactory::Station.create(line, :type => "work") do |s|
-          CloudFactory::HumanWorker.new(s, 2, 20)
-          CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-            CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
-            CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
-            CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
+    it "using without the block variable also creating instruction without block variable" do
+      VCR.use_cassette "stations/block/create-without-block-var", :record => :new_episodes do
+        line = CloudFactory::Line.create("Digitize Card", "Digitization") do
+          CloudFactory::Station.create({:line => self, :type => "work"}) do
+            CloudFactory::HumanWorker.new({:station => self, :number => 2, :reward => 20})
+            CloudFactory::StandardInstruction.create({:station => self, :title => "Enter text from a business card image", :description => "Describe"}) do
+              CloudFactory::FormField.new({:instruction => self, :label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new({:instruction => self, :label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new({:instruction => self, :label => "Last Name", :field_type => "SA", :required => "true"})
+            end
           end
         end
         line.stations.first.type.should eq("Work")
@@ -36,31 +57,7 @@ describe CloudFactory::Station do
       end
     end
 
-    it "using without the block variable also creating instruction without block variable" do
-      VCR.use_cassette "stations/create-without-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
-
-        station_1 = CloudFactory::Station.create(line, :type => "Work") do 
-          human_worker = CloudFactory::HumanWorker.new(self, 2, 20)
-          CloudFactory::StandardInstruction.create(self,{:title => "Enter text from a business card image", :description => "Describe"}) do 
-            CloudFactory::FormField.new(self, {:label => "First Name", :field_type => "SA", :required => "true"})
-            CloudFactory::FormField.new(self, {:label => "Middle Name", :field_type => "SA"})
-            CloudFactory::FormField.new(self, {:label => "Last Name", :field_type => "SA", :required => "true"})
-          end 
-        end
-        line.stations.first.type.should eq("Work")
-        line.stations.first.worker.number.should == 2
-        line.stations.first.worker.reward.should == 20
-        line.stations.first.instruction.title.should eq("Enter text from a business card image")
-        line.stations.first.instruction.description.should eq("Describe")
-        line.stations.first.instruction.form_fields[0].label.should eq("First Name")
-        line.stations.first.instruction.form_fields[1].label.should eq("Middle Name")
-        line.stations.first.instruction.form_fields[2].label.should eq("Last Name")
-      end
-    end
-
-    it "should create a custom instruction" do
+    xit "should create a custom instruction" do
       VCR.use_cassette "stations/create-custom-instruction", :record => :new_episodes do
         attrs = {:title => "Enter text from a business card image",
           :description => "Describe"
@@ -89,23 +86,25 @@ describe CloudFactory::Station do
       end
     end
   end
- 
+
   context "get station" do
     it "should get information about a single station" do
-      VCR.use_cassette "stations/get-station", :record => :new_episodes do
+      VCR.use_cassette "stations/plain-ruby/get-station", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(line, :type => "Work")
+        station = CloudFactory::Station.new(:type => "Work")
+        line.stations station
         station.type.should eq("Work")
-        line.stations.first.get._type.should eq("WorkStation")
+        line.stations.first.get.type.should eq("WorkStation")
       end
     end
 
     it "should get all existing stations of a line" do
-      VCR.use_cassette "stations/get-all-stations", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
-          CloudFactory::Station.new(l, :type => "work")
-        end
+      VCR.use_cassette "stations/plain-ruby/get-all-stations", :record => :new_episodes do
+        line = CloudFactory::Line.new("Digitize Card","Digitization")
+        line.title.should eq("Digitize Card")
+        station = CloudFactory::Station.new(:type => "Work")
+        line.stations station
         stations = CloudFactory::Station.all(line)
         stations[0]._type.should eq("WorkStation")
       end
@@ -114,17 +113,15 @@ describe CloudFactory::Station do
 
   context "deleting a station" do
     it "should delete a station" do
-      VCR.use_cassette "stations/delete", :record => :new_episodes do
+      VCR.use_cassette "stations/plain-ruby/delete", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(line, :type => "Work")
-        station.type.should eq("Work")
-        station.delete
-        begin
-          station.get
-        rescue Exception => exec
-          exec.class.should eql(Crack::ParseError)
-        end
+        station = CloudFactory::Station.new(:type => "Work")
+        line.stations station
+        line.stations.first.delete
+        deleted_station = line.stations.first.get
+        deleted_station.message.should eql("Resource not found.")
+        deleted_station.code.should eql(404)
       end
     end
   end
