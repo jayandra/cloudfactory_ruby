@@ -131,6 +131,7 @@ module CloudFactory
       resp.to_hash.each_pair do |k,v|
         form.send("#{k}=",v) if form.respond_to?(k)
       end
+      form.station = self
       @instruction_instance = form
     end
 

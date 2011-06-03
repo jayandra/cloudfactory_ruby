@@ -13,7 +13,6 @@ describe CloudFactory::Line do
     end
 
     it "using block with variable" do
-      # WebMock.allow_net_connect!
       VCR.use_cassette "lines/block/create-block-var", :record => :new_episodes do
         line = CloudFactory::Line.create("Digitize Card","Digitization") do |l| 
           CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
@@ -36,9 +35,9 @@ describe CloudFactory::Line do
             CloudFactory::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             CloudFactory::HumanWorker.new({:station => station, :number => 2, :reward => 20})
             CloudFactory::StandardInstruction.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -70,9 +69,9 @@ describe CloudFactory::Line do
           CloudFactory::Station.create({:line => l, :type => "work"}) do |station|
             CloudFactory::HumanWorker.new({:line => l, :station => station, :number => 2, :reward => 20})
             CloudFactory::StandardInstruction.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -110,7 +109,7 @@ describe CloudFactory::Line do
         2.times do |i|
           CloudFactory::Line.new("Line #{i}", "Digitization", {:public => true, :description => "#{i}-this is description"})
         end
-        
+
         lines = CloudFactory::Line.public_lines
         lines.first.title.should eq("line-0")
         lines.size.should eql(2) 
@@ -167,9 +166,9 @@ describe CloudFactory::Line do
           CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
             CloudFactory::HumanWorker.new({:station => s, :number => 2, :reward => 20})
             CloudFactory::StandardInstruction.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})            
+              CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+              CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
             end
           end
         end
@@ -197,11 +196,11 @@ describe CloudFactory::Line do
       VCR.use_cassette "lines/plain-ruby/create-station", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
         station = CloudFactory::Station.new({:type => "work"})
-        line.stations << station
-        line.stations.first.type.should eql("Work")
+        line.stations station
+        line.stations.first.type.should eql("WorkStation")
       end
     end
-    
+
     it "should create a human worker within station" do
       VCR.use_cassette "lines/plain-ruby/create-station", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
@@ -214,7 +213,7 @@ describe CloudFactory::Line do
         line.stations.first.worker.reward.should eql(20)
       end
     end
-    
+
     it "should create a StandardInstruciton within station" do
       VCR.use_cassette "lines/plain-ruby/create-form", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
@@ -230,9 +229,8 @@ describe CloudFactory::Line do
         line.stations.first.instruction.description.should eql("Describe")
       end
     end
-    
+
     it "should create an input header within line" do
-      # WebMock.allow_net_connect!
       VCR.use_cassette "lines/plain-ruby/create-input-header", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
         station = CloudFactory::Station.new({:type => "work"})
@@ -244,6 +242,36 @@ describe CloudFactory::Line do
         line.stations.first.input_headers.first.value.should eq("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
         line.stations.first.input_headers.first.required.should eq("true")
         line.stations.first.input_headers.first.validation_format.should eq("url")
+      end
+    end
+
+    it "should create form fields within the standard instruction" do
+      VCR.use_cassette "lines/plain-ruby/create-form-fields", :record => :new_episodes do
+        line = CloudFactory::Line.new("Digitize Card", "Digitization")
+        station = CloudFactory::Station.new({:type => "work"})
+        line.stations station
+
+        worker = CloudFactory::HumanWorker.new({:number => 2, :reward => 20})
+        line.stations.first.worker = worker
+
+        form = CloudFactory::StandardInstruction.new({:title => "Enter text from a business card image", :description => "Describe"})
+        line.stations.first.instruction = form
+
+        form_fields_1 = CloudFactory::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
+        line.stations.first.instruction.form_fields form_fields_1
+        form_fields_2 = CloudFactory::FormField.new({:label => "Middle Name", :field_type => "SA"})
+        line.stations.first.instruction.form_fields form_fields_2
+        form_fields_3 = CloudFactory::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
+        line.stations.first.instruction.form_fields form_fields_3
+
+        line.stations.first.instruction.form_fields[0].label.should eql("First Name")
+        line.stations.first.instruction.form_fields[0].field_type.should eq("SA")
+        line.stations.first.instruction.form_fields[0].required.should eq(true)
+        line.stations.first.instruction.form_fields[1].label.should eql("Middle Name")
+        line.stations.first.instruction.form_fields[1].field_type.should eq("SA")
+        line.stations.first.instruction.form_fields[2].label.should eql("Last Name")
+        line.stations.first.instruction.form_fields[2].field_type.should eq("SA")
+        line.stations.first.instruction.form_fields[2].required.should eq(true)
       end
     end
   end
