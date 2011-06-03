@@ -1,26 +1,26 @@
 module CloudFactory
-  class CustomInstruction
+  class CustomForm
     # Title of "custom_instruction" object, e.g. :title => "title_name of custom_instruction"
     attr_accessor :title
     
     # Description of "custom_instruction" object, e.g. :description => "description for title of custom_instruction"
     attr_accessor :description
 
-    # ==Initializes a new CustomInstruction
+    # ==Initializes a new CustomForm
     # ==Usage custom_instruction.new(hash):
     #
     #     attrs = {:title => "Enter text from a business card image",
     #         :description => "Describe"}
     #
-    #     instruction = CustomInstruction.new(attrs)
+    #     instruction = CustomForm.new(attrs)
     def initialize(options={})
       @title       = options[:title]
       @description = options[:description]
     end
   
-    # ==Initializes a new CustomInstruction within block using Variable
+    # ==Initializes a new CustomForm within block using Variable
     # ==Usage of custom_instruction.create(instruction):
-    # ===Creating CustomInstruction using block variable
+    # ===Creating CustomForm using block variable
     #     attrs = {:title => "Enter text from a business card image",
     #         :description => "Describe"}
     #     
@@ -33,20 +33,20 @@ module CloudFactory
     #
     #     javascript_content = '<script>.........</script>'
     #
-    #     instruction = CustomInstruction.create(instruction) do |i|
+    #     instruction = CustomForm.create(instruction) do |i|
     #       i.html = html_content 
     #        i.css = css_content
     #        i.javascript = javascript_content
     #      end
     #
     # ===OR without block variable
-    #     instruction = CustomInstruction.create(instruction) do
+    #     instruction = CustomForm.create(instruction) do
     #       html html_content 
     #       css css_content
     #       javascript javascript_content
     #     end
     def self.create(instruction, &block)
-      instruction = CustomInstruction.new(instruction)
+      instruction = CustomForm.new(instruction)
       if block.arity >= 1
         block.call(instruction)
       else
