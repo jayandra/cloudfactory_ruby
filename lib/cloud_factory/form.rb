@@ -1,5 +1,5 @@
 module CloudFactory
-  class StandardInstruction
+  class Form
     include Client
     
     # title of the standard_instruction
@@ -8,7 +8,7 @@ module CloudFactory
     # description about the instruction
     attr_accessor :description
     
-    # form_fields for the StandardInstruction
+    # form_fields for the Form
     attr_accessor :form_fields
     
     # station attributes required to store station information
@@ -17,33 +17,33 @@ module CloudFactory
     # ID of Standard Instruction
     attr_accessor :id
 
-    # ==Initializes a new StandardInstruction
+    # ==Initializes a new Form
     # ==Usage of standard_instruction.new
     #   attrs = {:title => "Enter text from a business card image",
     #       :description => "Describe"}
     #
-    #   instruction = StandardInstruction.new(attrs)
+    #   instruction = Form.new(attrs)
     def initialize(options={})
       @form_fields =[]
       @station     = options[:station]
       @title       = options[:title]
       @description = options[:description]
       if !@station.nil?
-        resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "StandardInstruction"})
+        resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "Form"})
         @id = resp.id
         @station.instruction = self
       end
     end
     
-    # ==Initializes a new StandardInstruction within block using Variable
+    # ==Initializes a new Form within block using Variable
     # ==Usage of "standard_instruction.create(hash) do |block|"
-    # ===Creating StandardInstruction using block variable
+    # ===Creating Form using block variable
     #   line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
     #     CloudFactory::InputHeader.new({:line => l, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
     #     CloudFactory::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CloudFactory::Station.create({:line => l, :type => "work") do |s|
     #       CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20)
-    #       CloudFactory::StandardInstruction.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #       CloudFactory::Form.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
     #         CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #         CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
     #         CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
@@ -57,7 +57,7 @@ module CloudFactory
     #     CloudFactory::InputHeader.new({:line => self, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CloudFactory::Station.create({:line => self, :type => "work") do
     #       CloudFactory::HumanWorker.new({:station => self, :number => 1, :reward => 20)
-    #       CloudFactory::StandardInstruction.create(:station => self, :title => "Enter text from a business card image", :description => "Describe"}) do
+    #       CloudFactory::Form.create(:station => self, :title => "Enter text from a business card image", :description => "Describe"}) do
     #         CloudFactory::FormField.new({:instruction => self, :label => "First Name", :field_type => "SA", :required => "true"})
     #         CloudFactory::FormField.new({:instruction => self, :label => "Middle Name", :field_type => "SA"})
     #         CloudFactory::FormField.new({:instruction => self, :label => "Last Name", :field_type => "SA", :required => "true"})            
@@ -66,7 +66,7 @@ module CloudFactory
     #   end
     #
     def self.create(options, &block)
-      instruction = StandardInstruction.new(options)
+      instruction = Form.new(options)
       if block.arity >= 1
         block.call(instruction)
       else
@@ -83,7 +83,7 @@ module CloudFactory
     #     CloudFactory::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CloudFactory::Station.create({:line => l, :type => "work") do |s|
     #       CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20)
-    #       CloudFactory::StandardInstruction.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #       CloudFactory::Form.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
     #         CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #         CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
     #         CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
@@ -117,7 +117,7 @@ module CloudFactory
     #     CloudFactory::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CloudFactory::Station.create({:line => l, :type => "work") do |s|
     #       CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20)
-    #       CloudFactory::StandardInstruction.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #       CloudFactory::Form.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
     #         CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #         CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
     #         CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
@@ -126,7 +126,7 @@ module CloudFactory
     #   end
     #   station = line.stations[0]
     #
-    #   CloudFactory::StandardInstruction.delete_instruction(station)
+    #   CloudFactory::Form.delete_instruction(station)
     # deletes standard_instruction of a station
     def self.delete_instruction(station)
       delete("/stations/#{station.id}/instruction.json")

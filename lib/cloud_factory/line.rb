@@ -6,7 +6,7 @@ module CloudFactory
     attr_accessor :title
     
     # Category Name is required for the category which is categorized according to ID, e.g. "4dc8ad6572f8be0600000001"
-    attr_accessor :category_name
+    attr_accessor :department_name
     
     # Public is a boolean attribute which when set to true becomes public & vice-versa
     #
@@ -34,14 +34,14 @@ module CloudFactory
     #
     #     line = Line.new("Digit", "Survey")
 
-    def initialize(title, category_name, options={})
+    def initialize(title, department_name, options={})
       @input_headers =[]
       @stations =[]
       @title = title
-      @category_name = category_name
+      @department_name = department_name
       @public = options[:public]
       @description = options[:description]
-      resp = self.class.post("/lines.json", {:line => {:title => title, :category_name => category_name, :public => @public, :description => @description}})
+      resp = self.class.post("/lines.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       self.id = resp.id
     end
     
@@ -92,8 +92,8 @@ module CloudFactory
     #     CloudFactory::InputHeader.new({:line => self, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
     #     CloudFactory::Station.new({:line => self, :type => "Work"})
     #   end
-    def self.create(title, category_name, options={}, &block)
-      line = Line.new(title,category_name,options={})
+    def self.create(title, department_name, options={}, &block)
+      line = Line.new(title,department_name,options={})
       @public = options[:public]
       @description = options[:description]
       if block.arity >= 1
@@ -166,10 +166,10 @@ module CloudFactory
     # * This changes the title of the "line" object from "Digitize Card" to "New Title"
     def update(options={})
       @title = options[:title]
-      @category_name = options[:category_name]
+      @department_name = options[:department_name]
       @public = options[:public]
       @description = options[:description]
-      self.class.put("/lines/#{id}.json", :line => {:title => @title, :category_name => @category_name, :public => @public, :description => @description})
+      self.class.put("/lines/#{id}.json", :line => {:title => @title, :department_name => @department_name, :public => @public, :description => @description})
     end
     
     # ==Deletes a line

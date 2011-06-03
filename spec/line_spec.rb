@@ -8,7 +8,7 @@ describe CloudFactory::Line do
       VCR.use_cassette "lines/block/create", :record => :new_episodes do      
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
         line.title.should eq("Digitize Card")
-        line.category_name.should eq("Digitization")
+        line.department_name.should eq("Digitization")
       end
     end
 
@@ -21,7 +21,7 @@ describe CloudFactory::Line do
           end
         end
         line.title.should eq("Digitize Card")
-        line.category_name.should eq("Digitization")
+        line.department_name.should eq("Digitization")
         line.stations.first.input_headers[0].label.should eql("image_url")
         line.stations.first.input_headers[1].label.should eql("image")
         line.stations.first.type.should eq("Work")
@@ -34,7 +34,7 @@ describe CloudFactory::Line do
           CloudFactory::Station.create({:line => self, :type => "work"}) do |station|
             CloudFactory::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             CloudFactory::HumanWorker.new({:station => station, :number => 2, :reward => 20})
-            CloudFactory::StandardInstruction.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+            CloudFactory::Form.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
               CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
               CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -42,7 +42,7 @@ describe CloudFactory::Line do
           end
         end
         line.title.should eq("Digitize Card")
-        line.category_name.should eq("Digitization")
+        line.department_name.should eq("Digitization")
         line.stations.first.input_headers.first.label.should eql("image_url")
         line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should eq(2)
@@ -55,7 +55,7 @@ describe CloudFactory::Line do
       VCR.use_cassette "lines/block/create-optional-params", :record => :new_episodes do 
         line = CloudFactory::Line.new("Line Name", "Digitization", {:public => true, :description => "this is description"})
         line.title.should eq("Line Name")
-        line.category_name.should eq("Digitization")
+        line.department_name.should eq("Digitization")
         line.public.should eql(true)
         line.description.should eq("this is description")
       end
@@ -68,7 +68,7 @@ describe CloudFactory::Line do
         line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
           CloudFactory::Station.create({:line => l, :type => "work"}) do |station|
             CloudFactory::HumanWorker.new({:line => l, :station => station, :number => 2, :reward => 20})
-            CloudFactory::StandardInstruction.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+            CloudFactory::Form.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
               CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
               CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -76,7 +76,7 @@ describe CloudFactory::Line do
           end
         end
         line.title.should eq("Digitize Card")
-        line.category_name.should eq("Digitization")
+        line.department_name.should eq("Digitization")
         line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.worker.reward.should eq(20)
@@ -134,12 +134,12 @@ describe CloudFactory::Line do
     it "updates an existing line" do
       VCR.use_cassette "lines/block/update-line", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization", {:public => true, :description => "this is description"})
-        line.update({:title => "New Title", :category_name => "Survey", :description => "this is new description"})
+        line.update({:title => "New Title", :department_name => "Survey", :description => "this is new description"})
         updated_line = CloudFactory::Line.info(line)
         updated_line.title.should eql("new-title")
         updated_line.title.should_not eql("Digitize Card")
-        updated_line.category_name.should eql("Survey")
-        updated_line.category_name.should_not eql("Digitization")
+        updated_line.department_name.should eql("Survey")
+        updated_line.department_name.should_not eql("Digitization")
         updated_line.description.should eql("this is new description")
         updated_line.description.should_not eql("this is description")
       end
@@ -165,7 +165,7 @@ describe CloudFactory::Line do
         line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
           CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
             CloudFactory::HumanWorker.new({:station => s, :number => 2, :reward => 20})
-            CloudFactory::StandardInstruction.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+            CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
               CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
               CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
@@ -223,7 +223,7 @@ describe CloudFactory::Line do
         worker = CloudFactory::HumanWorker.new({:number => 2, :reward => 20})
         line.stations.first.worker = worker
 
-        form = CloudFactory::StandardInstruction.new({:title => "Enter text from a business card image", :description => "Describe"})
+        form = CloudFactory::Form.new({:title => "Enter text from a business card image", :description => "Describe"})
         line.stations.first.instruction = form
         line.stations.first.instruction.title.should eql("Enter text from a business card image")
         line.stations.first.instruction.description.should eql("Describe")
@@ -254,7 +254,7 @@ describe CloudFactory::Line do
         worker = CloudFactory::HumanWorker.new({:number => 2, :reward => 20})
         line.stations.first.worker = worker
 
-        form = CloudFactory::StandardInstruction.new({:title => "Enter text from a business card image", :description => "Describe"})
+        form = CloudFactory::Form.new({:title => "Enter text from a business card image", :description => "Describe"})
         line.stations.first.instruction = form
 
         form_fields_1 = CloudFactory::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
