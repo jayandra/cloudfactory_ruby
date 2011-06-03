@@ -91,6 +91,8 @@ module CloudFactory
           form_fields_3 = CloudFactory::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
           line.stations.first.instruction.form_fields form_fields_3
 
+          run = CloudFactory::Run.create(line,"Run in plain ruby way", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          
           line.title.should eq("Digitize Card")
           line.stations.first.type.should eq("WorkStation")
 
