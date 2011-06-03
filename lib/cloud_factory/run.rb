@@ -36,15 +36,9 @@ module CloudFactory
       @title = title
       @file = file
       @input_data =[]
-      
-      if line.id.nil?
-        line_id = line._id
-      else
-        line_id = line.id
-      end
-      
-      resp = self.class.post("/lines/#{line_id}/runs.json", {:run => {:title => @title}, :file => File.new(@file, 'rb')})
-      @id = resp._id
+      debugger
+      resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, :file => File.new(@file, 'rb')})
+      @id = resp.id
     end
     
     # ==Creates a new Run
