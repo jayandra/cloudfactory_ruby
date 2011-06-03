@@ -36,16 +36,22 @@ module CloudFactory
     #
     def initialize(options={})
       @station            = options[:station]
+      @line               = options[:line]
       @label              = options[:label]
       @field_type         = options[:field_type]
       @value              = options[:value]
       @required           = options[:required]
       @validation_format  = options[:validation_format]
-      if !@station.nil?
-        resp = self.class.post("/lines/#{@station.line_id}/input_headers.json", :input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format})
+      if !@station.nil? or !@line.nil?
+        line_id = @station.nil? ? @line.id : @station.line_id
+        resp = self.class.post("/lines/#{line_id}/input_headers.json", :input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format})
         @id = resp.id
-        @line_id = @station.line_id
-        @station.input_headers = self
+        @line_id = line_id
+        if !@station.nil?
+          @station.input_headers = self
+        else
+          @line.input_headers = self
+        end
       end
     end
     
