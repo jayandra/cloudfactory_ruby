@@ -15,7 +15,7 @@ module CloudFactory
     
     # ID of Standard Instruction
     attr_accessor :id
-    
+
     # ==Initializes a new StandardInstruction
     # ==Usage of standard_instruction.new
     #   attrs = {:title => "Enter text from a business card image",
@@ -30,7 +30,7 @@ module CloudFactory
       if !@station.nil?
         resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "StandardInstruction"})
         @id = resp.id
-        station.instruction = self
+        @station.instruction = self
       end
     end
     
@@ -86,7 +86,16 @@ module CloudFactory
     #
     def form_fields form_fields = nil
       if form_fields
-        @form_fields << form_fields
+        label = form_fields.label
+        field_type = form_fields.field_type
+        required = form_fields.required
+        resp = CloudFactory::FormField.post("/stations/#{self.station.id}/instruction/form_fields.json", :form_field => 
+          {:label => label, :field_type => field_type, :required => required})
+        form_field = CloudFactory::FormField.new({})
+        resp.to_hash.each_pair do |k,v|
+          form_field.send("#{k}=",v) if form_field.respond_to?(k)
+        end
+        @form_fields << form_field
       else
         @form_fields
       end
