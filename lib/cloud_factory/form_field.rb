@@ -20,9 +20,9 @@ module CloudFactory
     # ==Initializes a new "form_field" object
     # ==Usage of form_field.new(hash):
     #   line = CloudFactory::Line.create("Digitize", "Survey") do |l|   
-    #     CloudFactory::Station.create(l, :type => "work") do |s|
-    #       CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-    #         CloudFactory::FormField.new(s, {:label => "First Name", :field_type => "SA", :required => "true"})
+    #     CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
+    #       CloudFactory::StandardInstruction.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #         CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #       end
     #     end
     #   end

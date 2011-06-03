@@ -26,14 +26,17 @@ module CloudFactory
     # ==Initializes a new input_header
     # * Syntax for creating new input_header: <b>InputHeader.new(</b> Hash <b>)</b>
     # ===Usage Example:
-    #   attrs = {:label => "image_url",
+    #   line = CloudFactory::Line.create("Digitize", "Survey")
+    #
+    #   attrs = {:line => line,
+    #     :label => "image_url",
     #     :field_type => "text_data",
     #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg",
     #     :required => true,
     #     :validation_format => "url"} 
-    #   line = CloudFactory::Line.create("Digitize", "Survey")   
-    #   input_header = CloudFactory::InputHeader.new(line, attrs) 
-    #
+    #   
+    #   input_header = CloudFactory::InputHeader.new(attrs) 
+    #   line.input_headers input_header
     def initialize(options={})
       @station            = options[:station]
       @line               = options[:line]
@@ -56,23 +59,28 @@ module CloudFactory
     end
     
     # ==Returns all the input headers of a specific line
-    #   attrs_1 = {:label => "image_url",
+    #   line = CloudFactory::Line.new("Digitize Card","Survey")
+    #
+    #   attrs_1 = {:line => line,
+    #     :label => "image_url",
     #     :field_type => "text_data",
     #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
     #     :required => true, 
     #     :validation_format => "url"
     #   }
-    #   attrs_2 = {:label => "text_url",
+    #   attrs_2 = {:line => line,
+    #     :label => "text_url",
     #     :field_type => "text_data",
     #     :value => "http://s3.amazon.com/bizcardarmy/", 
     #     :required => true, 
     #     :validation_format => "url"
     #   }
     #   
-    #   line = CloudFactory::Line.create("Digitize Card","4dc8ad6572f8be0600000001") do |l|
-    #     input_header_1 = CloudFactory::InputHeader.new(l, attrs_1)
-    #     input_header_2 = CloudFactory::InputHeader.new(l, attrs_2)
-    #   end
+    #   input_header_1 = CloudFactory::InputHeader.new(attrs_1)
+    #   line.input_headers input_header_1
+    #   input_header_2 = CloudFactory::InputHeader.new(attrs_2)
+    #   line.input_headers input_header_2
+    # 
     #   input_headers_of_line = CloudFactory::InputHeader.all(line)
     # returns an array of input headers associated with line
     def self.all(line)
@@ -81,17 +89,19 @@ module CloudFactory
     
     # ==Returns a particular input header of a specific line
     # ===Usage example
-    #   attrs_1 = {:label => "image_url_type",
-    #        :field_type => "text_data",
-    #        :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
-    #        :required => true, 
-    #        :validation_format => "url"
+    #   line = CloudFactory::Line.new("Digitize Card","Survey")
+    #   attrs = {:line => line,
+    #     :label => "image_url_type",
+    #     :field_type => "text_data",
+    #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
+    #     :required => true, 
+    #     :validation_format => "url"
     #   }
     #      
-    #   line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
-    #     CloudFactory::InputHeader.new(l, attrs_1)
-    #   end
+    #   input_header = CloudFactory::InputHeader.new(attrs)
+    #   line.input_headers input_header
     #   input_header = line.input_headers[0]
+    #   
     #   got_input_header = input_header.get
     def get
       self.class.get("/lines/#{line_id}/input_headers/#{id}.json")
@@ -99,17 +109,19 @@ module CloudFactory
     
     # ==Updates input header
     # ===Usage example
-    #   attrs_1 = {:label => "image_url_type",
+    #   line = CloudFactory::Line.new("Digitize Card","Survey")
+    #   attrs = {:line => line,
+    #     :label => "image_url_type",
     #     :field_type => "text_data",
     #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
     #     :required => true, 
     #     :validation_format => "url"
     #   }
     #   
-    #   line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
-    #     CloudFactory::InputHeader.new(l, attrs_1)
-    #   end
+    #   input_header = CloudFactory::InputHeader.new(attrs)
+    #   line.input_headers input_header
     #   input_header = line.input_headers[0]
+    #
     #   updated_input_header = input_header.update({:label => "jackpot", :field_type => "lottery"})
     def update(options={})
       @label              = options[:label]
@@ -120,18 +132,17 @@ module CloudFactory
       self.class.put("/lines/#{line_id}/input_headers/#{id}.json", :input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format})
     end
     
-    # ==Deletes an input header of a specific line
-    # ===Usage example
-    #   attrs = {:label => "image_url_type",
+    #   line = CloudFactory::Line.new("Digitize Card","Survey")
+    #   attrs = {:line => line,
+    #     :label => "image_url_type",
     #     :field_type => "text_data",
     #     :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
     #     :required => true, 
     #     :validation_format => "url"
     #   }
     #   
-    #   line = CloudFactory::Line.create("Digitize","4dc8ad6572f8be0600000006") do |l|
-    #     CloudFactory::InputHeader.new(l, attrs)
-    #   end
+    #   input_header = CloudFactory::InputHeader.new(attrs)
+    #   line.input_headers input_header
     #
     #   input_header = line.input_headers[0]
     #   input_header.delete

@@ -6,8 +6,8 @@ module CloudFactory
   # * where the default value of number is 1
   # ==Usage Example
   #   line = CloudFactory::Line.create("Digitize", "Survey") do |l|   
-  #     CloudFactory::Station.create(l, :type => "work") do |s|
-  #       CloudFactory::HumanWorker.new(s, 2, 0.2)
+  #     CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
+  #       CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20})
   #     end
   #   end
   #
