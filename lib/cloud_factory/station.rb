@@ -196,7 +196,7 @@ module CloudFactory
     #   got_station = station.get
     # returns the station object
     def get
-      self.class.get("/lines/#{@line.id}/stations/#{self.id}.json")
+      self.class.get("/lines/#{self.line_id}/stations/#{self.id}.json")
     end
 
     # ==Returns information of instruction 
@@ -243,7 +243,7 @@ module CloudFactory
     #   station = CloudFactory::Station.new(line, :type => "Work")
     #   station.delete
     def delete
-      self.class.delete("/lines/#{@line.id}/stations/#{self.id}.json")
+      self.class.delete("/lines/#{self.line_id}/stations/#{self.id}.json")
     end
   end
 end

@@ -43,7 +43,7 @@ module CloudFactory
       @validation_format  = options[:validation_format]
       if !@station.nil?
         resp = self.class.post("/lines/#{@station.line_id}/input_headers.json", :input_header => {:label => @label, :field_type => @field_type, :value => @value, :required => @required, :validation_format => @validation_format})
-        @id = resp._id
+        @id = resp.id
         @line_id = @station.line_id
         @station.input_headers = self
       end
@@ -88,7 +88,7 @@ module CloudFactory
     #   input_header = line.input_headers[0]
     #   got_input_header = input_header.get
     def get
-      self.class.get("/lines/#{line_id}/input_headers/#{@id}.json")
+      self.class.get("/lines/#{line_id}/input_headers/#{id}.json")
     end
     
     # ==Updates input header
