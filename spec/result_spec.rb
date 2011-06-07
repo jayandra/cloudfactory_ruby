@@ -4,8 +4,8 @@ module CloudFactory
   describe CloudFactory::Result do
     context "Trace result" do
       it "should trace the result of a production run" do
-        # WebMock.allow_net_connect!
-        VCR.use_cassette "run/block/create-run", :record => :new_episodes do
+        WebMock.allow_net_connect!
+        # VCR.use_cassette "run/block/create-run", :record => :new_episodes do
           line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
             CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
               CloudFactory::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
@@ -19,14 +19,14 @@ module CloudFactory
             end
           end
 
-          run = CloudFactory::Run.create(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          run = CloudFactory::Run.create(line, "Run for result tracing", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
           run_id = run.id
-          
+          # debugger
           got_result = CloudFactory::Result.get_result(run_id)
           got_result.class.should eql(Array)
           got_result.size.should eql(3)
           got_result.first.class.should eql(CloudFactory::Result)
-        end
+        # end
       end
     end
   end
