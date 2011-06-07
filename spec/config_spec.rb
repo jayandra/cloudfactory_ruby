@@ -8,13 +8,11 @@ describe CloudFactory do
         config.api_version = API_CONFIG['api_version']
         config.api_url = API_CONFIG['api_url']
         config.api_key = API_CONFIG['api_key']
-        config.email = API_CONFIG['email']
       end
       
       CloudFactory.api_key.should eq(API_CONFIG['api_key'])
       CloudFactory.api_url.should eq(API_CONFIG['api_url'])
       CloudFactory.api_version.should eq(API_CONFIG['api_version'])
-      CloudFactory.email.should eq(API_CONFIG['email'])
     end
   end
 end

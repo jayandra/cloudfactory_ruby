@@ -5,7 +5,7 @@ module CloudFactory
     
     def self.get_result(run_id)
       resp = get("/runs/#{run_id}/results.json")
-      debugger
+      
       @results =[]
       resp.each do |r|
         result = self.new()

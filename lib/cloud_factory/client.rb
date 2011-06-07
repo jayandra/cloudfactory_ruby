@@ -5,7 +5,7 @@ module CloudFactory
 
     module ClassMethods      
       def default_params
-        {:api_key => CloudFactory.api_key, :email => CloudFactory.email}
+        {:api_key => CloudFactory.api_key}
       end
 
       def get(*args)
@@ -21,7 +21,7 @@ module CloudFactory
       end
 
       def delete(*args)
-        handle_response  RestClient.delete("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}?api_key=#{CloudFactory.api_key}&email=#{CloudFactory.email}", :accept => 'json')
+        handle_response  RestClient.delete("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}?api_key=#{CloudFactory.api_key}", :accept => 'json')
       end
 
       def handle_response(response)

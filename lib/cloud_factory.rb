@@ -14,7 +14,7 @@ Hash.send :include, Hashie::HashExtensions
 module CloudFactory  
 
   class << self
-    attr_accessor :api_key, :api_url, :api_version, :email
+    attr_accessor :api_key, :api_url, :api_version
     def configure
       yield self
     end    
@@ -29,7 +29,6 @@ module CloudFactory
       config.api_version = API_CONFIG['api_version']
       config.api_url = API_CONFIG['api_url']
       config.api_key = API_CONFIG['api_key']
-      config.email = API_CONFIG['email']
     end
   end
   
