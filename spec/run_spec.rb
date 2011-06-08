@@ -39,7 +39,6 @@ module CloudFactory
           line.stations[0].instruction.form_fields[0].required.should eq("true")
 
           run.title.should eq("run name")
-          debugger
           runfile = File.read(run.file)
           runfile.should == File.read(File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
         end
@@ -60,11 +59,12 @@ module CloudFactory
               end
             end
           end
-          run = CloudFactory::Run.create(line, "run name","Company,Website\nSprout,www.sprout-technology.com")
+          run = CloudFactory::Run.create(line, "run name", "Company,Website\nSprout,www.sprout-technology.com")
           run.data.should eql("Company,Website\nSprout,www.sprout-technology.com")
         end
       end
-      xit "for an existing line" do
+
+      it "for an existing line" do
         VCR.use_cassette "run/block/create-run-of-an-existing-line", :record => :new_episodes do
           line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
             CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
