@@ -13,7 +13,7 @@ module CloudFactory
               CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
                 CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
                 CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-                CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
+                CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
               end
             end
           end
@@ -26,7 +26,7 @@ module CloudFactory
           line.stations.first.input_headers.first.field_type.should eq("text_data")
           line.stations.first.input_headers.first.required.should eq(true)
 
-          line.stations[0].type.should eq("Work") 
+          line.stations[0].type.should eq("Work")
 
           line.stations[0].worker.number.should eq(1)
           line.stations[0].worker.reward.should eq(20)
@@ -39,11 +39,31 @@ module CloudFactory
           line.stations[0].instruction.form_fields[0].required.should eq("true")
 
           run.title.should eq("run name")
+          debugger
           runfile = File.read(run.file)
           runfile.should == File.read(File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
         end
       end
 
+      it "should create a production run for input data as plain data" do
+        WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-without-file", :record => :new_episodes do
+          line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
+            CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
+              CloudFactory::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
+              CloudFactory::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
+              CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+                CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+                CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+              end
+            end
+          end
+          run = CloudFactory::Run.create(line, "run name","Company,Website\nSprout,www.sprout-technology.com")
+          run.data.should eql("Company,Website\nSprout,www.sprout-technology.com")
+        end
+      end
       xit "for an existing line" do
         VCR.use_cassette "run/block/create-run-of-an-existing-line", :record => :new_episodes do
           line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
@@ -54,11 +74,10 @@ module CloudFactory
               CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
                 CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
                 CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-                CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
+                CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
               end
             end
           end
-          debugger
           old_line = CloudFactory::Line.find(line.id)
           run = CloudFactory::Run.create(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
           run.title.should eq("Run Using Line")
@@ -92,7 +111,7 @@ module CloudFactory
           line.stations.first.instruction.form_fields form_fields_3
 
           run = CloudFactory::Run.create(line,"Run in plain ruby way", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
-          
+
           line.title.should eq("Digitize Card")
           line.stations.first.type.should eq("WorkStation")
 
