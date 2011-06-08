@@ -1,29 +1,29 @@
 module CloudFactory
   class Line
     include Client
-    
+
     # Title of the Line
     attr_accessor :title
-    
+
     # Category Name is required for the category which is categorized according to ID, e.g. "4dc8ad6572f8be0600000001"
     attr_accessor :department_name
-    
+
     # Public is a boolean attribute which when set to true becomes public & vice-versa
     #
     # Public attribute is optional
     attr_accessor :public
-    
+
     # Description attribute describes about the line
     #
     # Description attribute is optional
     attr_accessor :description
-    
+
     # id attribute is for the line_id & is required to be stored for making Api calls
     attr_accessor :id
-    
+
     # stations contained within line object
     attr_accessor :stations
-    
+
     # input_headers contained within line object
     attr_accessor :input_headers
     #attr_accessor :input_header_instance
@@ -44,13 +44,13 @@ module CloudFactory
       resp = self.class.post("/lines.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       self.id = resp.id
     end
-    
+
     # ==Usage of line.stations << station
     #   line = CloudFactory::Line.new("line name")
     #   station = CloudFactory::Station.new({:type => "Work"})
     #   line.stations station
-    # 
-    # * returns 
+    #
+    # * returns
     # line.stations as an array of stations
     def stations stations = nil
       if stations
@@ -65,20 +65,20 @@ module CloudFactory
         @stations
       end
     end
-    
+
     def << stations #:nodoc:
       type = stations.type
       @stations << stations
       resp = CloudFactory::Station.post("/lines/#{id}/stations.json", :station => {:type => type})
     end
-    
-    
+
+
     def stations=(stations) # :nodoc:
       @stations << stations
       #resp = CloudFactory::Station.post("/lines/#{id}/stations.json", :station => {:type => stations.type})
       #@station_id = resp._id
     end
-    
+
     # ==Initializes a new line
     # ==Usage of line.create("line_name") do |block|
     # ===creating Line within block using variable
@@ -86,7 +86,7 @@ module CloudFactory
     #     CloudFactory::InputHeader.new({:line => line, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
     #     CloudFactory::Station.new({:line => line, :type => "Work"})
     #   end
-    # 
+    #
     # ===OR creating without variable
     #   CloudFactory::Line.create("line_name") do
     #     CloudFactory::InputHeader.new({:line => self, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
@@ -103,13 +103,13 @@ module CloudFactory
       end
       line
     end
-    
+
     # ==Usage of line.input_headers(input_header)
     #   line = Line.new("line name", "Survey")
-    # 
+    #
     #   input_header = CloudFactory::InputHeader.new({:label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
     #   line.input_headers input_header
-    # * returns 
+    # * returns
     # line.input_headers as an array of input_headers
     def input_headers input_headers_value = nil
       if input_headers_value
@@ -131,36 +131,36 @@ module CloudFactory
     def input_headers=(input_headers_value) # :nodoc:
       @input_headers << input_headers_value
     end
-    
+
     # ==Returns the content of a line by making an Api call
-    # ===Syntax for get_line method is 
+    # ===Syntax for get_line method is
     #   CloudFactory::Line.info(line)
     def self.info(line)
       get("/lines/#{line.id}.json")
     end
-    
-    # ==Finds a line 
-    # ===Syntax for find method is 
+
+    # ==Finds a line
+    # ===Syntax for find method is
     #   CloudFactory::Line.find(line.id)
     def self.find(line_id)
       get("/lines/#{line_id}.json")
     end
     # ==Returns all the lines of an account
-    # ===Syntax for all method is 
+    # ===Syntax for all method is
     #   CloudFactory::Line.all
     def self.all
       get("/lines.json")
     end
-    
+
     # ==Return all the lines whose public value is set true
-    # ===Syntax for public_lines method is 
+    # ===Syntax for public_lines method is
     #   CloudFactory::Line.public_lines
     def self.public_lines
       get("/public_lines.json")
     end
-    
-    # ==Updates a line 
-    # ===Syntax for update method is 
+
+    # ==Updates a line
+    # ===Syntax for update method is
     #   line = CloudFactory::Line.new("Digitize Card", "Survey")
     #   line.update({:title => "New Title"})
     # * This changes the title of the "line" object from "Digitize Card" to "New Title"
@@ -171,7 +171,7 @@ module CloudFactory
       @description = options[:description]
       self.class.put("/lines/#{id}.json", :line => {:title => @title, :department_name => @department_name, :public => @public, :description => @description})
     end
-    
+
     # ==Deletes a line
     # ===Syantax for delete method
     #   line = CloudFactory::Line.new("Digitize Card", "Survey")
