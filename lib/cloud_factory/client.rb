@@ -3,7 +3,7 @@ module CloudFactory
 
     extend ActiveSupport::Concern
 
-    module ClassMethods      
+    module ClassMethods
       def default_params
         {:api_key => CloudFactory.api_key}
       end
@@ -33,13 +33,13 @@ module CloudFactory
         when 500...600; raise ServerError.new(response.code)
         else; response
         end
-        
+
         unless response.length == 2
           parsed_response = JSON.load(response)
           if parsed_response.is_a?(Array)
             parsed_response.map{|item| Hashie::Mash.new(item)}
           else
-            new_response = parsed_response.inject({ }) do |x, (k,v)| 
+            new_response = parsed_response.inject({ }) do |x, (k,v)|
                             x[k.sub(/\A_/, '')] = v
                             x
                           end
@@ -49,6 +49,6 @@ module CloudFactory
           response
         end
       end
-    end    
+    end
   end
 end
