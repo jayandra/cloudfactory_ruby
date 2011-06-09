@@ -26,20 +26,15 @@ class HumanWorkerApp < Sinatra::Base
       CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
         CloudFactory::InputHeader.new({:station => s, :label => "Politician Name",:field_type => "text_data",:value => "Madhav Kumar Nepal", :required => true, :validation_format => "general"})
         CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-        CloudFactory::Form.create({:station => s, :title => "Enter the Amounts they have bribed", :description => "Guess the amount they have earned through bribe in Rupees"}) do |f|
+        CloudFactory::Form.create({:station => s, :title => "Gem", :description => "Guess the amount they have earned through bribe in Rupees"}) do |f|
           CloudFactory::FormField.new({:instruction => f, :label => "Amount", :field_type => "SA", :required => "true"})
         end
       end
     end
     
     input_data = "Politician Name\n"
-    input_data += params[:names].join("\n")
-    # input_data_array = []
-    #     params['names'].each do |data|
-    #       input_data_array << data + "," + data
-    #     end
-    #     input_data += input_data_array.join("\n")
-    #     debugger
+    input_data += params[:names]
+    
     @run = CloudFactory::Run.create(line, "2011 Ghotala", input_data)
 
     haml :run

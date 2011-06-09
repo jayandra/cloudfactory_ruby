@@ -2,10 +2,9 @@
   Results
 
 %p
-  - @got_result.each do |result|
-    - result.results.each do |amount|
-      =h amount.amount
-      %br
-
+  =h @got_result.last.meta_data
+  Received 
+  =h @got_result.last.results.last.amount
+  from Bribery
 %p
   %a{:href => "/"}Go Back to Home
