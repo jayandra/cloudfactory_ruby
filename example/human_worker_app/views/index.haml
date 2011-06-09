@@ -1,6 +1,15 @@
 %h1
-  Welcome to Translator CF App
+  Bribery App
 
 #container
   %form{:action => "/run", :method => :post, :name => :the_form}
-  Name: #{text_field "item", "name"}
+    %p
+      %label Enter the politician name
+      %input{:type => :text, :name => "names[]"}
+      %span.remove Remove
+
+
+    %span.add Add More Politician
+
+    %p
+      %input{:type => :submit, :value => "Find It"}
