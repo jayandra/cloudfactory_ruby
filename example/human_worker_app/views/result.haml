@@ -1,0 +1,11 @@
+%h2
+  Results
+
+%p
+  - @got_result.each do |result|
+    - result.results.each do |amount|
+      =h amount.amount
+      %br
+
+%p
+  %a{:href => "/"}Go Back to Home
