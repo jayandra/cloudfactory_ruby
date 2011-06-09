@@ -35,15 +35,16 @@ module CloudFactory
       @title = title
       if File.exist?(input)
         @file = input
-        @@param_data = File.new(input, 'rb')
-        @@param_for_input = :file
+        @param_data = File.new(input, 'rb')
+        @param_for_input = :file
       else
         @data = input
-        @@param_data = input
-        @@param_for_input = :data
+        @param_data = input
+        @param_for_input = :data
       end
       @input_data =[]
-      resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, @@param_for_input => @@param_data })
+      meta_data = @param_data.split("\n").last
+      resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, @param_for_input => @param_data, :meta_data => meta_data})
       @id = resp.id
     end
 

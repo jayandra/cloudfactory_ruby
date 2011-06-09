@@ -5,11 +5,7 @@
   %form{:action => "/run", :method => :post, :name => :the_form}
     %p
       %label Enter the politician name
-      %input{:type => :text, :name => "names[]"}
-      %span.remove Remove
-
-
-    %span.add Add More Politician
+      %input{:type => :text, :name => "names"}
 
     %p
       %input{:type => :submit, :value => "Find It"}
