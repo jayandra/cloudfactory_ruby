@@ -15,7 +15,7 @@ describe CloudFactory::CustomForm do
                   </div>
                   <div id="image-field-wrapper">
                     <div id = "image-panel" >
-                      <img class="card-mage" src="{{image_url}}">
+                      <img class="card-image" src="{{image_url}}">
                     </div>
                     <div id = "field-panel">
                       Name<br />
