@@ -5,7 +5,7 @@ describe CloudFactory::Line do
 
   context "create a line" do
     it "the plain ruby way" do
-      VCR.use_cassette "lines/block/create", :record => :new_episodes do      
+      VCR.use_cassette "lines/block/create", :record => :new_episodes do
         line = CloudFactory::Line.new("Digitize Card", "Digitization")
         line.title.should eq("Digitize Card")
         line.department_name.should eq("Digitization")
@@ -14,7 +14,7 @@ describe CloudFactory::Line do
 
     it "using block with variable" do
       VCR.use_cassette "lines/block/create-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l| 
+        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
           CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
             CloudFactory::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             CloudFactory::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
@@ -52,7 +52,7 @@ describe CloudFactory::Line do
     end
 
     it "with all the optional params" do
-      VCR.use_cassette "lines/block/create-optional-params", :record => :new_episodes do 
+      VCR.use_cassette "lines/block/create-optional-params", :record => :new_episodes do
         line = CloudFactory::Line.new("Line Name", "Digitization", {:public => true, :description => "this is description"})
         line.title.should eq("Line Name")
         line.department_name.should eq("Digitization")
@@ -96,7 +96,7 @@ describe CloudFactory::Line do
           CloudFactory::Line.new("Digitize Card #{i}", "Digitization", {:public => false, :description => "#{i}-this is description"})
         end
         lines = CloudFactory::Line.all
-        #lines.first.title.should eq("digitize-card-0")             FIX ME
+        lines.last.title.should eq("digitize-card-0")
         lines.size.should eql(5)
       end
     end
@@ -111,8 +111,8 @@ describe CloudFactory::Line do
         end
 
         lines = CloudFactory::Line.public_lines
-        lines.first.title.should eq("line-0")
-        lines.size.should eql(2) 
+        lines.first.title.should eq("line-1")
+        lines.size.should eql(2)
       end
     end
   end
@@ -168,7 +168,7 @@ describe CloudFactory::Line do
             CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
               CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
+              CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end

@@ -22,6 +22,7 @@ module CloudFactory
           run_id = run.id
 
           got_result = CloudFactory::Result.get_result(run_id)
+          debugger
           got_result.class.should eql(Array)
           got_result.size.should eql(3)
           got_result.first.class.should eql(CloudFactory::Result)
