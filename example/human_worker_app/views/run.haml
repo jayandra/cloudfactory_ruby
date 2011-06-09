@@ -1,4 +1,12 @@
 %h2
-  Run created.
+  Run Successfully created.
+
+%p
+  Title of your Production Run is: 
+  = @run.title
   
-= @categories.inspect
+%p
+  %a{:href =>"result/#{@run.id}"}"Click here to trace Result"
+  
+%p
+  %a{:href => "/"}Go Back to Home
