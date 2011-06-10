@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe CloudFactory::Station do
+describe CF::Station do
   context "create a station" do
     it "the plain ruby way" do
       VCR.use_cassette "stations/plain-ruby/create", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card", "Digitization")
-        station = CloudFactory::Station.new({:type => "work"})
+        line = CF::Line.new("Digitize Card", "Digitization")
+        station = CF::Station.new({:type => "work"})
         line.stations station
         line.stations.first.type.should eql("WorkStation")
       end
@@ -13,13 +13,13 @@ describe CloudFactory::Station do
 
     it "using the block variable" do
       VCR.use_cassette "stations/block/create-with-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card", "Digitization") do
-          CloudFactory::Station.create({:line => self, :type => "work"}) do |s|
-            CloudFactory::HumanWorker.new({:station => s, :number => 2, :reward => 20})
-            CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+        line = CF::Line.create("Digitize Card", "Digitization") do
+          CF::Station.create({:line => self, :type => "work"}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 2, :reward => 20})
+            CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+              CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -36,13 +36,13 @@ describe CloudFactory::Station do
 
     it "using without the block variable also creating instruction without block variable" do
       VCR.use_cassette "stations/block/create-without-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card", "Digitization") do
-          CloudFactory::Station.create({:line => self, :type => "work"}) do
-            CloudFactory::HumanWorker.new({:station => self, :number => 2, :reward => 20})
-            CloudFactory::Form.create({:station => self, :title => "Enter text from a business card image", :description => "Describe"}) do
-              CloudFactory::FormField.new({:instruction => self, :label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new({:instruction => self, :label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new({:instruction => self, :label => "Last Name", :field_type => "SA", :required => "true"})
+        line = CF::Line.create("Digitize Card", "Digitization") do
+          CF::Station.create({:line => self, :type => "work"}) do
+            CF::HumanWorker.new({:station => self, :number => 2, :reward => 20})
+            CF::Form.create({:station => self, :title => "Enter text from a business card image", :description => "Describe"}) do
+              CF::FormField.new({:instruction => self, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:instruction => self, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:instruction => self, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -68,15 +68,15 @@ describe CloudFactory::Station do
 
         javascript = '<script src="http://code.jquery.com/jquery-latest.js"></script><script type="text/javascript" src="http://www.bizcardarmy.com/javascripts/jquery.autocomplete-min.js"></script><script type="text/javascript">$(document).ready(function(){autocomplete_fields = ["first_name", "middle_name", "last_name", "company", "job_title", "city", "state", "zip"];$.each(autocomplete_fields, function(index, value){var inputField = "input." + value;$(inputField).autocomplete({serviceUrl: "http://www.bizcardarmy.com/cards/return_data_for_autocompletion.json",maxHeight: 400,width: 300,zIndex: 9999,params: { field: value }});});});</script>'
 
-        instruction = CloudFactory::CustomForm.create(attrs) do |i|
+        instruction = CF::CustomForm.create(attrs) do |i|
           i.html = html
           i.css = css
           i.javascript = javascript
         end
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
+        line = CF::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
 
-        station = CloudFactory::Station.create(line, :type => "work") do |s|
+        station = CF::Station.create(line, :type => "work") do |s|
           s.instruction = instruction
         end
         station.type.should eq("Work")
@@ -94,9 +94,9 @@ describe CloudFactory::Station do
   context "get station" do
     it "should get information about a single station" do
       VCR.use_cassette "stations/plain-ruby/get-station", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
+        line = CF::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(:type => "Work")
+        station = CF::Station.new(:type => "Work")
         line.stations station
         station.type.should eq("Work")
         line.stations.first.get.type.should eq("WorkStation")
@@ -105,11 +105,11 @@ describe CloudFactory::Station do
 
     it "should get all existing stations of a line" do
       VCR.use_cassette "stations/plain-ruby/get-all-stations", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
+        line = CF::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(:type => "Work")
+        station = CF::Station.new(:type => "Work")
         line.stations station
-        stations = CloudFactory::Station.all(line)
+        stations = CF::Station.all(line)
         stations[0]._type.should eq("WorkStation")
       end
     end
@@ -118,9 +118,9 @@ describe CloudFactory::Station do
   context "deleting a station" do
     it "should delete a station" do
       VCR.use_cassette "stations/plain-ruby/delete", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
+        line = CF::Line.new("Digitize Card","Digitization")
         line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(:type => "Work")
+        station = CF::Station.new(:type => "Work")
         line.stations station
         line.stations.first.delete
         deleted_station = line.stations.first.get

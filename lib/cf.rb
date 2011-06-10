@@ -1,4 +1,3 @@
-# require 'httparty'
 require 'hashie'
 require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
@@ -11,7 +10,7 @@ directory = File.expand_path(File.dirname(__FILE__))
 Hash.send :include, Hashie::HashExtensions
 
 
-module CloudFactory  
+module CF  
 
   class << self
     attr_accessor :api_key, :api_url, :api_version
@@ -25,14 +24,14 @@ module CloudFactory
   # TEST=true bundle exec rspec spec/.....
   if ENV['TEST']
     API_CONFIG = YAML.load_file(File.expand_path("../../fixtures/api_credentials.yml", __FILE__))
-    CloudFactory.configure do |config|
+    CF.configure do |config|
       config.api_version = API_CONFIG['api_version']
       config.api_url = API_CONFIG['api_url']
       config.api_key = API_CONFIG['api_key']
     end
   end
   
-  class CloudFactoryError < StandardError
+  class CFError < StandardError
     attr_reader :data
   
     def initialize(data)
@@ -42,8 +41,8 @@ module CloudFactory
   end
 
   class ClientError < StandardError; end
-  class ServerError < CloudFactoryError; end
-  class General     < CloudFactoryError; end
+  class ServerError < CFError; end
+  class General     < CFError; end
 
   class Unauthorized < ClientError; end
   class NotFound     < ClientError; end
@@ -51,17 +50,17 @@ module CloudFactory
   class Unavailable  < StandardError; end
 end
 
-require 'cloud_factory/client'
-require 'cloud_factory/line'
-require 'cloud_factory/input_header'
-require 'cloud_factory/worker'
-require 'cloud_factory/human_worker'
-require 'cloud_factory/google_translate_robot'
-require 'cloud_factory/media_converter_robot'
-require 'cloud_factory/station'
-require 'cloud_factory/form'
-require 'cloud_factory/form_field'
-require 'cloud_factory/custom_form'
-require 'cloud_factory/run'
-require 'cloud_factory/department'
-require 'cloud_factory/result'
+require 'cf/client'
+require 'cf/line'
+require 'cf/input_header'
+require 'cf/worker'
+require 'cf/human_worker'
+require 'cf/google_translate_robot'
+require 'cf/media_converter_robot'
+require 'cf/station'
+require 'cf/form'
+require 'cf/form_field'
+require 'cf/custom_form'
+require 'cf/run'
+require 'cf/department'
+require 'cf/result'

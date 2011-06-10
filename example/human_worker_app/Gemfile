@@ -9,4 +9,4 @@ else
   gem "ruby-debug19", :require => 'ruby-debug'
 end
 
-gem 'cloud_factory', :path => "../../"
+gem 'cloud_factory', :path => "../../", :require => "cf"

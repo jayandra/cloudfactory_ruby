@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "cloud_factory/version"
+require "cf/version"
 
 Gem::Specification.new do |s|
   s.name        = "cloud_factory"
-  s.version     = CloudFactory::VERSION
+  s.version     = CF::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Millisami"]
   s.email       = ["millisami@gmail.com"]

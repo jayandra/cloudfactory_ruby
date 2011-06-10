@@ -1,4 +1,4 @@
-module CloudFactory
+module CF
   module Worker
     extend ActiveSupport::Concern
     include Client
@@ -20,7 +20,7 @@ module CloudFactory
           @number  = options[:number].nil? ? 1 : options[:number]
           @reward  = options[:reward]
           if !@station.nil?
-            CloudFactory::HumanWorker.post("/stations/#{@station.id}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
+            CF::HumanWorker.post("/stations/#{@station.id}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
             station.worker = self
           end
         end
