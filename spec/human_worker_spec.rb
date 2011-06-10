@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-module CloudFactory
-  describe CloudFactory::HumanWorker do
+module CF
+  describe CF::HumanWorker do
     context "create a worker" do
       xit "the plain ruby way" do
-        line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
-          l.stations = CloudFactory::Station.create(l, :type => "work") do |s|
-            @worker = CloudFactory::HumanWorker.new(s, 2, 20)
+        line = CF::Line.create("Digitize Card", "Digitization") do |l|
+          l.stations = CF::Station.create(l, :type => "work") do |s|
+            @worker = CF::HumanWorker.new(s, 2, 20)
             s.worker = @worker
           end
         end
