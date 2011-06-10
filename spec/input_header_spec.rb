@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CloudFactory::InputHeader do
+describe CF::InputHeader do
   context "create an input header" do
     it "in plain ruby way within line" do
       VCR.use_cassette "input_headers/plain-ruby/create-within-line", :record => :new_episodes do
@@ -11,8 +11,8 @@ describe CloudFactory::InputHeader do
           :validation_format => "url"
         }
 
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        input_header = CloudFactory::InputHeader.new(attrs)
+        line = CF::Line.new("Digitize Card","Digitization")
+        input_header = CF::InputHeader.new(attrs)
         line.input_headers input_header
         line.input_headers.first.label.should eql("image_url")
         line.input_headers.first.field_type.should eql("text_data")
@@ -28,10 +28,10 @@ describe CloudFactory::InputHeader do
           :validation_format => "url"
         }
 
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        station = CloudFactory::Station.new({:type => "work"})
+        line = CF::Line.new("Digitize Card","Digitization")
+        station = CF::Station.new({:type => "work"})
         line.stations station
-        input_header = CloudFactory::InputHeader.new(attrs)
+        input_header = CF::InputHeader.new(attrs)
         line.stations.first.input_headers input_header
 
         line.title.should eq("Digitize Card")
@@ -45,9 +45,9 @@ describe CloudFactory::InputHeader do
     
     it "in block DSL way within line" do
       VCR.use_cassette "input_headers/block/create-input-headers-of-line", :record => :new_episodes do 
-        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-            CloudFactory::InputHeader.new({:line => l, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-            CloudFactory::InputHeader.new({:line => l, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
+        line = CF::Line.create("Digitize Card","Digitization") do |l|
+            CF::InputHeader.new({:line => l, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::InputHeader.new({:line => l, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
         end
         line.input_headers[0].label.should eq("image_url")
         line.input_headers[0].field_type.should eq("text_data")
@@ -60,10 +60,10 @@ describe CloudFactory::InputHeader do
     
     it "in block DSL way within station" do
       VCR.use_cassette "input_headers/block/create-input-headers-of-station", :record => :new_episodes do 
-        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-          CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-            CloudFactory::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-            CloudFactory::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
+        line = CF::Line.create("Digitize Card","Digitization") do |l|
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
           end
         end
         line.stations.first.input_headers[0].label.should eq("image_url")
@@ -79,13 +79,13 @@ describe CloudFactory::InputHeader do
   context "return all the input headers" do
     it "should return all the input headers of a line " do
       VCR.use_cassette "input_headers/block/input-headers-of-line", :record => :new_episodes do 
-        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-          CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-            CloudFactory::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-            CloudFactory::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
+        line = CF::Line.create("Digitize Card","Digitization") do |l|
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
           end
         end
-        input_headers_of_line = CloudFactory::InputHeader.all(line)
+        input_headers_of_line = CF::InputHeader.all(line)
         input_headers_of_line.map(&:label).should include("image_url")
         input_headers_of_line.map(&:label).should include("image")
         input_headers_of_line.map(&:field_type).should include("text_data")
@@ -97,10 +97,10 @@ describe CloudFactory::InputHeader do
 
     it "should return info of an input header" do
       VCR.use_cassette "input_headers/block/get-input-header", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-          CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-            CloudFactory::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-            CloudFactory::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
+        line = CF::Line.create("Digitize Card","Digitization") do |l|
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
           end
         end
         got_input_header_1 = line.stations.first.input_headers[0].get 
@@ -119,10 +119,10 @@ describe CloudFactory::InputHeader do
   context "update input_header" do
     it "should update input_header" do
       VCR.use_cassette "input_headers/block/update-input-header", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-          CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-            CloudFactory::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-            CloudFactory::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
+        line = CF::Line.create("Digitize Card","Digitization") do |l|
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
           end
         end
         line.stations.first.input_headers.last.update({:label => "jackpot", :field_type => "lottery"})
@@ -155,16 +155,16 @@ describe CloudFactory::InputHeader do
           :validation_format => "url"
         }
 
-        line = CloudFactory::Line.create("Digitize","Digitization") do |l|
-          CloudFactory::InputHeader.new(l, attrs_1)
-          CloudFactory::InputHeader.new(l, attrs_2)
-          CloudFactory::InputHeader.new(l, attrs_3)
+        line = CF::Line.create("Digitize","Digitization") do |l|
+          CF::InputHeader.new(l, attrs_1)
+          CF::InputHeader.new(l, attrs_2)
+          CF::InputHeader.new(l, attrs_3)
         end
 
-        CloudFactory::InputHeader.delete_all(line)
+        CF::InputHeader.delete_all(line)
 
         begin
-          CloudFactory::InputHeader.all(line)
+          CF::InputHeader.all(line)
         rescue Exception => exec
           exec.class.should eql(NoMethodError)
         end
@@ -175,10 +175,10 @@ describe CloudFactory::InputHeader do
   context "delete an input_header" do
     it "should delete an input_header of a specific line" do
       VCR.use_cassette "input_headers/block/delete-input-header", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-          CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-            CloudFactory::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-            CloudFactory::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
+        line = CF::Line.create("Digitize Card","Digitization") do |l|
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/", :required => true, :validation_format => "url"})
           end
         end
         line.stations.first.input_headers[0].delete

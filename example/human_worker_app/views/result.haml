@@ -3,8 +3,11 @@
 
 %p
   =h @got_result.last.meta_data
-  Received 
-  =h @got_result.last.results.last.amount
+  Received
+  %b
+    "
+    =h @got_result.last.results.last.amount
+    "
   from Bribery
 %p
   %a{:href => "/"}Go Back to Home

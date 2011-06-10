@@ -1,4 +1,4 @@
-module CloudFactory
+module CF
   class Result
     include Client
     attr_accessor :meta_data, :results, :unit_id

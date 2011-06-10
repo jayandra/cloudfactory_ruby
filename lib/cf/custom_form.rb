@@ -1,4 +1,4 @@
-module CloudFactory
+module CF
   class CustomForm
     # Title of "custom_instruction" object, e.g. :title => "title_name of custom_instruction"
     attr_accessor :title

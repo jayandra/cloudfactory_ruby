@@ -1,27 +1,27 @@
-module CloudFactory
+module CF
   module Client
 
     extend ActiveSupport::Concern
 
     module ClassMethods
       def default_params
-        {:api_key => CloudFactory.api_key}
+        {:api_key => CF.api_key}
       end
 
       def get(*args)
-        handle_response RestClient.get("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}", :params => default_params, :accept => 'json')
+        handle_response RestClient.get("#{CF.api_url}#{CF.api_version}#{args.first}", :params => default_params, :accept => 'json')
       end
 
       def post(*args)
-        handle_response  RestClient.post("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}", args.last.merge!(default_params), :accept => 'json')
+        handle_response  RestClient.post("#{CF.api_url}#{CF.api_version}#{args.first}", args.last.merge!(default_params), :accept => 'json')
       end
 
       def put(*args)
-        handle_response  RestClient.put("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}", args.last.merge!(default_params), :accept => 'json')
+        handle_response  RestClient.put("#{CF.api_url}#{CF.api_version}#{args.first}", args.last.merge!(default_params), :accept => 'json')
       end
 
       def delete(*args)
-        handle_response  RestClient.delete("#{CloudFactory.api_url}#{CloudFactory.api_version}#{args.first}?api_key=#{CloudFactory.api_key}", :accept => 'json')
+        handle_response  RestClient.delete("#{CF.api_url}#{CF.api_version}#{args.first}?api_key=#{CF.api_key}", :accept => 'json')
       end
 
       def handle_response(response)

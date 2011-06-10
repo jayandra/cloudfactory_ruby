@@ -1,4 +1,4 @@
-module CloudFactory
+module CF
   class FormField
     include Client
 
@@ -19,10 +19,10 @@ module CloudFactory
 
     # ==Initializes a new "form_field" object
     # ==Usage of form_field.new(hash):
-    #   line = CloudFactory::Line.create("Digitize", "Survey") do |l|   
-    #     CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-    #       CloudFactory::StandardInstruction.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-    #         CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+    #   line = CF::Line.create("Digitize", "Survey") do |l|   
+    #     CF::Station.create({:line => l, :type => "work"}) do |s|
+    #       CF::StandardInstruction.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #       end
     #     end
     #   end

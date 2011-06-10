@@ -1,7 +1,7 @@
 require 'thor'
 require 'cloud_factory/line'
 
-module CloudFactory
+module CF
   class CLI < Thor
 
     desc "create NAME", "Creates a new line with the name NAME"
