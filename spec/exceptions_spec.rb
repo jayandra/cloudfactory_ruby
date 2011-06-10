@@ -5,11 +5,11 @@ describe "Exceptions" do
     xit "without name and department should raise ArgumentError" do
       WebMock.allow_net_connect!
       # VCR.use_cassette "lines/plain-ruby/create-station", :record => :new_episodes do
-      line = CloudFactory::Line.new("Digitize Card", "Digitization")
-      CloudFactory::Station.new({}).should_raise ArgumentError
-      CloudFactory::Station.new({:line => line}).should_raise StationTypeMissing
+      line = CF::Line.new("Digitize Card", "Digitization")
+      CF::Station.new({}).should_raise ArgumentError
+      CF::Station.new({:line => line}).should_raise StationTypeMissing
 
-      CloudFactory::HumanWorker.new({}).should_raise ArgumentError
+      CF::HumanWorker.new({}).should_raise ArgumentError
     end
   end  
 end

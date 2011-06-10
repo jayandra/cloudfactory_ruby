@@ -1,11 +1,11 @@
 # CloudFactory Gem
 
-A ruby library to interact with the [CloudFactory](http://cloudfactory.com) RESTFul API.
+A ruby library to interact with the [CF](http://cloudfactory.com) RESTFul API.
 
 ## Getting Started
 
 ```ruby
-gem install cloudfactory
+gem install cf
 ```
 
 ```ruby
