@@ -1,4 +1,4 @@
-module CloudFactory
+module CF
   class Department
     include Client
 
@@ -8,14 +8,14 @@ module CloudFactory
     # Category name 
     attr_accessor :name
     
-    # ==Returns all category
+    # ==Returns all Department
     # ===Usage example
-    #   categories = CloudFactory::Category.all
+    #   categories = CF::Department.all
     def self.all
       response = get("/departments.json")
     end
     
-    # Returns all lines of a specific category
+    # Returns all lines of a specific Department
     def self.get_lines_of_department(department_id)
       @department_id = department_id
       get("/departments/#{@department_id}/lines.json")

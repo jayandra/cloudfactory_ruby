@@ -1,24 +1,24 @@
 require 'spec_helper'
 
-describe CloudFactory::FormField do
+describe CF::FormField do
   context "create an form_field" do
     it "the plain ruby way" do
       VCR.use_cassette "form-fields/plain-ruby/create-form-fields", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card", "Digitization")
-        station = CloudFactory::Station.new({:type => "work"})
+        line = CF::Line.new("Digitize Card", "Digitization")
+        station = CF::Station.new({:type => "work"})
         line.stations station
 
-        worker = CloudFactory::HumanWorker.new({:number => 2, :reward => 20})
+        worker = CF::HumanWorker.new({:number => 2, :reward => 20})
         line.stations.first.worker = worker
 
-        form = CloudFactory::Form.new({:title => "Enter text from a business card image", :description => "Describe"})
+        form = CF::Form.new({:title => "Enter text from a business card image", :description => "Describe"})
         line.stations.first.instruction = form
 
-        form_fields_1 = CloudFactory::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
+        form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
         line.stations.first.instruction.form_fields form_fields_1
-        form_fields_2 = CloudFactory::FormField.new({:label => "Middle Name", :field_type => "SA"})
+        form_fields_2 = CF::FormField.new({:label => "Middle Name", :field_type => "SA"})
         line.stations.first.instruction.form_fields form_fields_2
-        form_fields_3 = CloudFactory::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
+        form_fields_3 = CF::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
         line.stations.first.instruction.form_fields form_fields_3
 
         line.stations.first.instruction.form_fields[0].label.should eql("First Name")
@@ -34,14 +34,14 @@ describe CloudFactory::FormField do
   
     it "in block DSL way" do
       VCR.use_cassette "form-fields/block/create-using-block", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card", "Digitization") do
-          CloudFactory::Station.create({:line => self, :type => "work"}) do |station|
-            CloudFactory::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-            CloudFactory::HumanWorker.new({:station => station, :number => 2, :reward => 20})
-            CloudFactory::Form.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-              CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-              CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+        line = CF::Line.create("Digitize Card", "Digitization") do
+          CF::Station.create({:line => self, :type => "work"}) do |station|
+            CF::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
+            CF::Form.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+              CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end

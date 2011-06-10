@@ -1,24 +1,24 @@
 require 'spec_helper'
 
-module CloudFactory
-  describe CloudFactory::Run do
+module CF
+  describe CF::Run do
     context "create a new run" do
       it "for a line in block dsl way" do
         VCR.use_cassette "run/block/create-run", :record => :new_episodes do
-          line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-            CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-              CloudFactory::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
-              CloudFactory::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
-              CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-              CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-                CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-                CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-                CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+          line = CF::Line.create("Digitize Card","Digitization") do |l|
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
+              CF::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+                CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
               end
             end
           end
 
-          run = CloudFactory::Run.create(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          run = CF::Run.create(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
 
           line.title.should eq("Digitize Card")
 
@@ -47,39 +47,39 @@ module CloudFactory
       it "should create a production run for input data as plain data" do
         WebMock.allow_net_connect!
         VCR.use_cassette "run/block/create-run-without-file", :record => :new_episodes do
-          line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-            CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-              CloudFactory::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
-              CloudFactory::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
-              CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-              CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-                CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-                CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-                CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+          line = CF::Line.create("Digitize Card","Digitization") do |l|
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
+              CF::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+                CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
               end
             end
           end
-          run = CloudFactory::Run.create(line, "run name", "Company,Website\nSprout,www.sprout-technology.com")
+          run = CF::Run.create(line, "run name", "Company,Website\nSprout,www.sprout-technology.com")
           run.data.should eql("Company,Website\nSprout,www.sprout-technology.com")
         end
       end
 
       it "for an existing line" do
         VCR.use_cassette "run/block/create-run-of-an-existing-line", :record => :new_episodes do
-          line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-            CloudFactory::Station.create({:line => l, :type => "work"}) do |s|
-              CloudFactory::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
-              CloudFactory::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
-              CloudFactory::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-              CloudFactory::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-                CloudFactory::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-                CloudFactory::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-                CloudFactory::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+          line = CF::Line.create("Digitize Card","Digitization") do |l|
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
+              CF::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+                CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
               end
             end
           end
-          old_line = CloudFactory::Line.find(line.id)
-          run = CloudFactory::Run.create(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          old_line = CF::Line.find(line.id)
+          run = CF::Run.create(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
           run.title.should eq("Run Using Line")
         end
       end
@@ -90,27 +90,27 @@ module CloudFactory
 
       it "for a line in a plain ruby way" do
         VCR.use_cassette "run/plain-ruby/create-run", :record => :new_episodes do
-          line = CloudFactory::Line.new("Digitize Card", "Digitization")
-          station = CloudFactory::Station.new({:type => "work"})
+          line = CF::Line.new("Digitize Card", "Digitization")
+          station = CF::Station.new({:type => "work"})
           line.stations station
-          input_header_1 = CloudFactory::InputHeader.new({:label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
-          input_header_2 = CloudFactory::InputHeader.new({:label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
+          input_header_1 = CF::InputHeader.new({:label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
+          input_header_2 = CF::InputHeader.new({:label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
           line.stations.first.input_headers input_header_1
           line.stations.first.input_headers input_header_2
-          worker = CloudFactory::HumanWorker.new({:number => 1, :reward => 20})
+          worker = CF::HumanWorker.new({:number => 1, :reward => 20})
           line.stations.first.worker = worker
 
-          form = CloudFactory::Form.new({:title => "Enter text from a business card image", :description => "Describe"})
+          form = CF::Form.new({:title => "Enter text from a business card image", :description => "Describe"})
           line.stations.first.instruction = form
 
-          form_fields_1 = CloudFactory::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
+          form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
           line.stations.first.instruction.form_fields form_fields_1
-          form_fields_2 = CloudFactory::FormField.new({:label => "Middle Name", :field_type => "SA"})
+          form_fields_2 = CF::FormField.new({:label => "Middle Name", :field_type => "SA"})
           line.stations.first.instruction.form_fields form_fields_2
-          form_fields_3 = CloudFactory::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
+          form_fields_3 = CF::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
           line.stations.first.instruction.form_fields form_fields_3
 
-          run = CloudFactory::Run.create(line,"Run in plain ruby way", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          run = CF::Run.create(line,"Run in plain ruby way", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
 
           line.title.should eq("Digitize Card")
           line.stations.first.type.should eq("WorkStation")
