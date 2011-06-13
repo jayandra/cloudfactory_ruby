@@ -10,7 +10,7 @@ module CF
       end
       
       def show_readme
-        readme 'USAGE' if behavior == :invoke
+        readme 'README' if behavior == :invoke
       end
       
     end
