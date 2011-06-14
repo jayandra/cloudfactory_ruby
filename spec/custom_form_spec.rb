@@ -3,8 +3,7 @@ require 'spec_helper'
 describe CF::CustomForm do
   context "create a standard_instruction" do
     it "in block DSL way" do
-      WebMock.allow_net_connect!
-      # VCR.use_cassette "custom-form/block/create", :record => :new_episodes do
+      VCR.use_cassette "custom-form/block/create", :record => :new_episodes do
       html =   '<div id="form-content">
                   <div id="instructions">
                     <ul>
@@ -88,13 +87,11 @@ describe CF::CustomForm do
         line.stations.first.type.should eql("Tournament")
         line.stations.first.input_headers.first.field_type.should eql("text_data")
         line.stations.first.instruction.raw_html.should eql("&lt;div id=&quot;form-content&quot;&gt;\n                  &lt;div id=&quot;instructions&quot;&gt;\n                    &lt;ul&gt;\n                      &lt;li&gt;Look at the business card properly and fill in asked data.&lt;/li&gt;\n                      &lt;li&gt;Make sure you enter everything found on business card.&lt;/li&gt;\n                      &lt;li&gt;Work may be rejected if it is incomplete or mistakes are found.&lt;/li&gt;\n                    &lt;/ul&gt;\n                  &lt;/div&gt;\n                  &lt;div id=&quot;image-field-wrapper&quot;&gt;\n                    &lt;div id = &quot;image-panel&quot; &gt;\n                      &lt;img class=&quot;card-image&quot; src=&quot;{{image_url}}&quot;&gt;\n                    &lt;/div&gt;\n                    &lt;div id = &quot;field-panel&quot;&gt;\n                      Name&lt;br /&gt;\n                      &lt;input class=&quot;input-field first_name&quot; type=&quot;text&quot; name=&quot;result[first_name]&quot; /&gt;\n                      &lt;input class=&quot;input-field middle_name&quot; type=&quot;text&quot; name=&quot;result[middle_name]&quot; /&gt;\n                      &lt;input class=&quot;input-field last_name&quot; type=&quot;text&quot; name=&quot;result[last_name]&quot; /&gt;&lt;br /&gt;\n\n                      &lt;br /&gt;Contact&lt;br /&gt;\n                      &lt;input class=&quot;input-field email&quot; type=&quot;text&quot; name=&quot;result[email]&quot; placeholder=&quot;Email&quot;/&gt;\n                      &lt;input class=&quot;input-field phone&quot; type=&quot;text&quot; name=&quot;result[phone]&quot; placeholder=&quot;Phone&quot;/&gt;\n                      &lt;input class=&quot;input-field mobile&quot; type=&quot;text&quot; name=&quot;result[mobile]&quot; placeholder=&quot;Mobile&quot;/&gt;&lt;br /&gt;\n\n                    &lt;/div&gt;\n                  &lt;/div&gt;\n                &lt;/div&gt;")
-      # end
+      end
     end
     
     it "in plain ruby way" do
-      WebMock.allow_net_connect!
-      
-      # VCR.use_cassette "custom-form/plain/create", :record => :new_episodes do
+      VCR.use_cassette "custom-form/plain/create", :record => :new_episodes do
       html =   '<div id="form-content">
                   <div id="instructions">
                     <ul>
@@ -180,7 +177,7 @@ describe CF::CustomForm do
         line.department_name.should eql("Digitization")
         line.stations.first.type.should eql("WorkStation")
         line.stations.first.instruction.raw_html.should eql("&lt;div id=&quot;form-content&quot;&gt;\n                  &lt;div id=&quot;instructions&quot;&gt;\n                    &lt;ul&gt;\n                      &lt;li&gt;Look at the business card properly and fill in asked data.&lt;/li&gt;\n                      &lt;li&gt;Make sure you enter everything found on business card.&lt;/li&gt;\n                      &lt;li&gt;Work may be rejected if it is incomplete or mistakes are found.&lt;/li&gt;\n                    &lt;/ul&gt;\n                  &lt;/div&gt;\n                  &lt;div id=&quot;image-field-wrapper&quot;&gt;\n                    &lt;div id = &quot;image-panel&quot; &gt;\n                      &lt;img class=&quot;card-image&quot; src=&quot;{{image_url}}&quot;&gt;\n                    &lt;/div&gt;\n                    &lt;div id = &quot;field-panel&quot;&gt;\n                      Name&lt;br /&gt;\n                      &lt;input class=&quot;input-field first_name&quot; type=&quot;text&quot; name=&quot;result[first_name]&quot; /&gt;\n                      &lt;input class=&quot;input-field middle_name&quot; type=&quot;text&quot; name=&quot;result[middle_name]&quot; /&gt;\n                      &lt;input class=&quot;input-field last_name&quot; type=&quot;text&quot; name=&quot;result[last_name]&quot; /&gt;&lt;br /&gt;\n\n                      &lt;br /&gt;Contact&lt;br /&gt;\n                      &lt;input class=&quot;input-field email&quot; type=&quot;text&quot; name=&quot;result[email]&quot; placeholder=&quot;Email&quot;/&gt;\n                      &lt;input class=&quot;input-field phone&quot; type=&quot;text&quot; name=&quot;result[phone]&quot; placeholder=&quot;Phone&quot;/&gt;\n                      &lt;input class=&quot;input-field mobile&quot; type=&quot;text&quot; name=&quot;result[mobile]&quot; placeholder=&quot;Mobile&quot;/&gt;&lt;br /&gt;\n\n                    &lt;/div&gt;\n                  &lt;/div&gt;\n                &lt;/div&gt;")
-      # end
+      end
     end
   end
 end
