@@ -3,9 +3,9 @@ require 'rails/all'
 require 'rails/generators/test_case'
 require 'generator_spec/test_case'
 
-require 'generators/cf/install_generator'
+require 'generators/cf/install/install_generator'
 
-module CF
+module Cf
   module Generators
     describe InstallGenerator, "using custom matcher" do
       include GeneratorSpec::TestCase

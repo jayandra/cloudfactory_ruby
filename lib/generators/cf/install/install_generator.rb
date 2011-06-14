@@ -1,10 +1,10 @@
-module CF
+module Cf
   module Generators
     class InstallGenerator < Rails::Generators::Base
       source_root File.expand_path("../templates", __FILE__)
-      argument :account_name, :required => true,
+      argument :account_name, :required => false,
                               :desc => "The account name that you used to signup at http://cloudfactory.com"
-      argument :api_key, :required => true,
+      argument :api_key, :required => false,
                               :desc => "The api key that you can find at the account settings page"
 
       desc "Creates a CF initializer"
