@@ -17,7 +17,7 @@ module CF
         run_generator
       end
 
-      specify do
+      specify "should generate the initializer for a rails app" do
         run_generator
         destination_root.should have_structure {
           directory "config" do
