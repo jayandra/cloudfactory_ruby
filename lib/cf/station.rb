@@ -99,24 +99,32 @@ module CF
       worker_type = worker_instance.class.to_s.split("::").last
       case worker_type
       when "HumanWorker"
-        number = worker_instance.number
-        reward = worker_instance.reward
-        resp = CF::HumanWorker.post("/stations/#{self.id}/workers.json", :worker => {:number => number, :reward => reward, :type => "HumanWorker"})
-        worker = CF::HumanWorker.new({})
-        resp.to_hash.each_pair do |k,v|
-          worker.send("#{k}=",v) if worker.respond_to?(k)
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          number = worker_instance.number
+          reward = worker_instance.reward
+          resp = CF::HumanWorker.post("/stations/#{self.id}/workers.json", :worker => {:number => number, :reward => reward, :type => "HumanWorker"})
+          worker = CF::HumanWorker.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          @worker_instance = worker
         end
-        @worker_instance = worker
 
       else
-        number = 1
-        reward = 0
-        resp = worker_instance.class.post("/stations/#{self.id}/workers.json", :body => {:worker => {:number => 1, :reward => 0, :type => type}})
-        worker = worker_instance.class.new({})
-        resp.to_hash.each_pair do |k,v|
-          worker.send("#{k}=",v) if worker.respond_to?(k)
+        if worker_instance.station
+          @worker_instance = worker_instance 
+        else
+          @number = worker_instance.number.nil? ? 1 : worker_instance.number
+          @reward = worker_instance.reward.nil? ? 0 : worker_instance.reward
+          resp = worker_instance.class.post("/stations/#{self.id}/workers.json", :body => {:worker => {:number => @number, :reward => @reward, :type => type}})
+          worker = worker_instance.class.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          @worker_instance = worker
         end
-        @worker_instance = worker
       end
     end
 
@@ -134,16 +142,31 @@ module CF
         @instruction_instance
       end
     end
+    
     def instruction=(instruction_instance) # :nodoc:
-      title = instruction_instance.title
-      description = instruction_instance.description
-      resp = CF::Form.post("/stations/#{self.id}/instruction.json", :instruction => {:title => title, :description => description, :_type => "Form"})
-      form = CF::Form.new({})
-      resp.to_hash.each_pair do |k,v|
-        form.send("#{k}=",v) if form.respond_to?(k)
+      if instruction_instance.station
+        @instruction_instance = instruction_instance
+      else
+        @title = instruction_instance.title
+        @description = instruction_instance.description
+        type = instruction_instance.class.to_s.split("::").last
+        form = instruction_instance.class.new({})
+        if type == "CustomForm"
+          @html = instruction_instance.raw_html
+          @css = instruction_instance.raw_css
+          @javascript = instruction_instance.raw_javascript
+          @resp = CF::CustomForm.post("/stations/#{self.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "CustomForm", :raw_html => @html, :raw_css => @css, :raw_javascript => @javascript})
+        else
+          @resp = CF::Form.post("/stations/#{self.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => type}) 
+        end
+        
+        @resp.to_hash.each_pair do |k,v|
+          form.send("#{k}=",v) if form.respond_to?(k)
+        end
+        
+        form.station = self
+        @instruction_instance = form
       end
-      form.station = self
-      @instruction_instance = form
     end
 
     # ==Usage of line.input_headers(input_header)

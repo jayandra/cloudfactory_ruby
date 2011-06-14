@@ -24,7 +24,7 @@ describe CF::Line do
         line.department_name.should eq("Digitization")
         line.stations.first.input_headers[0].label.should eql("image_url")
         line.stations.first.input_headers[1].label.should eql("image")
-        line.stations.first.type.should eq("Work")
+        line.stations.first.type.should eq("WorkStation")
       end
     end
 
@@ -44,7 +44,7 @@ describe CF::Line do
         line.title.should eq("Digitize Card")
         line.department_name.should eq("Digitization")
         line.stations.first.input_headers.first.label.should eql("image_url")
-        line.stations.first.type.should eq("Work")
+        line.stations.first.type.should eq("WorkStation")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.instruction.description.should eq("Describe")
         line.stations.first.instruction.form_fields.first.label.should eq("First Name")
@@ -77,7 +77,7 @@ describe CF::Line do
         end
         line.title.should eq("Digitize Card")
         line.department_name.should eq("Digitization")
-        line.stations.first.type.should eq("Work")
+        line.stations.first.type.should eq("WorkStation")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.worker.reward.should eq(20)
         line.stations.first.instruction.title.should eq("Enter text from a business card image")
@@ -173,7 +173,7 @@ describe CF::Line do
           end
         end
         line.title.should eq("Digitize Card")
-        line.stations.first.type.should eq("Work")
+        line.stations.first.type.should eq("WorkStation")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.worker.reward.should eq(20)
         line.stations.first.instruction.title.should eq("Enter text from a business card image")
