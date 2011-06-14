@@ -19,11 +19,25 @@ module CF
       @input_headers =[]
       @line_id = options[:line].nil? ? nil : options[:line].id
       @type = options[:type].nil? ? nil : options[:type].camelize
-      if !@line_id.nil?
-        resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type})
-        @id = resp.id
-        line = options[:line]
-        line.stations = self
+      @max_judges = options[:max_judges]
+      @auto_judge = options[:auto_judge]
+      @line = options[:line]
+      if @line_id
+        if @type == "Tournament"
+          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :line_id => @line_id, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }})
+          @id = resp.id
+          resp.to_hash.each_pair do |k,v|
+            self.send("#{k}=",v) if self.respond_to?(k)
+          end
+          @line.stations = self
+        else
+          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type})
+          @id = resp.id
+          resp.to_hash.each_pair do |k,v|
+            self.send("#{k}=",v) if self.respond_to?(k)
+          end
+          @line.stations = self
+        end
       end
     end
 
