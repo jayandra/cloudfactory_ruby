@@ -48,7 +48,7 @@ describe CF::FormField do
         line.title.should eq("Digitize Card")
         line.department_name.should eq("Digitization")
         line.stations.first.input_headers.first.label.should eql("image_url")
-        line.stations.first.type.should eq("Work")
+        line.stations.first.type.should eq("WorkStation")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.instruction.description.should eq("Describe")
         line.stations.first.instruction.form_fields[0].label.should eq("First Name")

@@ -1,10 +1,24 @@
 module CF
   class CustomForm
+    include Client
+    
     # Title of "custom_instruction" object, e.g. :title => "title_name of custom_instruction"
     attr_accessor :title
     
     # Description of "custom_instruction" object, e.g. :description => "description for title of custom_instruction"
     attr_accessor :description
+    
+    # raw_html is an attribute to store the custom html contents
+    attr_accessor :raw_html
+    
+    # raw_css is an attribute to store the custom css contents 
+    attr_accessor :raw_css
+    
+    # raw_javascript is an attribute to store the custom javascript contents
+    attr_accessor :raw_javascript
+    
+    # station attribute is required for association with custom_from object
+    attr_accessor :station
 
     # ==Initializes a new CustomForm
     # ==Usage custom_instruction.new(hash):
@@ -14,8 +28,22 @@ module CF
     #
     #     instruction = CustomForm.new(attrs)
     def initialize(options={})
+      @station     = options[:station]
       @title       = options[:title]
       @description = options[:description]
+      @raw_html = options[:raw_html]
+      @raw_css = options[:raw_css]
+      @raw_javascript = options[:raw_javascript]
+      if @station
+        @resp = self.class.post("/stations/#{@station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "CustomForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
+        @id = @resp.id
+        custom_form = CF::CustomForm.new({})
+        @resp.to_hash.each_pair do |k,v|
+          custom_form.send("#{k}=",v) if custom_form.respond_to?(k)
+        end
+        custom_form.station = @station
+        @station.instruction = custom_form
+      end
     end
   
     # ==Initializes a new CustomForm within block using Variable
@@ -45,14 +73,14 @@ module CF
     #       css css_content
     #       javascript javascript_content
     #     end
-    def self.create(instruction, &block)
+    def self.create(instruction)
       instruction = CustomForm.new(instruction)
-      if block.arity >= 1
-        block.call(instruction)
-      else
-        instruction.instance_eval &block
-      end
-      instruction
+      # if block.arity >= 1
+      #         block.call(instruction)
+      #       else
+      #         instruction.instance_eval &block
+      #       end
+      #       instruction
     end
 
     # ==Usage of instruction.html:

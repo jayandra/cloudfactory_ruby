@@ -133,45 +133,6 @@ describe CF::InputHeader do
     end
   end
 
-  context "delete input_headers" do
-    xit "should delete all the input_headers of a specific line" do
-      VCR.use_cassette "input_headers/delete-input-headers", :record => :new_episodes do
-        attrs_1 = {:label => "image_url_0",
-          :field_type => "text_data",
-          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
-          :required => true, 
-          :validation_format => "url"
-        }
-        attrs_2 = {:label => "image_url_1",
-          :field_type => "text_data",
-          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
-          :required => true, 
-          :validation_format => "url"
-        }
-        attrs_3 = {:label => "image_url_2",
-          :field_type => "text_data",
-          :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", 
-          :required => true, 
-          :validation_format => "url"
-        }
-
-        line = CF::Line.create("Digitize","Digitization") do |l|
-          CF::InputHeader.new(l, attrs_1)
-          CF::InputHeader.new(l, attrs_2)
-          CF::InputHeader.new(l, attrs_3)
-        end
-
-        CF::InputHeader.delete_all(line)
-
-        begin
-          CF::InputHeader.all(line)
-        rescue Exception => exec
-          exec.class.should eql(NoMethodError)
-        end
-      end
-    end
-  end
-
   context "delete an input_header" do
     it "should delete an input_header of a specific line" do
       VCR.use_cassette "input_headers/block/delete-input-header", :record => :new_episodes do

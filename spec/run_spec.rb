@@ -26,7 +26,7 @@ module CF
           line.stations.first.input_headers.first.field_type.should eq("text_data")
           line.stations.first.input_headers.first.required.should eq(true)
 
-          line.stations[0].type.should eq("Work")
+          line.stations[0].type.should eq("WorkStation")
 
           line.stations[0].worker.number.should eq(1)
           line.stations[0].worker.reward.should eq(20)
@@ -82,10 +82,6 @@ module CF
           run = CF::Run.create(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
           run.title.should eq("Run Using Line")
         end
-      end
-
-      xit "for google_translator robot" do
-
       end
 
       it "for a line in a plain ruby way" do
