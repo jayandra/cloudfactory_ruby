@@ -144,17 +144,27 @@ module CF
     end
     
     def instruction=(instruction_instance) # :nodoc:
-      if instruction_instance.station
-        @instruction_instance = instruction_instance
+      temp_instruction = instruction_instance
+      if instruction_instance.class == Hash
+        form_type = instruction_instance['_type']
+        @instruction = eval(form_type.camelize).new({})
+        instruction_instance.to_hash.each_pair do |k,v|
+          @instruction.send("#{k}=",v) if @instruction.respond_to?(k)
+        end
       else
-        @title = instruction_instance.title
-        @description = instruction_instance.description
-        type = instruction_instance.class.to_s.split("::").last
-        form = instruction_instance.class.new({})
+        @instruction = instruction_instance
+      end
+      if @instruction.station
+        @instruction_instance = @instruction
+      else
+        @title = @instruction.title
+        @description = @instruction.description
+        type = @instruction.class.to_s.split("::").last
+        form = @instruction.class.new({})
         if type == "CustomForm"
-          @html = instruction_instance.raw_html
-          @css = instruction_instance.raw_css
-          @javascript = instruction_instance.raw_javascript
+          @html = @instruction.raw_html
+          @css = @instruction.raw_css
+          @javascript = @instruction.raw_javascript
           @resp = CF::CustomForm.post("/stations/#{self.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "CustomForm", :raw_html => @html, :raw_css => @css, :raw_javascript => @javascript})
         else
           @resp = CF::Form.post("/stations/#{self.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => type}) 

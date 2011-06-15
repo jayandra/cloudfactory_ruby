@@ -143,4 +143,41 @@ describe CF::Station do
     end
   end
 
+  context "create multiple station" do
+    it "should create two stations" do
+      VCR.use_cassette "stations/block/multiple-station", :record => :new_episodes do
+        line = CF::Line.create("Company Info -1","Digitization") do |l|
+          CF::InputHeader.new({:line => l, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
+          CF::InputHeader.new({:line => l, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+            CF::Form.create({:station => s, :title => "Enter the name of CEO", :description => "Describe"}) do |i|
+              CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+            end
+          end
+        end
+        
+        station = CF::Station.new({:type => "Improve"})
+        line.stations station
+        
+        worker = CF::HumanWorker.new({:number => 2, :reward => 10})
+        line.stations.last.worker = worker
+
+        form = CF::Form.new({:title => "Enter the address of the following Person", :description => "Description"})
+        line.stations.last.instruction = form
+
+        form_fields_1 = CF::FormField.new({:label => "Street", :field_type => "SA", :required => "true"})
+        line.stations.last.instruction.form_fields form_fields_1
+        form_fields_2 = CF::FormField.new({:label => "City", :field_type => "SA", :required => "true"})
+        line.stations.last.instruction.form_fields form_fields_2
+        form_fields_3 = CF::FormField.new({:label => "Country", :field_type => "SA", :required => "true"})
+        line.stations.last.instruction.form_fields form_fields_3
+
+        # run = CF::Run.create(line,"Creation of Multiple Station", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+
+      end
+    end
+  end
 end
