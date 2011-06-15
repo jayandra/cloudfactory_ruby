@@ -23,7 +23,19 @@ module CF
       @auto_judge = options[:auto_judge]
       @line = options[:line]
       if @line_id
-        if @type == "Tournament"
+        if @type == "Improve"
+          line = options[:line]
+          if line.stations.size <= 1
+            raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
+          else
+            resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type})
+            @id = resp.id
+            resp.to_hash.each_pair do |k,v|
+              self.send("#{k}=",v) if self.respond_to?(k)
+            end
+            @line.stations = self
+          end
+        elsif @type == "Tournament"
           resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :line_id => @line_id, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }})
           @id = resp.id
           resp.to_hash.each_pair do |k,v|
@@ -144,7 +156,6 @@ module CF
     end
     
     def instruction=(instruction_instance) # :nodoc:
-      temp_instruction = instruction_instance
       if instruction_instance.class == Hash
         form_type = instruction_instance['_type']
         @instruction = eval(form_type.camelize).new({})
@@ -154,6 +165,7 @@ module CF
       else
         @instruction = instruction_instance
       end
+      
       if @instruction.station
         @instruction_instance = @instruction
       else
