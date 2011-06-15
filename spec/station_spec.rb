@@ -80,26 +80,11 @@ describe CF::Station do
       end
     end
     
-    it "should create a station of Improve station" do
-      VCR.use_cassette "stations/block/improve-station", :record => :new_episodes do
-        line = CF::Line.create("Digitize Card", "Digitization") do
-          CF::Station.create({:line => self, :type => "improve"}) do |s|
-            CF::HumanWorker.new({:station => s, :number => 2, :reward => 10})
-            CF::Form.create({:station => s, :title => "Enter text from following business card image", :description => "title is description"}) do |i|
-              CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-              CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-              CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
-            end
-          end
-        end
-        line.stations.first.type.should eq("ImproveStation")
-        line.stations.first.worker.number.should eql(2)
-        line.stations.first.worker.reward.should eql(10)
-        line.stations.first.instruction.title.should eq("Enter text from following business card image")
-        line.stations.first.instruction.description.should eq("title is description")
-        line.stations.first.instruction.form_fields[0].label.should eq("First Name")
-        line.stations.first.instruction.form_fields[1].label.should eq("Middle Name")
-        line.stations.first.instruction.form_fields[2].label.should eq("Last Name")
+    it "should create a station of Improve station as first station of line" do
+      VCR.use_cassette "stations/block/improve-as-first-station", :record => :new_episodes do
+        line = CF::Line.new("Digitize Card", "Digitization")
+        station = CF::Station.new({:type => "improve"}) 
+        expect { line.stations station }.to raise_error(CF::ImproveStationNotAllowed)
       end
     end
   end
@@ -144,7 +129,7 @@ describe CF::Station do
   end
 
   context "create multiple station" do
-    it "should create two stations" do
+    it "should create two stations with improve station" do
       VCR.use_cassette "stations/block/multiple-station", :record => :new_episodes do
         line = CF::Line.create("Company Info -1","Digitization") do |l|
           CF::InputHeader.new({:line => l, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})

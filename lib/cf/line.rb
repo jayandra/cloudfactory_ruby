@@ -55,12 +55,16 @@ module CF
     def stations stations = nil
       if stations
         type = stations.type
-        resp = CF::Station.post("/lines/#{id}/stations.json", :station => {:type => type})
-        station = CF::Station.new()
-        resp.to_hash.each_pair do |k,v|
-          station.send("#{k}=",v) if station.respond_to?(k)
+        if type == "Improve" && self.stations.size <= 1
+          raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
+        else
+          resp = CF::Station.post("/lines/#{id}/stations.json", :station => {:type => type})
+          station = CF::Station.new()
+          resp.to_hash.each_pair do |k,v|
+            station.send("#{k}=",v) if station.respond_to?(k)
+          end
+          @stations << station
         end
-        @stations << station
       else
         @stations
       end
