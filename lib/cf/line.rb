@@ -55,7 +55,7 @@ module CF
     def stations stations = nil
       if stations
         type = stations.type
-        if type == "Improve" && self.stations.size <= 1
+        if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
         else
           resp = CF::Station.post("/lines/#{id}/stations.json", :station => {:type => type})
