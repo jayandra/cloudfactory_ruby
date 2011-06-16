@@ -26,15 +26,22 @@ class HumanWorkerApp < Sinatra::Base
       CF::Station.create({:line => l, :type => "work"}) do |s|
         CF::InputHeader.new({:station => s, :label => "Politician Name",:field_type => "text_data",:value => "Madhav Kumar Nepal", :required => true, :validation_format => "general"})
         CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-        CF::Form.create({:station => s, :title => "Gem Sinatra App", :description => "Guess the amount they have earned through bribe in Rupees"}) do |f|
+        CF::TaskForm.create({:station => s, :title => "Gem Sinatra App with unit level meta_data implementation", :description => "Guess the amount they have earned through bribe in Rupees"}) do |f|
           CF::FormField.new({:instruction => f, :label => "Amount", :field_type => "SA", :required => "true"})
         end
       end
     end
     
-    input_data = "Politician Name\n"
-    input_data += params[:names]
+    input_data = "Politician Name, meta_data_name\n"
+    # input_data += params[:names]
     
+    input_data_array = []
+    
+    params['names'].each do |data|
+      input_data_array << data + "," + data
+    end
+    
+    input_data += input_data_array.join("\n")
     @run = CF::Run.create(line, "2011 Ghotala", input_data)
 
     haml :run
