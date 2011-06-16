@@ -1,5 +1,5 @@
 module CF
-  class CustomForm
+  class CustomTaskForm
     include Client
     
     # Title of "custom_instruction" object, e.g. :title => "title_name of custom_instruction"
@@ -35,9 +35,9 @@ module CF
       @raw_css = options[:raw_css]
       @raw_javascript = options[:raw_javascript]
       if @station
-        @resp = self.class.post("/stations/#{@station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "CustomForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
+        @resp = self.class.post("/stations/#{@station.id}/form.json", :form => {:title => @title, :description => @description, :_type => "CustomTaskForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
         @id = @resp.id
-        custom_form = CF::CustomForm.new({})
+        custom_form = CF::CustomTaskForm.new({})
         @resp.to_hash.each_pair do |k,v|
           custom_form.send("#{k}=",v) if custom_form.respond_to?(k)
         end
@@ -74,7 +74,7 @@ module CF
     #       javascript javascript_content
     #     end
     def self.create(instruction)
-      instruction = CustomForm.new(instruction)
+      instruction = CustomTaskForm.new(instruction)
       # if block.arity >= 1
       #         block.call(instruction)
       #       else
