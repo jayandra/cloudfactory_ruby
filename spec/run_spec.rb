@@ -10,7 +10,7 @@ module CF
               CF::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
               CF::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
               CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-              CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+              CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
                 CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
                 CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
                 CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -26,7 +26,7 @@ module CF
           line.stations.first.input_headers.first.field_type.should eq("text_data")
           line.stations.first.input_headers.first.required.should eq(true)
 
-          line.stations[0].type.should eq("WorkStation")
+          line.stations[0].type.should eq("Work")
 
           line.stations[0].worker.number.should eq(1)
           line.stations[0].worker.reward.should eq(20)
@@ -45,14 +45,13 @@ module CF
       end
 
       it "should create a production run for input data as plain data" do
-        WebMock.allow_net_connect!
         VCR.use_cassette "run/block/create-run-without-file", :record => :new_episodes do
           line = CF::Line.create("Digitize Card","Digitization") do |l|
             CF::Station.create({:line => l, :type => "work"}) do |s|
               CF::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
               CF::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
               CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-              CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+              CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
                 CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
                 CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
                 CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -71,7 +70,7 @@ module CF
               CF::InputHeader.new({:station => s, :label => "Company",:field_type => "text_data",:value => "Google", :required => true, :validation_format => "general"})
               CF::InputHeader.new({:station => s, :label => "Website",:field_type => "text_data",:value => "www.google.com", :required => true, :validation_format => "url"})
               CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-              CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+              CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
                 CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
                 CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
                 CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -96,7 +95,7 @@ module CF
           worker = CF::HumanWorker.new({:number => 1, :reward => 20})
           line.stations.first.worker = worker
 
-          form = CF::Form.new({:title => "Enter text from a business card image", :description => "Describe"})
+          form = CF::TaskForm.new({:title => "Enter text from a business card image", :description => "Describe"})
           line.stations.first.instruction = form
 
           form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
@@ -109,7 +108,7 @@ module CF
           run = CF::Run.create(line,"Run in plain ruby way", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
 
           line.title.should eq("Digitize Card")
-          line.stations.first.type.should eq("WorkStation")
+          line.stations.first.type.should eq("Work")
 
           line.stations.first.input_headers[0].label.should eq("Company")
           line.stations.first.input_headers[0].field_type.should eq("text_data")
