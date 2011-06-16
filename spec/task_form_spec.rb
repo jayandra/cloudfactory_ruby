@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CF::Form do
+describe CF::TaskForm do
   context "create a standard_instruction" do
     it "the plain ruby way" do
       VCR.use_cassette "standard_instruction/block/create", :record => :new_episodes do
@@ -8,7 +8,7 @@ describe CF::Form do
           CF::Station.create({:line => self, :type => "work"}) do |station|
             CF::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
-            CF::Form.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
               CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
               CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -32,7 +32,7 @@ describe CF::Form do
           CF::Station.create({:line => self, :type => "work"}) do |station|
             CF::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
-            CF::Form.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
               CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
               CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -82,7 +82,7 @@ describe CF::Form do
           CF::Station.create({:line => self, :type => "work"}) do |station|
             CF::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
-            CF::Form.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
               CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
               CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -94,7 +94,7 @@ describe CF::Form do
         @got_instruction.description.should eq("Describe")
 
         station = line.stations[0]
-        deleted_response = CF::Form.delete_instruction(station)
+        deleted_response = CF::TaskForm.delete_instruction(station)
         deleted_response.code.should eq(200)
       end
     end

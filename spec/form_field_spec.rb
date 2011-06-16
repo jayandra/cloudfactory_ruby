@@ -11,7 +11,7 @@ describe CF::FormField do
         worker = CF::HumanWorker.new({:number => 2, :reward => 20})
         line.stations.first.worker = worker
 
-        form = CF::Form.new({:title => "Enter text from a business card image", :description => "Describe"})
+        form = CF::TaskForm.new({:title => "Enter text from a business card image", :description => "Describe"})
         line.stations.first.instruction = form
 
         form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
@@ -38,7 +38,7 @@ describe CF::FormField do
           CF::Station.create({:line => self, :type => "work"}) do |station|
             CF::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
             CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
-            CF::Form.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
               CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
               CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
               CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
@@ -48,7 +48,7 @@ describe CF::FormField do
         line.title.should eq("Digitize Card")
         line.department_name.should eq("Digitization")
         line.stations.first.input_headers.first.label.should eql("image_url")
-        line.stations.first.type.should eq("WorkStation")
+        line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.instruction.description.should eq("Describe")
         line.stations.first.instruction.form_fields[0].label.should eq("First Name")

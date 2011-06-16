@@ -1,5 +1,5 @@
 module CF
-  class Form
+  class TaskForm
     include Client
     
     # title of the standard_instruction
@@ -29,7 +29,7 @@ module CF
       @title       = options[:title]
       @description = options[:description]
       if !@station.nil?
-        resp = self.class.post("/stations/#{station.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "Form"})
+        resp = self.class.post("/stations/#{station.id}/form.json", :form => {:title => @title, :description => @description, :_type => "TaskForm"})
         @id = resp.id
         @station.instruction = self
       end
@@ -66,7 +66,7 @@ module CF
     #   end
     #
     def self.create(options, &block)
-      instruction = Form.new(options)
+      instruction = TaskForm.new(options)
       if block.arity >= 1
         block.call(instruction)
       else
@@ -96,7 +96,7 @@ module CF
         label = form_fields.label
         field_type = form_fields.field_type
         required = form_fields.required
-        resp = CF::FormField.post("/stations/#{self.station.id}/instruction/form_fields.json", :form_field => 
+        resp = CF::FormField.post("/stations/#{self.station.id}/form/form_fields.json", :form_field => 
           {:label => label, :field_type => field_type, :required => required})
         form_field = CF::FormField.new({})
         resp.to_hash.each_pair do |k,v|
@@ -129,7 +129,7 @@ module CF
     #   CF::Form.delete_instruction(station)
     # deletes standard_instruction of a station
     def self.delete_instruction(station)
-      delete("/stations/#{station.id}/instruction.json")
+      delete("/stations/#{station.id}/form.json")
     end
   end
 end
