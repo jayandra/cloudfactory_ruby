@@ -1,13 +1,18 @@
 %h2
   Results
-
 %p
-  =h @got_result.last.meta_data
-  Received
-  %b
-    "
-    =h @got_result.last.results.last.amount
-    "
-  from Bribery
+  %ol
+    - @got_result.each do |result|
+      %li
+        %b
+          = result.meta_data['name']
+        Received
+        %b
+          "
+          = result.results.last.amount
+          "
+        from Bribery
+        %br
+        %br
 %p
   %a{:href => "/"}Go Back to Home
