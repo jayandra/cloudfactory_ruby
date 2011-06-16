@@ -25,7 +25,7 @@ module CF
       if @line_id
         if @type == "Improve"
           line = options[:line]
-          if line.stations.size <= 1
+          if line.stations.size < 1
             raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
           else
             resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type})
@@ -173,13 +173,13 @@ module CF
         @description = @instruction.description
         type = @instruction.class.to_s.split("::").last
         form = @instruction.class.new({})
-        if type == "CustomForm"
+        if type == "CustomTaskForm"
           @html = @instruction.raw_html
           @css = @instruction.raw_css
           @javascript = @instruction.raw_javascript
-          @resp = CF::CustomForm.post("/stations/#{self.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => "CustomForm", :raw_html => @html, :raw_css => @css, :raw_javascript => @javascript})
+          @resp = CF::CustomTaskForm.post("/stations/#{self.id}/form.json", :form => {:title => @title, :description => @description, :_type => "CustomTaskForm", :raw_html => @html, :raw_css => @css, :raw_javascript => @javascript})
         else
-          @resp = CF::Form.post("/stations/#{self.id}/instruction.json", :instruction => {:title => @title, :description => @description, :_type => type}) 
+          @resp = CF::TaskForm.post("/stations/#{self.id}/form.json", :form => {:title => @title, :description => @description, :_type => type}) 
         end
         
         @resp.to_hash.each_pair do |k,v|
@@ -231,7 +231,7 @@ module CF
     def update_instruction(options={})
       @title       = options[:title]
       @description = options[:description]
-      self.class.put("/stations/#{self.id}/instruction.json", :instruction => {:title => @title, :description => @description, :type => "Form"})
+      self.class.put("/stations/#{self.id}/form.json", :instruction => {:title => @title, :description => @description, :type => "Form"})
     end
 
     # ==Returns a particular station of a line
@@ -263,7 +263,7 @@ module CF
     #
     #   @got_instruction = line.stations[0].get_instruction
     def get_instruction
-      self.class.get("/stations/#{self.id}/instruction.json")
+      self.class.get("/stations/#{self.id}/form.json")
     end
 
     # ==Returns all the stations associated with a particular line

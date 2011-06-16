@@ -37,15 +37,13 @@ module CF
         @file = input
         @param_data = File.new(input, 'rb')
         @param_for_input = :file
-        @meta_data = nil
       else
         @data = input
         @param_data = input
-        @meta_data = @param_data.split("\n").last
         @param_for_input = :data
       end
       @input_data =[]
-      resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, @param_for_input => @param_data, :meta_data => @meta_data})
+      resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, @param_for_input => @param_data})
       @id = resp.id
     end
 
