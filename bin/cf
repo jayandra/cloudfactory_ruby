@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'cloud_factory/cli'
-CloudFactory::CLI.start
+require 'rubygems'
+require 'thor'
+require 'yaml'
+
+require File.expand_path('../../lib/cf/cli', __FILE__)
+
+CF::CLI.start
