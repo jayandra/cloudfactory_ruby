@@ -147,10 +147,10 @@ describe CF::Station do
         station = CF::Station.new({:type => "Improve"})
         line.stations station
         
-        worker = CF::HumanWorker.new({:number => 2, :reward => 10})
+        worker = CF::HumanWorker.new({:number => 1, :reward => 10})
         line.stations.last.worker = worker
 
-        form = CF::TaskForm.new({:title => "Enter the address of the following Person", :instruction => "Description"})
+        form = CF::TaskForm.new({:title => "Enter the address of the given Person", :instruction => "Description"})
         line.stations.last.form = form
 
         form_fields_1 = CF::FormField.new({:label => "Street", :field_type => "SA", :required => "true"})
@@ -160,8 +160,18 @@ describe CF::Station do
         form_fields_3 = CF::FormField.new({:label => "Country", :field_type => "SA", :required => "true"})
         line.stations.last.form.form_fields form_fields_3
 
-        # run = CF::Run.create(line,"Creation of Multiple Station", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
-
+        run = CF::Run.create(line,"Creation of Multiple Station", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+        # debugger
+        result_of_station_1 = run.output(:station => 1)
+        debugger
+        result_of_station_2 = run.output(:station => 2)
+        debugger
+        @final_output = run.final_output
+        debugger
+        @final_output.first.meta_data['company'].should eql("Apple")
+        @final_output.first.final_outputs.last['street'].should eql("Kupondole")
+        @final_output.first.final_outputs.last['city'].should eql("Kathmandu")
+        @final_output.first.final_outputs.last['country'].should eql("Nepal")
       end
     end
   end
