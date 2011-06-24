@@ -16,7 +16,7 @@ module CF
     #   line = CF::Line.new("Digitize", "Survey")
     #   station = CF::Station.new({:line => line, :type => "Work"})
     def initialize(options={})
-      @input_headers =[]
+      @input_formats =[]
       @line_id = options[:line].nil? ? nil : options[:line].id
       @type = options[:type].nil? ? nil : options[:type].camelize
       @max_judges = options[:max_judges]
@@ -57,28 +57,28 @@ module CF
     # ===Usage Example
     # ===Creating station using block variable
     #   line = CF::Line.create("Digitize Card","Digitization") do |l|
-    #     CF::InputHeader.new({:line => l, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
-    #     CF::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
+    #     CF::InputFormat.new({:line => l, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
+    #     CF::InputFormat.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CF::Station.create({:line => l, :type => "work") do |s|
     #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
     #       CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-    #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-    #         CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-    #         CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+    #         CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
     #       end
     #     end
     #   end
     #
     # ===OR creating without variable within block
     #   line = CF::Line.create("Digitize Card","Digitization") do
-    #     CF::InputHeader.new({:line => self, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
-    #     CF::InputHeader.new({:line => self, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
+    #     CF::InputFormat.new({:line => self, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
+    #     CF::InputFormat.new({:line => self, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CF::Station.create({:line => self, :type => "work") do
     #       CF::HumanWorker.new({:station => self, :number => 1, :reward => 20)
     #       CF::Form.create({:station => self, :title => "Enter text from a business card image", :description => "Describe"}) do
-    #         CF::FormField.new({:instruction => self, :label => "First Name", :field_type => "SA", :required => "true"})
-    #         CF::FormField.new({:instruction => self, :label => "Middle Name", :field_type => "SA"})
-    #         CF::FormField.new({:instruction => self, :label => "Last Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => self, :label => "First Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => self, :label => "Middle Name", :field_type => "SA"})
+    #         CF::FormField.new({:form => self, :label => "Last Name", :field_type => "SA", :required => "true"})
     #       end
     #     end
     #   end
@@ -92,7 +92,7 @@ module CF
       station
     end
 
-    # ==Creates new instruction for station object
+    # ==Creates new form for station object
     # ===Usage of worker method for "station" object
     #   line = CF::Line.new("line name", "Survey")
     #   station = CF::Station.new({:type => "work"})
@@ -140,46 +140,46 @@ module CF
       end
     end
 
-    # ==Creates new instruction for station object
+    # ==Creates new form for station object
     # ===Usage of Instruction method for "station" object
     #   line = CF::Line.new("line name", "Survey")
     #   station = CF::Station.new({:type => "work"})
     #   line.stations station
-    #   standard_instruction = CF::Form.new({:title => "title", :description => "description"})
-    #   line.stations.first.instruction instruction
-    def instruction instruction_instance = nil
-      if instruction_instance
-        @instruction_instance = instruction_instance
+    #   standard_form = CF::Form.new({:title => "title", :description => "description"})
+    #   line.stations.first.form form
+    def form form_instance = nil
+      if form_instance
+        @form_instance = form_instance
       else
-        @instruction_instance
+        @form_instance
       end
     end
     
-    def instruction=(instruction_instance) # :nodoc:
-      if instruction_instance.class == Hash
-        form_type = instruction_instance['_type']
-        @instruction = eval(form_type.camelize).new({})
-        instruction_instance.to_hash.each_pair do |k,v|
-          @instruction.send("#{k}=",v) if @instruction.respond_to?(k)
+    def form=(form_instance) # :nodoc:
+      if form_instance.class == Hash
+        form_type = form_instance['_type']
+        @form = eval(form_type.camelize).new({})
+        form_instance.to_hash.each_pair do |k,v|
+          @form.send("#{k}=",v) if @form.respond_to?(k)
         end
       else
-        @instruction = instruction_instance
+        @form = form_instance
       end
       
-      if @instruction.station
-        @instruction_instance = @instruction
+      if @form.station
+        @form_instance = @form
       else
-        @title = @instruction.title
-        @description = @instruction.description
-        type = @instruction.class.to_s.split("::").last
-        form = @instruction.class.new({})
+        @title = @form.title
+        @instruction = @form.instruction
+        type = @form.class.to_s.split("::").last
+        form = @form.class.new({})
         if type == "CustomTaskForm"
-          @html = @instruction.raw_html
-          @css = @instruction.raw_css
-          @javascript = @instruction.raw_javascript
-          @resp = CF::CustomTaskForm.post("/stations/#{self.id}/form.json", :form => {:title => @title, :description => @description, :_type => "CustomTaskForm", :raw_html => @html, :raw_css => @css, :raw_javascript => @javascript})
+          @html = @form.raw_html
+          @css = @form.raw_css
+          @javascript = @form.raw_javascript
+          @resp = CF::CustomTaskForm.post("/stations/#{self.id}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @html, :raw_css => @css, :raw_javascript => @javascript})
         else
-          @resp = CF::TaskForm.post("/stations/#{self.id}/form.json", :form => {:title => @title, :description => @description, :_type => type}) 
+          @resp = CF::TaskForm.post("/stations/#{self.id}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => type}) 
         end
         
         @resp.to_hash.each_pair do |k,v|
@@ -187,38 +187,36 @@ module CF
         end
         
         form.station = self
-        @instruction_instance = form
+        @form_instance = form
       end
     end
 
-    # ==Usage of line.input_headers(input_header)
+    # ==Usage of line.input_formats(input_format)
     #   line = CF::Line.new("line name", "Survey")
     #   station = CF::Station.new({:type => "work"})
     #   line.stations station
-    #   input_header = CF::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
-    #   line.stations.first.input_headers input_header
+    #   input_format = CF::InputFormat.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
+    #   line.stations.first.input_formats input_format
     # * returns
-    # line.stationss.first.input_headers as an array of input_headers
-    def input_headers input_headers_value = nil
-      if input_headers_value
-        label = input_headers_value.label
-        field_type = input_headers_value.field_type
-        value = input_headers_value.value
-        required = input_headers_value.required
-        validation_format = input_headers_value.validation_format
-        resp = CF::InputHeader.post("/lines/#{self.line_id}/input_headers.json", :input_header => {:label => label, :field_type => field_type, :value => value, :required => required, :validation_format => validation_format})
+    # line.stationss.first.input_formats as an array of input_formats
+    def input_formats input_formats_value = nil
+      if input_formats_value
+        name = input_formats_value.name
+        required = input_formats_value.required
+        valid_type = input_formats_value.valid_type
+        resp = CF::InputFormat.post("/lines/#{self.line_id}/input_formats.json", :input_format => {:name => name, :required => required, :valid_type => valid_type})
 
-        input_header = CF::InputHeader.new()
+        input_format = CF::InputFormat.new()
         resp.to_hash.each_pair do |k,v|
-          input_header.send("#{k}=",v) if input_header.respond_to?(k)
+          input_format.send("#{k}=",v) if input_format.respond_to?(k)
         end
-        @input_headers << input_header
+        @input_formats << input_format
       else
-        @input_headers
+        @input_formats
       end
     end
-    def input_headers=(input_headers_value) # :nodoc:
-      @input_headers << input_headers_value
+    def input_formats=(input_formats_value) # :nodoc:
+      @input_formats << input_formats_value
     end
     # ==Updates Standard Instruction of a station
     # ===Usage example
@@ -227,11 +225,11 @@ module CF
     #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
     #     end
     #   end
-    #   line.stations[0].update_instruction({:title => "Enter phone number from a business card image", :description => "Call"})
-    def update_instruction(options={})
+    #   line.stations[0].update_form({:title => "Enter phone number from a business card image", :description => "Call"})
+    def update_form(options={})
       @title       = options[:title]
       @description = options[:description]
-      self.class.put("/stations/#{self.id}/form.json", :instruction => {:title => @title, :description => @description, :type => "Form"})
+      self.class.put("/stations/#{self.id}/form.json", :form => {:title => @title, :description => @description, :type => "Form"})
     end
 
     # ==Returns a particular station of a line
@@ -246,37 +244,37 @@ module CF
       self.class.get("/lines/#{self.line_id}/stations/#{self.id}.json")
     end
 
-    # ==Returns information of instruction
+    # ==Returns information of form
     # ===Usage example
     #   line = CF::Line.create("Digitize Card","Digitization") do |l|
-    #     CF::InputHeader.new({:line => l, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
-    #     CF::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
+    #     CF::InputFormat.new({:line => l, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
+    #     CF::InputFormat.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CF::Station.create({:line => l, :type => "work") do |s|
     #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
     #       CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-    #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-    #         CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-    #         CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+    #         CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
     #       end
     #     end
     #   end
     #
-    #   @got_instruction = line.stations[0].get_instruction
-    def get_instruction
+    #   @got_form = line.stations[0].get_form
+    def get_form
       self.class.get("/stations/#{self.id}/form.json")
     end
 
     # ==Returns all the stations associated with a particular line
     # ===Usage example for station.all method is
     #   line = CF::Line.create("Digitize Card","Digitization") do |l|
-    #     CF::InputHeader.new({:line => l, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
-    #     CF::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
+    #     CF::InputFormat.new({:line => l, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
+    #     CF::InputFormat.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CF::Station.create({:line => l, :type => "work") do |s|
     #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
     #       CF::Form.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-    #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-    #         CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-    #         CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+    #         CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
     #       end
     #     end
     #   end

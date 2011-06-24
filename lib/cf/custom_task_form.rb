@@ -6,7 +6,7 @@ module CF
     attr_accessor :title
     
     # Description of "custom_instruction" object, e.g. :description => "description for title of custom_instruction"
-    attr_accessor :description
+    attr_accessor :instruction
     
     # raw_html is an attribute to store the custom html contents
     attr_accessor :raw_html
@@ -30,19 +30,19 @@ module CF
     def initialize(options={})
       @station     = options[:station]
       @title       = options[:title]
-      @description = options[:description]
+      @instruction = options[:instruction]
       @raw_html = options[:raw_html]
       @raw_css = options[:raw_css]
       @raw_javascript = options[:raw_javascript]
       if @station
-        @resp = self.class.post("/stations/#{@station.id}/form.json", :form => {:title => @title, :description => @description, :_type => "CustomTaskForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
+        @resp = self.class.post("/stations/#{@station.id}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
         @id = @resp.id
         custom_form = CF::CustomTaskForm.new({})
         @resp.to_hash.each_pair do |k,v|
           custom_form.send("#{k}=",v) if custom_form.respond_to?(k)
         end
         custom_form.station = @station
-        @station.instruction = custom_form
+        @station.form = custom_form
       end
     end
   
@@ -73,8 +73,8 @@ module CF
     #       css css_content
     #       javascript javascript_content
     #     end
-    def self.create(instruction)
-      instruction = CustomTaskForm.new(instruction)
+    def self.create(form)
+      instruction = CustomTaskForm.new(form)
       # if block.arity >= 1
       #         block.call(instruction)
       #       else

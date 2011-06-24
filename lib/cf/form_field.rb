@@ -22,20 +22,20 @@ module CF
     #   line = CF::Line.create("Digitize", "Survey") do |l|   
     #     CF::Station.create({:line => l, :type => "work"}) do |s|
     #       CF::StandardInstruction.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-    #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
+    #         CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #       end
     #     end
     #   end
     def initialize(options={})
-      @instruction  = options[:instruction]
+      @form  = options[:form]
       @label        = options[:label]
       @field_type   = options[:field_type]
       @required     = options[:required]
-      if !@instruction.nil?
-        resp = self.class.post("/stations/#{@instruction.station.id}/form/form_fields.json", :form_field => 
+      if !@form.nil?
+        resp = self.class.post("/stations/#{@form.station.id}/form/form_fields.json", :form_field => 
         {:label => @label, :field_type => @field_type, :required => @required})
         @id = resp.id
-        @instruction.station.instruction.form_fields = self
+        @form.station.form.form_fields = self
       end
     end
   end

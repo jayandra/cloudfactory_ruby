@@ -24,10 +24,10 @@ class HumanWorkerApp < Sinatra::Base
     response = RestClient.get 'http://sprout.lvh.me:3000/api/v1/lines.json', {:accept => :json}
     line = CF::Line.create("Nepali Politicians","Survey") do |l|
       CF::Station.create({:line => l, :type => "work"}) do |s|
-        CF::InputHeader.new({:station => s, :label => "Politician Name",:field_type => "text_data",:value => "Madhav Kumar Nepal", :required => true, :validation_format => "general"})
+        CF::InputFormat.new({:station => s, :name => "Politician Name", :required => true, :valid_type => "general"})
         CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-        CF::TaskForm.create({:station => s, :title => "Gem Sinatra App with unit level meta_data implementation", :description => "Guess the amount they have earned through bribe in Rupees"}) do |f|
-          CF::FormField.new({:instruction => f, :label => "Amount", :field_type => "SA", :required => "true"})
+        CF::TaskForm.create({:station => s, :title => "Gem Sinatra App with unit level meta_data implementation", :instruction => "Guess the amount they have earned through bribe in Rupees"}) do |f|
+          CF::FormField.new({:form => f, :label => "Amount", :field_type => "SA", :required => "true"})
         end
       end
     end
