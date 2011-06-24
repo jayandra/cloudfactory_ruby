@@ -1,7 +1,7 @@
 module CF
   class FinalOutput
     include Client
-    attr_accessor :meta_data, :final_outputs, :unit_id
+    attr_accessor :meta_data, :final_outputs, :unit_id, :final_output
     
     # def self.get_result(run_id)
     #       resp = get("/runs/#{run_id}/results.json")

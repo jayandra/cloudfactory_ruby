@@ -37,26 +37,37 @@ module CF
         @file = input
         @param_data = File.new(input, 'rb')
         @param_for_input = :file
+        resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, @param_for_input => @param_data})
       else
         @input = input
         @param_data = input
         @param_for_input = :data
+        
+        built_data = ""
+        @param_data.each do |d|
+          d.each do |k, v|
+            built_data += " -d \"data[][#{k}]=#{v}\""
+          end
+        end.join(" ")
+        uri = "-X POST #{built_data} -d \"run[title]=#{@title}\" http://manish.lvh.me:3000/api/v1/lines/#{@line.id}/runs.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
+
+        response = `curl #{uri}`
+        run_id = JSON.load(response)['_id']
+        url = "http://manish.lvh.me:3000/api/v1/runs/#{run_id}.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
+        respo = `curl -I #{url}`
+        if respo.scan(/\d{3}/).first == "200"
+          parsed_response = JSON.load(response)
+          if parsed_response.is_a?(Array)
+            parsed_response.map{|item| Hashie::Mash.new(item)}
+          else
+            new_response = parsed_response.inject({ }) do |x, (k,v)|
+                            x[k.sub(/\A_/, '')] = v
+                            x
+                          end
+            resp = Hashie::Mash.new(new_response)
+          end
+        end
       end
-      
-      # built_data = ""
-      # 
-      #       @param_data.each do |d|
-      #         d.each do |k, v|
-      #           built_data += " -d \"data[][#{k}]=#{v}\""
-      #         end
-      #       end.join(" ")
-      #       
-      #       uri = "-X POST #{built_data} -d \"run[title]=Saroj says change title\" http://manish.lvh.me:3000/api/v1/lines/#{@line.id}/runs.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
-      #       
-      #       response = `curl #{uri}`
-      #       
-      #       debugger
-      resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, @param_for_input => @param_data})
       @id = resp.id
     end
 
@@ -104,7 +115,6 @@ module CF
       line = self.line
       station = line.stations[station_no-1]
       resp = self.class.get("/runs/#{self.id}/output/#{station.id}.json")
-      debugger
       @final_output =[]
         result = FinalOutput.new()
         resp.to_hash.each_pair do |k,v|
@@ -114,9 +124,5 @@ module CF
       return @final_output
     end
     
-    def input(options={})
-      station_no = options[:station]
-      
-    end
   end
 end
