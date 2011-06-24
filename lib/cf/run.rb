@@ -6,7 +6,7 @@ module CF
     attr_accessor :title
 
     # file attributes to upload
-    attr_accessor :file, :data
+    attr_accessor :file, :input
 
     # line attribute with which run is associated
     attr_accessor :line
@@ -33,16 +33,29 @@ module CF
     def initialize(line, title, input)
       @line = line
       @title = title
-      if File.exist?(input)
+      if File.exist?(input.to_s)
         @file = input
         @param_data = File.new(input, 'rb')
         @param_for_input = :file
       else
-        @data = input
+        @input = input
         @param_data = input
         @param_for_input = :data
       end
-      @input_data =[]
+      
+      # built_data = ""
+      # 
+      #       @param_data.each do |d|
+      #         d.each do |k, v|
+      #           built_data += " -d \"data[][#{k}]=#{v}\""
+      #         end
+      #       end.join(" ")
+      #       
+      #       uri = "-X POST #{built_data} -d \"run[title]=Saroj says change title\" http://manish.lvh.me:3000/api/v1/lines/#{@line.id}/runs.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
+      #       
+      #       response = `curl #{uri}`
+      #       
+      #       debugger
       resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, @param_for_input => @param_data})
       @id = resp.id
     end
@@ -70,6 +83,40 @@ module CF
 
     def get # :nodoc:
       self.class.get("/lines/#{@line.id}/runs/#{@id}.json")
+    end
+    
+    def final_output
+      resp = self.class.get("/runs/#{self.id}/final_outputs.json")
+      
+      @final_output =[]
+      resp.each do |r|
+        result = FinalOutput.new()
+        r.to_hash.each_pair do |k,v|
+          result.send("#{k}=",v) if result.respond_to?(k)
+        end
+        @final_output << result
+      end
+      return @final_output
+    end
+    
+    def output(options={})
+      station_no = options[:station]
+      line = self.line
+      station = line.stations[station_no-1]
+      resp = self.class.get("/runs/#{self.id}/output/#{station.id}.json")
+      debugger
+      @final_output =[]
+        result = FinalOutput.new()
+        resp.to_hash.each_pair do |k,v|
+          result.send("#{k}=",v) if result.respond_to?(k)
+        end
+        @final_output << result
+      return @final_output
+    end
+    
+    def input(options={})
+      station_no = options[:station]
+      
     end
   end
 end

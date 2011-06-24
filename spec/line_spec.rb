@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CF::Line do
-  let(:input_header) { CF::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"}) }
+  let(:input_format) { CF::InputFormat.new({:name => "image_url", :required => true, :valid_type => "url"}) }
 
   context "create a line" do
     it "the plain ruby way" do
@@ -16,14 +16,14 @@ describe CF::Line do
       VCR.use_cassette "lines/block/create-block-var", :record => :new_episodes do
         line = CF::Line.create("Digitize Card","Digitization") do |l|
           CF::Station.create({:line => l, :type => "work"}) do |s|
-            CF::InputHeader.new({:station => s, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-            CF::InputHeader.new({:station => s, :label => "image",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::InputFormat.new({:station => s, :name => "image_url", :required => true, :valid_type => "url"})
+            CF::InputFormat.new({:station => s, :name => "image", :required => true, :valid_type => "url"})
           end
         end
         line.title.should eq("Digitize Card")
         line.department_name.should eq("Digitization")
-        line.stations.first.input_headers[0].label.should eql("image_url")
-        line.stations.first.input_headers[1].label.should eql("image")
+        line.stations.first.input_formats[0].name.should eql("image_url")
+        line.stations.first.input_formats[1].name.should eql("image")
         line.stations.first.type.should eq("Work")
       end
     end
@@ -32,22 +32,22 @@ describe CF::Line do
       VCR.use_cassette "lines/block/create-without-block-var", :record => :new_episodes do
         line = CF::Line.create("Digitize Card", "Digitization") do
           CF::Station.create({:line => self, :type => "work"}) do |station|
-            CF::InputHeader.new({:station => station, :label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+            CF::InputFormat.new({:station => station, :name => "image_url", :required => true, :valid_type => "url"})
             CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
-            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-              CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-              CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
         line.title.should eq("Digitize Card")
         line.department_name.should eq("Digitization")
-        line.stations.first.input_headers.first.label.should eql("image_url")
+        line.stations.first.input_formats.first.name.should eql("image_url")
         line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should eq(2)
-        line.stations.first.instruction.description.should eq("Describe")
-        line.stations.first.instruction.form_fields.first.label.should eq("First Name")
+        line.stations.first.form.instruction.should eq("Describe")
+        line.stations.first.form.form_fields.first.label.should eq("First Name")
       end
     end
 
@@ -68,10 +68,10 @@ describe CF::Line do
         line = CF::Line.create("Digitize Card", "Digitization") do |l|
           CF::Station.create({:line => l, :type => "work"}) do |station|
             CF::HumanWorker.new({:line => l, :station => station, :number => 2, :reward => 20})
-            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-              CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-              CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -80,11 +80,11 @@ describe CF::Line do
         line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.worker.reward.should eq(20)
-        line.stations.first.instruction.title.should eq("Enter text from a business card image")
-        line.stations.first.instruction.description.should eq("Describe")
-        line.stations.first.instruction.form_fields.first.label.should eq("First Name")
-        line.stations.first.instruction.form_fields.first.field_type.should eq("SA")
-        line.stations.first.instruction.form_fields.first.required.should eq("true")
+        line.stations.first.form.title.should eq("Enter text from a business card image")
+        line.stations.first.form.instruction.should eq("Describe")
+        line.stations.first.form.form_fields.first.label.should eq("First Name")
+        line.stations.first.form.form_fields.first.field_type.should eq("SA")
+        line.stations.first.form.form_fields.first.required.should eq("true")
       end
     end
   end
@@ -154,7 +154,6 @@ describe CF::Line do
         resp.code.should eql(200)
         deleted_resp = CF::Line.info(line)
         deleted_resp.message.should eql("Resource not found.")
-        deleted_resp.code.should eql(404)
       end
     end
   end
@@ -165,10 +164,10 @@ describe CF::Line do
         line = CF::Line.create("Digitize Card","Digitization") do |l|
           CF::Station.create({:line => l, :type => "work"}) do |s|
             CF::HumanWorker.new({:station => s, :number => 2, :reward => 20})
-            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-              CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-              CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-              CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
             end
           end
         end
@@ -176,17 +175,17 @@ describe CF::Line do
         line.stations.first.type.should eq("Work")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.worker.reward.should eq(20)
-        line.stations.first.instruction.title.should eq("Enter text from a business card image")
-        line.stations.first.instruction.description.should eq("Describe")
-        line.stations.first.instruction.form_fields[0].label.should eq("First Name")
-        line.stations.first.instruction.form_fields[0].field_type.should eq("SA")
-        line.stations.first.instruction.form_fields[0].required.should eq("true")
-        line.stations.first.instruction.form_fields[1].label.should eq("Middle Name")
-        line.stations.first.instruction.form_fields[1].field_type.should eq("SA")
-        line.stations.first.instruction.form_fields[1].required.should eq(nil)
-        line.stations.first.instruction.form_fields[2].label.should eq("Last Name")
-        line.stations.first.instruction.form_fields[2].field_type.should eq("SA")
-        line.stations.first.instruction.form_fields[2].required.should eq("true")
+        line.stations.first.form.title.should eq("Enter text from a business card image")
+        line.stations.first.form.instruction.should eq("Describe")
+        line.stations.first.form.form_fields[0].label.should eq("First Name")
+        line.stations.first.form.form_fields[0].field_type.should eq("SA")
+        line.stations.first.form.form_fields[0].required.should eq("true")
+        line.stations.first.form.form_fields[1].label.should eq("Middle Name")
+        line.stations.first.form.form_fields[1].field_type.should eq("SA")
+        line.stations.first.form.form_fields[1].required.should eq(nil)
+        line.stations.first.form.form_fields[2].label.should eq("Last Name")
+        line.stations.first.form.form_fields[2].field_type.should eq("SA")
+        line.stations.first.form.form_fields[2].required.should eq("true")
       end
     end
   end
@@ -223,10 +222,10 @@ describe CF::Line do
         worker = CF::HumanWorker.new({:number => 2, :reward => 20})
         line.stations.first.worker = worker
 
-        form = CF::TaskForm.new({:title => "Enter text from a business card image", :description => "Describe"})
-        line.stations.first.instruction = form
-        line.stations.first.instruction.title.should eql("Enter text from a business card image")
-        line.stations.first.instruction.description.should eql("Describe")
+        form = CF::TaskForm.new({:title => "Enter text from a business card image", :instruction => "Describe"})
+        line.stations.first.form = form
+        line.stations.first.form.title.should eql("Enter text from a business card image")
+        line.stations.first.form.instruction.should eql("Describe")
       end
     end
 
@@ -235,13 +234,11 @@ describe CF::Line do
         line = CF::Line.new("Digitize Card", "Digitization")
         station = CF::Station.new({:type => "work"})
         line.stations station
-        input_header = CF::InputHeader.new({:label => "image_url",:field_type => "text_data",:value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-        line.stations.first.input_headers input_header
-        line.stations.first.input_headers.first.label.should eq("image_url")
-        line.stations.first.input_headers.first.field_type.should eq("text_data")
-        line.stations.first.input_headers.first.value.should eq("http://s3.amazon.com/bizcardarmy/medium/1.jpg")
-        line.stations.first.input_headers.first.required.should eq("true")
-        line.stations.first.input_headers.first.validation_format.should eq("url")
+        input_format = CF::InputFormat.new({:name => "image_url", :required => true, :valid_type => "url"})
+        line.stations.first.input_formats input_format
+        line.stations.first.input_formats.first.name.should eq("image_url")
+        line.stations.first.input_formats.first.required.should eq(true)
+        line.stations.first.input_formats.first.valid_type.should eq("url")
       end
     end
 
@@ -254,24 +251,24 @@ describe CF::Line do
         worker = CF::HumanWorker.new({:number => 2, :reward => 20})
         line.stations.first.worker = worker
 
-        form = CF::TaskForm.new({:title => "Enter text from a business card image", :description => "Describe"})
-        line.stations.first.instruction = form
+        form = CF::TaskForm.new({:title => "Enter text from a business card image", :instruction => "Describe"})
+        line.stations.first.form = form
 
         form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
-        line.stations.first.instruction.form_fields form_fields_1
+        line.stations.first.form.form_fields form_fields_1
         form_fields_2 = CF::FormField.new({:label => "Middle Name", :field_type => "SA"})
-        line.stations.first.instruction.form_fields form_fields_2
+        line.stations.first.form.form_fields form_fields_2
         form_fields_3 = CF::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
-        line.stations.first.instruction.form_fields form_fields_3
+        line.stations.first.form.form_fields form_fields_3
 
-        line.stations.first.instruction.form_fields[0].label.should eql("First Name")
-        line.stations.first.instruction.form_fields[0].field_type.should eq("SA")
-        line.stations.first.instruction.form_fields[0].required.should eq(true)
-        line.stations.first.instruction.form_fields[1].label.should eql("Middle Name")
-        line.stations.first.instruction.form_fields[1].field_type.should eq("SA")
-        line.stations.first.instruction.form_fields[2].label.should eql("Last Name")
-        line.stations.first.instruction.form_fields[2].field_type.should eq("SA")
-        line.stations.first.instruction.form_fields[2].required.should eq(true)
+        line.stations.first.form.form_fields[0].label.should eql("First Name")
+        line.stations.first.form.form_fields[0].field_type.should eq("SA")
+        line.stations.first.form.form_fields[0].required.should eq(true)
+        line.stations.first.form.form_fields[1].label.should eql("Middle Name")
+        line.stations.first.form.form_fields[1].field_type.should eq("SA")
+        line.stations.first.form.form_fields[2].label.should eql("Last Name")
+        line.stations.first.form.form_fields[2].field_type.should eq("SA")
+        line.stations.first.form.form_fields[2].required.should eq(true)
       end
     end
   end

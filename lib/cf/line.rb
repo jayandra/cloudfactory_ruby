@@ -24,9 +24,9 @@ module CF
     # stations contained within line object
     attr_accessor :stations
 
-    # input_headers contained within line object
-    attr_accessor :input_headers
-    #attr_accessor :input_header_instance
+    # input_formats contained within line object
+    attr_accessor :input_formats
+    #attr_accessor :input_format_instance
     #attr_accessor :station_instance
 
     # ==Initializes a new line
@@ -35,7 +35,7 @@ module CF
     #     line = Line.new("Digit", "Survey")
 
     def initialize(title, department_name, options={})
-      @input_headers =[]
+      @input_formats =[]
       @stations =[]
       @title = title
       @department_name = department_name
@@ -87,13 +87,13 @@ module CF
     # ==Usage of line.create("line_name") do |block|
     # ===creating Line within block using variable
     #   Line.create("line_name") do |line|
-    #     CF::InputHeader.new({:line => line, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+    #     CF::InputFormat.new({:line => line, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
     #     CF::Station.new({:line => line, :type => "Work"})
     #   end
     #
     # ===OR creating without variable
     #   CF::Line.create("line_name") do
-    #     CF::InputHeader.new({:line => self, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+    #     CF::InputFormat.new({:line => self, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
     #     CF::Station.new({:line => self, :type => "Work"})
     #   end
     def self.create(title, department_name, options={}, &block)
@@ -108,32 +108,30 @@ module CF
       line
     end
 
-    # ==Usage of line.input_headers(input_header)
+    # ==Usage of line.input_formats(input_format)
     #   line = Line.new("line name", "Survey")
     #
-    #   input_header = CF::InputHeader.new({:label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
-    #   line.input_headers input_header
+    #   input_format = CF::InputFormat.new({:label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+    #   line.input_formats input_format
     # * returns
-    # line.input_headers as an array of input_headers
-    def input_headers input_headers_value = nil
-      if input_headers_value
-        label = input_headers_value.label
-        field_type = input_headers_value.field_type
-        value = input_headers_value.value
-        required = input_headers_value.required
-        validation_format = input_headers_value.validation_format
-        resp = CF::InputHeader.post("/lines/#{self.id}/input_headers.json", :input_header => {:label => label, :field_type => field_type, :value => value, :required => required, :validation_format => validation_format})
-        input_header = CF::InputHeader.new()
+    # line.input_formats as an array of input_formats
+    def input_formats input_formats_value = nil
+      if input_formats_value
+        name = input_formats_value.name
+        required = input_formats_value.required
+        valid_type = input_formats_value.valid_type
+        resp = CF::InputFormat.post("/lines/#{self.id}/input_formats.json", :input_format => {:name => name, :required => required, :valid_type => valid_type})
+        input_format = CF::InputFormat.new()
         resp.to_hash.each_pair do |k,v|
-          input_header.send("#{k}=",v) if input_header.respond_to?(k)
+          input_format.send("#{k}=",v) if input_format.respond_to?(k)
         end
-        @input_headers << input_header
+        @input_formats << input_format
       else
-        @input_headers
+        @input_formats
       end
     end
-    def input_headers=(input_headers_value) # :nodoc:
-      @input_headers << input_headers_value
+    def input_formats=(input_formats_value) # :nodoc:
+      @input_formats << input_formats_value
     end
 
     # ==Returns the content of a line by making an Api call

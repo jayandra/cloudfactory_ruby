@@ -5,8 +5,8 @@ module CF
     # title of the standard_instruction
     attr_accessor :title
     
-    # description about the instruction
-    attr_accessor :description
+    # instruction about the instruction
+    attr_accessor :instruction
     
     # form_fields for the Form
     attr_accessor :form_fields
@@ -20,18 +20,18 @@ module CF
     # ==Initializes a new Form
     # ==Usage of standard_instruction.new
     #   attrs = {:title => "Enter text from a business card image",
-    #       :description => "Describe"}
+    #       :instruction => "Describe"}
     #
     #   instruction = CF::Form.new(attrs)
     def initialize(options={})
       @form_fields =[]
       @station     = options[:station]
       @title       = options[:title]
-      @description = options[:description]
+      @instruction = options[:instruction]
       if !@station.nil?
-        resp = self.class.post("/stations/#{station.id}/form.json", :form => {:title => @title, :description => @description, :_type => "TaskForm"})
+        resp = self.class.post("/stations/#{station.id}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "TaskForm"})
         @id = resp.id
-        @station.instruction = self
+        @station.form = self
       end
     end
     
@@ -43,7 +43,7 @@ module CF
     #     CF::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CF::Station.create({:line => l, :type => "work") do |s|
     #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
-    #       CF::Form.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #       CF::Form.create(:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
     #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #         CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
     #         CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
@@ -57,7 +57,7 @@ module CF
     #     CF::InputHeader.new({:line => self, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CF::Station.create({:line => self, :type => "work") do
     #       CF::HumanWorker.new({:station => self, :number => 1, :reward => 20)
-    #       CF::Form.create(:station => self, :title => "Enter text from a business card image", :description => "Describe"}) do
+    #       CF::Form.create(:station => self, :title => "Enter text from a business card image", :instruction => "Describe"}) do
     #         CF::FormField.new({:instruction => self, :label => "First Name", :field_type => "SA", :required => "true"})
     #         CF::FormField.new({:instruction => self, :label => "Middle Name", :field_type => "SA"})
     #         CF::FormField.new({:instruction => self, :label => "Last Name", :field_type => "SA", :required => "true"})            
@@ -66,13 +66,13 @@ module CF
     #   end
     #
     def self.create(options, &block)
-      instruction = TaskForm.new(options)
+      form = TaskForm.new(options)
       if block.arity >= 1
-        block.call(instruction)
+        block.call(form)
       else
-        instruction.instance_eval &block
+        form.instance_eval &block
       end
-      instruction
+      form
     end
     
     # ==appending different form_fields 
@@ -83,7 +83,7 @@ module CF
     #     CF::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CF::Station.create({:line => l, :type => "work") do |s|
     #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
-    #       CF::Form.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #       CF::Form.create(:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
     #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #         CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
     #         CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
@@ -117,7 +117,7 @@ module CF
     #     CF::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
     #     CF::Station.create({:line => l, :type => "work") do |s|
     #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
-    #       CF::Form.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #       CF::Form.create(:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
     #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #         CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
     #         CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})            
