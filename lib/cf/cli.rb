@@ -1,58 +1,38 @@
 require 'thor'
+require File.expand_path('../../cf', __FILE__) #=> requiring the gem
+require 'active_support/core_ext/string/inflections'
+require 'active_support/core_ext/object/blank'
 
-module CF
+cli_directory = File.expand_path("../cf/cli", File.dirname(__FILE__))
+require "#{cli_directory}/config"
+require "#{cli_directory}/line"
+
+
+
+
+if ENV['TEST_CLI']
+  require 'ruby-debug'
+  API_CONFIG = YAML.load_file(File.expand_path("../../../fixtures/api_credentials.yml", __FILE__))
+  CF.configure do |config|
+    config.api_version = API_CONFIG['api_version']
+    config.api_url = API_CONFIG['api_url']
+    config.api_key = API_CONFIG['api_key']
+  end
+end
+
+module Cf
   class CLI < Thor
+    include Thor::Actions
+    include Cf::Config
     
-    # include Thor::Actions
-    # # debugger
-    
-    # # argument :file_name#, :aliases => "-n"
-    # 
     desc "login", "Asks for the login information"
     def login
-      # puts "Line: #{name} created"
       api_key = ask("Enter the api_key:")
       save_config(api_key)
       say("API Key saved at #{config_file}", :green)
-      # @line = ::CloudFactory::Line.new(options[:name])
-      # I think this might work
-      # @line = ::CloudFactory::Line.new({:title => name})
     end
 
-    private
-    def config_file
-      File.join(find_home, '.cflogin')
-    end
-
-    def load_config
-      YAML::load(File.read(config_file))
-    end
-
-    def save_config(api_key)
-      File.open(config_file, 'w') {|f| f.write({ :api_key => api_key }.to_yaml) }
-    end
-
-    # Ripped from rubygems
-    def find_home
-      unless RUBY_VERSION > '1.9' then
-        ['HOME', 'USERPROFILE'].each do |homekey|
-          return File.expand_path(ENV[homekey]) if ENV[homekey]
-        end
-
-        if ENV['HOMEDRIVE'] && ENV['HOMEPATH'] then
-          return File.expand_path("#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}")
-        end
-      end
-
-      File.expand_path "~"
-    rescue
-      if File::ALT_SEPARATOR then
-        drive = ENV['HOMEDRIVE'] || ENV['SystemDrive']
-        File.join(drive.to_s, '/')
-      else
-        "/"
-      end
-    end
-
+    desc "line", "Commands to manage the Lines. For more info, cf line help"
+    subcommand "line", Cf::Line
   end
 end
