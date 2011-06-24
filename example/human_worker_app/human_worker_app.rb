@@ -26,31 +26,25 @@ class HumanWorkerApp < Sinatra::Base
       CF::Station.create({:line => l, :type => "work"}) do |s|
         CF::InputFormat.new({:station => s, :name => "Politician Name", :required => true, :valid_type => "general"})
         CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-        CF::TaskForm.create({:station => s, :title => "Gem Sinatra App with unit level meta_data implementation", :instruction => "Guess the amount they have earned through bribe in Rupees"}) do |f|
+        CF::TaskForm.create({:station => s, :title => "Gem Sinatra App -2", :instruction => "Guess the amount they have earned through bribe in Rupees"}) do |f|
           CF::FormField.new({:form => f, :label => "Amount", :field_type => "SA", :required => "true"})
         end
       end
     end
     
-    input_data = "Politician Name, meta_data_name\n"
-    # input_data += params[:names]
-    
     input_data_array = []
     
     params['names'].each do |data|
-      input_data_array << data + "," + data
-    end
-    
-    input_data += input_data_array.join("\n")
-    @run = CF::Run.create(line, "2011 Ghotala", input_data)
+      input_data_array << {"Politician Name" => data, "meta_data_name" => data}
+    end.join(",")
+    @run = CF::Run.create(line, "2011 Ghotala", input_data_array)
 
     haml :run
   end
 
-  get '/result/:id' do
-    @run_id = params[:id]
-    @got_result = CF::Result.get_result(@run_id)
-    
+  get '/result/:run' do
+    run_id = params[:run]
+    @got_result = CF::Run.get_final_output(run_id)
     haml :result
   end
   
