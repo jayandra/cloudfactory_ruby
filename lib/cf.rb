@@ -1,3 +1,4 @@
+require 'rails'
 require 'hashie'
 require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
