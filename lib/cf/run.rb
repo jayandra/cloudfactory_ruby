@@ -96,6 +96,20 @@ module CF
       self.class.get("/lines/#{@line.id}/runs/#{@id}.json")
     end
     
+    def self.get_final_output(run_id)
+      resp = get("/runs/#{run_id}/final_outputs.json")
+      
+      @final_output =[]
+      resp.each do |r|
+        result = FinalOutput.new()
+        r.to_hash.each_pair do |k,v|
+          result.send("#{k}=",v) if result.respond_to?(k)
+        end
+        @final_output << result
+      end
+      return @final_output
+    end
+    
     def final_output
       resp = self.class.get("/runs/#{self.id}/final_outputs.json")
       

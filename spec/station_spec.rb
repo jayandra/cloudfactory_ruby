@@ -163,11 +163,8 @@ describe CF::Station do
         run = CF::Run.create(line,"Creation of Multiple Station", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
         # debugger
         result_of_station_1 = run.output(:station => 1)
-        debugger
         result_of_station_2 = run.output(:station => 2)
-        debugger
         @final_output = run.final_output
-        debugger
         @final_output.first.meta_data['company'].should eql("Apple")
         @final_output.first.final_outputs.last['street'].should eql("Kupondole")
         @final_output.first.final_outputs.last['city'].should eql("Kathmandu")
