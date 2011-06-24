@@ -3,7 +3,8 @@
 require 'rubygems'
 require 'thor'
 require 'yaml'
+require 'fileutils'
 
 require File.expand_path('../../lib/cf/cli', __FILE__)
 
-CF::CLI.start
+Cf::CLI.start

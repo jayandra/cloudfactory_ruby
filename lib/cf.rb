@@ -2,6 +2,7 @@ require 'hashie'
 require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/object/try'
 require "rest_client"
 require 'json'
 
@@ -52,17 +53,17 @@ module CF
   class Unavailable  < StandardError; end
 end
 
-require 'cf/client'
-require 'cf/line'
-require 'cf/input_format'
-require 'cf/worker'
-require 'cf/human_worker'
-require 'cf/google_translate_robot'
-require 'cf/media_converter_robot'
-require 'cf/station'
-require 'cf/task_form'
-require 'cf/form_field'
-require 'cf/custom_task_form'
-require 'cf/run'
-require 'cf/department'
-require 'cf/final_output'
+require "#{directory}/cf/client"
+require "#{directory}/cf/line"
+require "#{directory}/cf/input_format"
+require "#{directory}/cf/worker"
+require "#{directory}/cf/human_worker"
+require "#{directory}/cf/google_translate_robot"
+require "#{directory}/cf/media_converter_robot"
+require "#{directory}/cf/station"
+require "#{directory}/cf/task_form"
+require "#{directory}/cf/form_field"
+require "#{directory}/cf/custom_task_form"
+require "#{directory}/cf/run"
+require "#{directory}/cf/department"
+require "#{directory}/cf/final_output"

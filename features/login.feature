@@ -2,18 +2,21 @@ Feature: Login
   In order to manage my cloud factory account
   As a CLI user
   I want to setup login information
-
+  
+  @announce
   Scenario: Logging In
-    When I run `cf login` interactively
+    When I run `cf ` interactively
     And I type "sprout"
+    # Then I debug
+    # Then I should see "API Key saved"
     # Then the output should contain "sprout"
-    Then the output should contain:
-      """
-      sprout
-      """
+    # Then the output should contain:
+    #   """
+    #   sprout
+    #   """
     # When I run `cf login` interactively
     # And I type "sprout"
-    # Then the output from "cf login" should contain "sprout"
+    Then the output from "cf login" should contain "API Key saved"
     
     # Then the output should contain "Enter your account name"
 
