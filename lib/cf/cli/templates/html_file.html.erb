@@ -1,0 +1,21 @@
+<div id="<%= form_title %>_instructions" class="<%= line_title %> cf_form_instruction">
+  <ul>
+    <li>Sample bullet list of instruction</li>
+    <li>Sample bullet list of instruction</li>
+    <li>Sample bullet list of instruction</li>
+  </ul>
+</div>
+
+<div id="<%= form_title %>" class="<%= line_title %> cf_form_content">
+<%- labels.split(",").each do |label| -%>
+<label>{{<%= label %>}}</label>
+<%- end unless labels.nil? -%>
+
+<div id = "field-panel">
+<%-
+  fields.each_pair do |field_name, field_type|
+-%>
+<p><label><%= field_name %></label><input id="<%= field_name.downcase %>" type="text" name="output[<%= field_name.downcase %>]" data-valid-type="<%= field_type.downcase %>" /></p>
+<%- end unless fields.blank? -%>
+</div>
+</div>
