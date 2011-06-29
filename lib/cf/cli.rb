@@ -6,7 +6,7 @@ require 'active_support/core_ext/object/blank'
 cli_directory = File.expand_path("../cf/cli", File.dirname(__FILE__))
 require "#{cli_directory}/config"
 require "#{cli_directory}/line"
-
+require "#{cli_directory}/form"
 
 
 
@@ -34,5 +34,8 @@ module Cf
 
     desc "line", "Commands to manage the Lines. For more info, cf line help"
     subcommand "line", Cf::Line
+
+    desc "form", "Commands to generate custom task forms. For more info, cf form help"
+    subcommand "form", Cf::Form
   end
 end
