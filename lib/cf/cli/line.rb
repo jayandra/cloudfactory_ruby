@@ -41,6 +41,7 @@ module Cf
         else
           say "Generating #{yaml_destination}", :green
           Cf::Newline.start([title, yaml_destination])
+          say "A new line named #{title.underscore.dasherize} created."
         end
       else
         say "Title for the line is required.", :red
