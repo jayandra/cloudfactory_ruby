@@ -55,10 +55,12 @@ module CF
     def stations stations = nil
       if stations
         type = stations.type
+        @except = stations.except if stations.except.presence != nil
+        @extra = stations.extra if stations.extra.presence != nil
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
         else
-          resp = CF::Station.post("/lines/#{id}/stations.json", :station => {:type => type})
+          resp = CF::Station.post("/lines/#{id}/stations.json", :station => {:type => type, :input_formats => {:except => @except, :extra => @extra}})
           station = CF::Station.new()
           resp.to_hash.each_pair do |k,v|
             station.send("#{k}=",v) if station.respond_to?(k)

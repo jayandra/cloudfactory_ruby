@@ -169,7 +169,7 @@ module CF
             end
           end
           run = CF::Run.create(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
-          # debugger
+          debugger
           @final_output = run.final_output
           @final_output.first.meta_data['company'].should eql("Apple")
           @final_output.first.final_outputs.last['first-name'].should eql("Bob")
