@@ -40,7 +40,7 @@ module CF
         resp = self.class.post("/lines/#{line_id}/input_formats.json", :input_format => {:name => @name, :required => @required, :valid_type => @valid_type})
         @id = resp.id
         @line_id = line_id
-        if !@station.nil?
+        if !@station.nil? && @station.except.nil? && @station.extra.nil?
           @station.input_formats = self
         else
           @line.input_formats = self

@@ -172,4 +172,47 @@ describe CF::Station do
       end
     end
   end
+  
+  context "create multiple station" do
+     it "should create two stations using different input format" do
+       WebMock.allow_net_connect!
+       VCR.use_cassette "stations/block/multiple-station-adding-input-format", :record => :new_episodes do
+         line = CF::Line.create("Company Info -1","Digitization") do |l|
+           CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+           CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+           CF::Station.create({:line => l, :type => "work", :input_formats=> {:except => ["Website"]}}) do |s|
+             CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+             CF::TaskForm.create({:station => s, :title => "Enter the name of CEO", :instruction => "Describe"}) do |i|
+               CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+               CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+               CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+             end
+           end
+         end
+
+         station = CF::Station.new({:type => "Improve", :input_formats=>{:extra => ["Website" => 0]}})
+         line.stations station
+
+         worker = CF::HumanWorker.new({:number => 1, :reward => 10})
+         line.stations.last.worker = worker
+
+         form = CF::TaskForm.new({:title => "Enter the address of the given Person", :instruction => "Description"})
+         line.stations.last.form = form
+
+         form_fields_1 = CF::FormField.new({:label => "Street", :field_type => "SA", :required => "true"})
+         line.stations.last.form.form_fields form_fields_1
+         form_fields_2 = CF::FormField.new({:label => "City", :field_type => "SA", :required => "true"})
+         line.stations.last.form.form_fields form_fields_2
+         form_fields_3 = CF::FormField.new({:label => "Country", :field_type => "SA", :required => "true"})
+         line.stations.last.form.form_fields form_fields_3
+         
+         station_1 = line.stations.first.get
+         # station_1.input_formats.first.name.should eql("Company")
+         station_1.input_format_ids.count.should eql(1)
+         station_2 = line.stations.last.get
+         # station_2.input_formats.last.name.should eql("Website")
+         station_2.input_format_ids.count.should eql(1)
+       end
+     end
+   end
 end

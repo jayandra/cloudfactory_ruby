@@ -9,7 +9,7 @@ module CF
     attr_accessor :line_id
 
     # ID of the station
-    attr_accessor :id
+    attr_accessor :id, :extra, :except
 
     # ==Initializes a new station
     # ===Usage Example
@@ -21,6 +21,8 @@ module CF
       @type = options[:type].nil? ? nil : options[:type].camelize
       @max_judges = options[:max_judges]
       @auto_judge = options[:auto_judge]
+      @except = options[:input_formats][:except] if options[:input_formats].presence != nil
+      @extra = options[:input_formats][:extra] if options[:input_formats].presence != nil
       @line = options[:line]
       if @line_id
         if @type == "Improve"
@@ -28,7 +30,7 @@ module CF
           if line.stations.size < 1
             raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
           else
-            resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type})
+            resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :input_formats => {:except => @except, :extra => @extra}})
             @id = resp.id
             resp.to_hash.each_pair do |k,v|
               self.send("#{k}=",v) if self.respond_to?(k)
@@ -36,14 +38,14 @@ module CF
             @line.stations = self
           end
         elsif @type == "Tournament"
-          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :line_id => @line_id, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }})
+          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :line_id => @line_id, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }, :input_formats => {:except => @except, :extra => @extra}})
           @id = resp.id
           resp.to_hash.each_pair do |k,v|
             self.send("#{k}=",v) if self.respond_to?(k)
           end
           @line.stations = self
         else
-          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type})
+          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :input_formats => {:except => @except, :extra => @extra}})
           @id = resp.id
           resp.to_hash.each_pair do |k,v|
             self.send("#{k}=",v) if self.respond_to?(k)
