@@ -10,7 +10,7 @@ module CF
       # Amount of money assigned for worker
       attr_accessor :reward
       attr_accessor :station
-      attr_accessor :id
+      attr_accessor :id, :data, :from, :to 
 
       case host
       when "HumanWorker"
@@ -31,18 +31,31 @@ module CF
         end
       else
         # Creates new worker 
-        def self.create(station)
+        def self.create(options={})
+          @station = options[:station]
+          type = self.to_s.split("::").last.underscore
           worker = self.new
           worker.instance_eval do
             @number = 1
             @reward = 0
+            if type == "google_translate_robot"
+              @data = options[:data]
+              @from = options[:from]
+              @to = options[:to]
+            end
           end
-          type = self.to_s.split("::").last.underscore
-          resp = self.post("/stations/#{station.id}/workers.json", :body => {:worker => {:number => 1, :reward => 0, :type => type}})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
+          if @station
+            if type == "google_translate_robot"
+              resp = self.post("/stations/#{@station.id}/workers.json", :worker => {:number => 1, :reward => 0, :type => type, :data => options[:data], :from => options[:from], :to => options[:to]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            end
+          else
+            return worker
           end
-          station.worker = worker
         end
       end
     end
