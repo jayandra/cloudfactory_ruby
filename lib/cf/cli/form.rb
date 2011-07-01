@@ -32,10 +32,9 @@ module Cf
     def generate(form_title=nil)
       line_title = options[:line].underscore.dasherize
       line_destination = "#{find_home}/.cf/#{line_title}"
-      yaml_destination = "#{line_destination}/#{line_title}.yml"
       
       if form_title.present?
-        if File.exist?(yaml_destination)
+        if Dir.exist?(line_destination)
           FileUtils.rm_rf("#{line_destination}/#{form_title}.*", :verbose => true) if options.force? && File.exist?("#{line_destination}/#{form_title}.html")
           if File.exist?("#{line_destination}/#{form_title}.html")
             say "Skipping the form because it already exists.\nUse the -f flag to force it to overwrite or check and delete it manually.", :red
