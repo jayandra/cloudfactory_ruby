@@ -126,6 +126,21 @@ module CF
           @worker_instance = worker
         end
 
+      when "GoogleTranslateRobot"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @data = worker_instance.data
+          @from = worker_instance.from
+          @to = worker_instance.to
+          resp = CF::GoogleTranslateRobot.post("/stations/#{self.id}/workers.json", :worker => {:number => 1, :reward => 0, :type => "google_translate_robot", :data => @data, :from => @from, :to => @to})
+          worker = CF::GoogleTranslateRobot.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          @worker_instance = worker
+        end
+      
       else
         if worker_instance.station
           @worker_instance = worker_instance 
