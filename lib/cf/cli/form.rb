@@ -23,7 +23,7 @@ module Cf
   class Form < Thor
     include Cf::Config
     
-    desc "generate FORM-TITLE", "genarates a custom task form at ~/.cf/<line-title>/<form-title>.html and its associated css and js files"
+    desc "form generate FORM-TITLE", "genarates a custom task form at ~/.cf/<line-title>/<form-title>.html and its associated css and js files"
     method_option :line, :type => :string, :required => true, :aliases => "-l", :desc => "the line title with which this form should be associated with"
     method_option :labels, :type => :string, :required => true, :aliases => "-lb", :desc => "the labels that will be shown to the worker on MTurk window"
     method_option :fields, :type => :hash, :required => true, :aliases => "-fd", :desc => "the actual form fields and types that the worker will work/fill on"
