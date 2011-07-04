@@ -120,10 +120,20 @@ describe CF::Line do
   context "an existing line" do
     it "should get the line info" do
       VCR.use_cassette "lines/block/line-info", :record => :new_episodes do
-        line = CF::Line.new("Digitize Card", "Digitization", {:public => true, :description => "this is description"})
+        line = CF::Line.new("Digitize", "Digitization", {:public => true, :description => "this is description"})
         get_line = CF::Line.info(line)
         get_line.title.should eql("digitize-card")
         get_line.id.should eql(line.id)
+        get_line.public.should eql(true)
+        get_line.description.should eql("this is description")
+      end
+    end
+    
+    it "should get the line info" do
+      VCR.use_cassette "lines/block/line-info-title", :record => :new_episodes do
+        line = CF::Line.new("digitize", "Digitization", {:public => true, :description => "this is description"})
+        get_line = CF::Line.info(line.title)
+        get_line.title.should eql("digitize")
         get_line.public.should eql(true)
         get_line.description.should eql("this is description")
       end

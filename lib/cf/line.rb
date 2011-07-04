@@ -140,7 +140,11 @@ module CF
     # ===Syntax for get_line method is
     #   CF::Line.info(line)
     def self.info(line)
-      get("/lines/#{line.id}.json")
+      if line.class == CF::Line
+        get("/lines/#{line.id}.json")
+      else
+        get("/lines/#{line}/search.json")
+      end
     end
 
     # ==Finds a line
