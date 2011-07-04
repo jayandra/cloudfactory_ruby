@@ -27,7 +27,6 @@ Feature: Generate Custom Task Forms
       Skipping the form because it already exists.
       Use the -f flag to force it to overwrite or check and delete it manually.
       """
-
   Scenario: Scaffolding a custom task form with all the parameters and valid conditions
     Given an empty file named ".cf/brandiator/brandiator.yml"
     When I run `cf form generate my_form --line brandiator --labels company,website --fields ceo:string email:email`

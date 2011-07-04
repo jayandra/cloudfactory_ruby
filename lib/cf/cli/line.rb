@@ -15,9 +15,9 @@ module Cf
       line_destination = arr.join("/")
       template("line.tt", yaml_destination)
       # if with_custom_form
-        copy_file("css_file.css",     "#{line_destination}/css_file.css")
-        copy_file("html_file.html",   "#{line_destination}/html_file.html")
-        copy_file("js_file.js",       "#{line_destination}/js_file.js")
+        copy_file("css_file.css.erb",     "#{line_destination}/css_file.css")
+        copy_file("html_file.html.erb",   "#{line_destination}/html_file.html")
+        copy_file("js_file.js.erb",       "#{line_destination}/js_file.js")
       # end
     end
   end
