@@ -17,13 +17,34 @@ module Cf
       template("js_file.js.erb",       "#{line_destination}/#{form_title}.js")
     end
   end
+  
+  class FormPreview < Thor::Group
+    include Thor::Actions
+    include Cf::Config
+    source_root File.expand_path('../templates', __FILE__)
+    argument :form_title, :type => :string
+    argument :line_title, :type => :string
+    argument :form_content, :type => :string
+    
+    def generate_form_preview
+      line_destination = "#{find_home}/.cf/#{line_title}"
+      template("form_preview.html.erb",   "#{line_destination}/#{form_title}_preview.html")
+      # template("css_file.css.erb",     "#{line_destination}/#{form_title}.css")
+      # template("js_file.js.erb",       "#{line_destination}/#{form_title}.js")
+    end
+    
+    def launch_preview
+      line_destination = "#{find_home}/.cf/#{line_title}"
+      system "open #{line_destination}/#{form_title}_preview.html"
+    end
+  end
 end
 
 module Cf
   class Form < Thor
     include Cf::Config
     
-    desc "generate FORM-TITLE", "genarates a custom task form at ~/.cf/<line-title>/<form-title>.html and its associated css and js files"
+    desc "form generate FORM-TITLE", "genarates a custom task form at ~/.cf/<line-title>/<form-title>.html and its associated css and js files"
     method_option :line, :type => :string, :required => true, :aliases => "-l", :desc => "the line title with which this form should be associated with"
     method_option :labels, :type => :string, :required => true, :aliases => "-lb", :desc => "the labels that will be shown to the worker on MTurk window"
     method_option :fields, :type => :hash, :required => true, :aliases => "-fd", :desc => "the actual form fields and types that the worker will work/fill on"
@@ -32,10 +53,9 @@ module Cf
     def generate(form_title=nil)
       line_title = options[:line].underscore.dasherize
       line_destination = "#{find_home}/.cf/#{line_title}"
-      yaml_destination = "#{line_destination}/#{line_title}.yml"
       
       if form_title.present?
-        if File.exist?(yaml_destination)
+        if Dir.exist?(line_destination)
           FileUtils.rm_rf("#{line_destination}/#{form_title}.*", :verbose => true) if options.force? && File.exist?("#{line_destination}/#{form_title}.html")
           if File.exist?("#{line_destination}/#{form_title}.html")
             say "Skipping the form because it already exists.\nUse the -f flag to force it to overwrite or check and delete it manually.", :red
@@ -49,6 +69,29 @@ module Cf
         end
       else
         say "Title for the form is required.", :red
+      end
+    end
+    
+    desc "form preview FORM-TITLE", "genarates a html file with the contents of custom task form at ~/.cf/<line-title>/<form-title>.html and its associated css and js files appended to view it before uploading to CF"
+    method_option :line, :type => :string, :required => true, :aliases => "-l", :desc => "the line title of which the form to be previewd"
+    def preview(form_title=nil)
+      line_title = options[:line].underscore.dasherize
+      line_destination = "#{find_home}/.cf/#{line_title}"
+
+      if form_title.present?
+        if Dir.exist?(line_destination)
+          if File.exist?("#{line_destination}/#{form_title}.html")
+            say "Generating #{form_title} form for line: #{line_title}", :green
+            form_content = File.read("#{line_destination}/#{form_title}.html")
+            Cf::FormPreview.start([form_title, line_title, form_content])
+          else
+            say "The form named #{form_title} does not exist.", :red
+          end
+        else
+          say "The line with the name #{line_title} don't exist.\nFirst create a line with this name, generate the form and preview.", :red
+        end
+      else
+        say "Title of the form is required to preview.", :red
       end
     end
   end

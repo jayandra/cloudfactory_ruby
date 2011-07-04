@@ -15,9 +15,9 @@ module Cf
       line_destination = arr.join("/")
       template("line.tt", yaml_destination)
       # if with_custom_form
-        copy_file("css_file.css",     "#{line_destination}/css_file.css")
-        copy_file("html_file.html",   "#{line_destination}/html_file.html")
-        copy_file("js_file.js",       "#{line_destination}/js_file.js")
+        copy_file("css_file.css.erb",     "#{line_destination}/css_file.css")
+        copy_file("html_file.html.erb",   "#{line_destination}/html_file.html")
+        copy_file("js_file.js.erb",       "#{line_destination}/js_file.js")
       # end
     end
   end
@@ -27,7 +27,7 @@ end
 module Cf
   class Line < Thor
     include Cf::Config
-    desc "generate LINE-TITLE", "genarates a line template at ~/.cf/<line-title>/<line-title>.yml"
+    desc "line generate LINE-TITLE", "genarates a line template at ~/.cf/<line-title>/<line-title>.yml"
     method_option :force, :type => :boolean, :default => false, :aliases => "-f", :desc => "force to overwrite the files if the line already exists, default is false"
     # method_option :with_custom_form, :type => :boolean, :default => false, :aliases => "-wcf", :desc => "generate the template with custom task form and the sample files, default is true"
     
@@ -48,7 +48,7 @@ module Cf
       end
     end
     
-    desc "create LINE-TITLE", "takes the yaml file at ~/.cf/<line-title>/<line-title>.yml file and creates a new line at http://cloudfactory.com"
+    desc "line create LINE-TITLE", "takes the yaml file at ~/.cf/<line-title>/<line-title>.yml file and creates a new line at http://cloudfactory.com"
     def create(title=nil)
       line_source = "#{find_home}/.cf/#{title.underscore.dasherize}"
       yaml_source = "#{line_source}/#{title.underscore.dasherize}.yml"
