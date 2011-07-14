@@ -7,8 +7,7 @@ cli_directory = File.expand_path("../cf/cli", File.dirname(__FILE__))
 require "#{cli_directory}/config"
 require "#{cli_directory}/line"
 require "#{cli_directory}/form"
-
-
+require "#{cli_directory}/run"
 
 if ENV['TEST_CLI']
   require 'ruby-debug'
