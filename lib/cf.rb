@@ -15,7 +15,7 @@ Hash.send :include, Hashie::HashExtensions
 module CF  
 
   class << self
-    attr_accessor :api_key, :api_url, :api_version
+    attr_accessor :api_key, :account_name, :api_version, :api_url
     def configure
       yield self
     end    
@@ -27,6 +27,7 @@ module CF
   if ENV['TEST']
     API_CONFIG = YAML.load_file(File.expand_path("../../fixtures/api_credentials.yml", __FILE__))
     CF.configure do |config|
+      config.account_name = API_CONFIG['account_name']
       config.api_version = API_CONFIG['api_version']
       config.api_url = API_CONFIG['api_url']
       config.api_key = API_CONFIG['api_key']

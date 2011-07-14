@@ -3,8 +3,9 @@ require 'spec_helper'
 describe CF::FormField do
   context "create an form_field" do
     it "the plain ruby way" do
+      # WebMock.allow_net_connect!
       VCR.use_cassette "form-fields/plain-ruby/create-form-fields", :record => :new_episodes do
-        line = CF::Line.new("Digitize Card", "Digitization")
+        line = CF::Line.new("Digitize-111111", "Digitization")
         station = CF::Station.new({:type => "work"})
         line.stations station
 
@@ -33,10 +34,11 @@ describe CF::FormField do
     end
   
     it "in block DSL way" do
+      # WebMock.allow_net_connect!
       VCR.use_cassette "form-fields/block/create-using-block", :record => :new_episodes do
-        line = CF::Line.create("Digitize Card", "Digitization") do
+        line = CF::Line.create("Digitize-101111", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
           CF::Station.create({:line => self, :type => "work"}) do |station|
-            CF::InputFormat.new({:station => station, :name => "image_url", :required => true, :valid_type => "url"})
             CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
             CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
               CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
@@ -45,20 +47,20 @@ describe CF::FormField do
             end
           end
         end
-        line.title.should eq("Digitize Card")
+        line.title.should eq("Digitize-101111")
         line.department_name.should eq("Digitization")
-        line.stations.first.input_formats.first.name.should eql("image_url")
-        line.stations.first.type.should eq("Work")
+        line.input_formats.first.name.should eql("image_url")
+        line.stations.first.type.should eq("WorkStation")
         line.stations.first.worker.number.should eq(2)
         line.stations.first.form.instruction.should eq("Describe")
         line.stations.first.form.form_fields[0].label.should eq("First Name")
         line.stations.first.form.form_fields[0].field_type.should eq("SA")
-        line.stations.first.form.form_fields[0].required.should eq("true")
+        line.stations.first.form.form_fields[0].required.should eq(true)
         line.stations.first.form.form_fields[1].label.should eq("Middle Name")
         line.stations.first.form.form_fields[1].field_type.should eq("SA")
         line.stations.first.form.form_fields[2].label.should eq("Last Name")
         line.stations.first.form.form_fields[2].field_type.should eq("SA")
-        line.stations.first.form.form_fields[2].required.should eq("true")
+        line.stations.first.form.form_fields[2].required.should eq(true)
       end
     end
   end

@@ -5,8 +5,9 @@ module CF
   describe CF::GoogleTranslateRobot do
     context "create a google translator worker" do
       it "should create google_translate_robot worker for first station in a plain ruby way" do
-        VCR.use_cassette "google_translate_robot/block/create-worker-in-first-station", :record => :new_episodes do
-          line = CF::Line.new("Digitize Card","Digitization")
+        WebMock.allow_net_connect!
+        # VCR.use_cassette "google_translate_robot/block/create-worker-in-first-station", :record => :new_episodes do
+          line = CF::Line.new("Digitize-rd-2","Digitization")
           input_format = CF::InputFormat.new({:name => "text", :required => true, :valid_type => "general"})
           line.input_formats input_format
 
@@ -26,10 +27,10 @@ module CF
           @final_output = run.final_output
           line.stations.first.worker.number.should eq(1)
           @final_output.first.final_outputs.first['text'].should eql('Empecé a amar a Monzón')
-        end
+        # end
       end
       
-      it "should create google_translate_robot worker for first station in a plain ruby way" do
+      it "should create google_translate_robot worker for first station in a plain ruby way without passing station parameter within the syntax" do
         VCR.use_cassette "google_translate_robot/block/create-worker-in-plain-ruby-way", :record => :new_episodes do
           line = CF::Line.new("Digitize Card","Digitization")
           input_format = CF::InputFormat.new({:name => "text", :required => true, :valid_type => "general"})
@@ -57,7 +58,6 @@ module CF
       
       it "should create google_translate_robot worker for multiple station in a plain ruby way" do
         VCR.use_cassette "google_translate_robot/block/create-worker-multiple-station", :record => :new_episodes do
-        # WebMock.allow_net_connect!
           line = CF::Line.create("Google Translate Robot","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
             CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
@@ -89,6 +89,26 @@ module CF
           @final_output = run.final_output
           line.stations.last.worker.number.should eq(1)
           @final_output.first.final_outputs.first['ceo'].should eql("Él es el hombre cuyo apellido es el empleo, que crear puestos de trabajo")
+        end
+      end
+      
+      it "should create google_translate_robot in block DSL way" do
+        VCR.use_cassette "google_translate_robot/block/create-worker-block-dsl-way", :record => :new_episodes do
+          line = CF::Line.create("Google Translate Robot","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "text", :required => true, :valid_type => "general"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::GoogleTranslateRobot.create({:station => s, :data => ["{text}"], :from => "en", :to => "es"})
+              CF::TaskForm.create({:station => s, :title => "Enter text", :instruction => "Describe"}) do |i|
+                CF::FormField.new({:form => i, :label => "Description", :field_type => "SA", :required => "true"})
+              end
+            end
+          end
+          
+          run = CF::Run.create(line, "google translate robot", [{"text"=> "I started loving Monsoon", "meta_data_text"=>"monsoon"}])
+          
+          @final_output = run.final_output
+          line.stations.first.worker.number.should eq(1)
+          @final_output.first.final_outputs.first['text'].should eql('Empecé a amar a Monzón')
         end
       end
     end

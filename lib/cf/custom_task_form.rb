@@ -20,6 +20,8 @@ module CF
     # station attribute is required for association with custom_from object
     attr_accessor :station
 
+    ACCOUNT_NAME = CF.account_name
+    
     # ==Initializes a new CustomForm
     # ==Usage custom_instruction.new(hash):
     #
@@ -35,8 +37,10 @@ module CF
       @raw_css = options[:raw_css]
       @raw_javascript = options[:raw_javascript]
       if @station
-        @resp = self.class.post("/stations/#{@station.id}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
-        @id = @resp.id
+        @resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@station.line_title.downcase}/stations/#{@station.index}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
+        
+        # custom task form response not well formatted 
+        # @id = @resp.from.id
         custom_form = CF::CustomTaskForm.new({})
         @resp.to_hash.each_pair do |k,v|
           custom_form.send("#{k}=",v) if custom_form.respond_to?(k)

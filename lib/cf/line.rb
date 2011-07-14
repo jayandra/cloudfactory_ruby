@@ -29,11 +29,12 @@ module CF
     #attr_accessor :input_format_instance
     #attr_accessor :station_instance
 
+    ACCOUNT_NAME = CF.account_name
+    
     # ==Initializes a new line
     # ==Usage of line.new("line_name")
     #
     #     line = Line.new("Digit", "Survey")
-
     def initialize(title, department_name, options={})
       @input_formats =[]
       @stations =[]
@@ -41,7 +42,7 @@ module CF
       @department_name = department_name
       @public = options[:public]
       @description = options[:description]
-      resp = self.class.post("/lines.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
+      resp = self.class.post("/lines/#{ACCOUNT_NAME}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       self.id = resp.id
     end
 
@@ -60,11 +61,14 @@ module CF
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
         else
-          resp = CF::Station.post("/lines/#{id}/stations.json", :station => {:type => type, :input_formats => {:except => @except, :extra => @extra}})
+          resp = CF::Station.post("/lines/#{ACCOUNT_NAME}/#{self.title.downcase}/stations.json", :station => {:type => type, :input_formats => {:except => @except, :extra => @extra}})
           station = CF::Station.new()
           resp.to_hash.each_pair do |k,v|
             station.send("#{k}=",v) if station.respond_to?(k)
           end
+          station.line = self
+          # station.id = resp.id
+          station.line_title = self.title
           @stations << station
         end
       else
@@ -75,7 +79,7 @@ module CF
     def << stations #:nodoc:
       type = stations.type
       @stations << stations
-      resp = CF::Station.post("/lines/#{id}/stations.json", :station => {:type => type})
+      resp = CF::Station.post("/lines/#{self.id}/stations.json", :station => {:type => type})
     end
 
 
@@ -122,9 +126,9 @@ module CF
         name = input_formats_value.name
         required = input_formats_value.required
         valid_type = input_formats_value.valid_type
-        resp = CF::InputFormat.post("/lines/#{self.id}/input_formats.json", :input_format => {:name => name, :required => required, :valid_type => valid_type})
+        resp = CF::InputFormat.post("/lines/#{ACCOUNT_NAME}/#{self.title.downcase}/input_formats.json", :input_format => {:name => name, :required => required, :valid_type => valid_type})
         input_format = CF::InputFormat.new()
-        resp.to_hash.each_pair do |k,v|
+        resp.each_pair do |k,v|
           input_format.send("#{k}=",v) if input_format.respond_to?(k)
         end
         @input_formats << input_format
@@ -141,9 +145,9 @@ module CF
     #   CF::Line.info(line)
     def self.info(line)
       if line.class == CF::Line
-        get("/lines/#{line.id}.json")
+        resp = get("/lines/#{ACCOUNT_NAME}/#{line.title.downcase}.json")
       else
-        get("/lines/#{line}/search.json")
+        resp = get("/lines/#{ACCOUNT_NAME}/#{line.downcase}.json")
       end
     end
 
@@ -157,7 +161,7 @@ module CF
     # ===Syntax for all method is
     #   CF::Line.all
     def self.all
-      get("/lines.json")
+      get("/lines/#{ACCOUNT_NAME}.json")
     end
 
     # ==Return all the lines whose public value is set true
@@ -173,11 +177,12 @@ module CF
     #   line.update({:title => "New Title"})
     # * This changes the title of the "line" object from "Digitize Card" to "New Title"
     def update(options={})
+      old_title = self.title
       @title = options[:title]
       @department_name = options[:department_name]
       @public = options[:public]
       @description = options[:description]
-      self.class.put("/lines/#{id}.json", :line => {:title => @title, :department_name => @department_name, :public => @public, :description => @description})
+      self.class.put("/lines/#{ACCOUNT_NAME}/#{old_title.downcase}.json", :line => {:title => @title, :department_name => @department_name, :public => @public, :description => @description})
     end
 
     # ==Deletes a line
@@ -185,7 +190,7 @@ module CF
     #   line = CF::Line.new("Digitize Card", "Survey")
     #   line.delete
     def delete
-      self.class.delete("/lines/#{id}.json")
+      self.class.delete("/lines/#{ACCOUNT_NAME}/#{self.title.downcase}.json")
     end
   end
 end
