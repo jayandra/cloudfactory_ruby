@@ -17,6 +17,8 @@ module CF
     # station id attribute required for API Calls
     attr_accessor :station_id
 
+    ACCOUNT_NAME = CF.account_name
+    
     # ==Initializes a new "form_field" object
     # ==Usage of form_field.new(hash):
     #   line = CF::Line.create("Digitize", "Survey") do |l|   
@@ -32,9 +34,10 @@ module CF
       @field_type   = options[:field_type]
       @required     = options[:required]
       if !@form.nil?
-        resp = self.class.post("/stations/#{@form.station.id}/form/form_fields.json", :form_field => 
-        {:label => @label, :field_type => @field_type, :required => @required})
-        @id = resp.id
+        resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@form.station.line['title'].downcase}/stations/#{@form.station.index}/form_fields.json", :form_field => {:label => @label, :field_type => @field_type, :required => @required})
+        resp.to_hash.each_pair do |k,v|
+          self.send("#{k}=",v) if self.respond_to?(k)
+        end
         @form.station.form.form_fields = self
       end
     end

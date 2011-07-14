@@ -3,6 +3,7 @@ require 'spec_helper'
 describe CF::CustomTaskForm do
   context "create a standard_instruction" do
     it "in block DSL way" do
+      # WebMock.allow_net_connect!
       VCR.use_cassette "custom-task-form/block/create", :record => :new_episodes do
       html =   '<div id="form-content">
                   <div id="instructions">
@@ -74,17 +75,17 @@ describe CF::CustomTaskForm do
                       </script>'
 
       
-        line = CF::Line.create("Digitize Card for custom form", "Digitization") do
+        line = CF::Line.create("Digitizecustomform11", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "Name", :required => true, :valid_format => "general"})
+          CF::InputFormat.new({:line => self, :name => "Contact", :required => true, :valid_type => "url"})
           CF::Station.create({:line => self, :type => "tournament", :max_judges => 10, :auto_judge => true}) do |s|
             CF::HumanWorker.new({:station => s, :number => 3, :reward => 20})
-            CF::InputFormat.new({:station => s, :name => "Name", :required => true, :valid_format => "general"})
-            CF::InputFormat.new({:station => s, :name => "Contact", :required => true, :valid_type => "url"})
             CF::CustomTaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe", :raw_html => html, :raw_css => css, :raw_javascript => javascript})
           end
         end
-        line.title.should eql("Digitize Card for custom form")
+        line.title.should eql("Digitizecustomform11")
         line.department_name.should eql("Digitization")
-        line.stations.first.type.should eql("Tournament")
+        line.stations.first.type.should eql("TournamentStation")
         CGI.unescape_html(line.stations.first.form.raw_html).should eql(html)
         CGI.unescape_html(line.stations.first.form.raw_css).should eql(css)
         CGI.unescape_html(line.stations.first.form.raw_javascript).should eql(javascript)
@@ -162,22 +163,24 @@ describe CF::CustomTaskForm do
                         });
                       </script>'
       
-        line = CF::Line.new("Digitize Card plain ruby", "Digitization")
-        station = CF::Station.new({:type => "work"})
-        line.stations station
+        line = CF::Line.new("Digitizeplainruby111", "Digitization")
+        
         input_format_1 = CF::InputFormat.new({:name => "Name", :required => true, :valid_format => "general"})
         input_format_2 = CF::InputFormat.new({:name => "Contact", :required => true, :valid_type => "url"})
+        line.input_formats input_format_1
+        line.input_formats input_format_2
         
-        line.stations.first.input_formats input_format_1
-        line.stations.first.input_formats input_format_2
+        station = CF::Station.new({:type => "work"})
+        line.stations station
+        
         worker = CF::HumanWorker.new({:number => 1, :reward => 20})
         line.stations.first.worker = worker
 
         form = CF::CustomTaskForm.new({:title => "Enter text from a business card image", :instruction => "Describe", :raw_html => html, :raw_css => css, :raw_javascript => javascript})
         line.stations.first.form = form
-        line.title.should eql("Digitize Card plain ruby")
+        line.title.should eql("Digitizeplainruby111")
         line.department_name.should eql("Digitization")
-        line.stations.first.type.should eql("Work")
+        line.stations.first.type.should eql("WorkStation")
         CGI.unescape_html(line.stations.first.form.raw_html).should eql(html)
         CGI.unescape_html(line.stations.first.form.raw_css).should eql(css)
         CGI.unescape_html(line.stations.first.form.raw_javascript).should eql(javascript)

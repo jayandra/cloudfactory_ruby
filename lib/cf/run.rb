@@ -13,6 +13,8 @@ module CF
 
     attr_accessor :id
 
+    ACCOUNT_NAME = CF.account_name
+    
     # ==Initializes a new Run
     # ==Usage Example:
     #
@@ -37,11 +39,11 @@ module CF
         @file = input
         @param_data = File.new(input, 'rb')
         @param_for_input = :file
-        resp = self.class.post("/lines/#{@line.id}/runs.json", {:run => {:title => @title}, @param_for_input => @param_data})
+        resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json", {:data => {:run => {:title => @title}}, @param_for_input => @param_data})
       else
         @input = input
         @param_data = input
-        @param_for_input = :data
+        @param_for_input = :inputs
         
         built_data = ""
         @param_data.each do |d|
@@ -49,11 +51,12 @@ module CF
             built_data += " -d \"data[][#{k}]=#{v}\""
           end
         end.join(" ")
-        uri = "-X POST #{built_data} -d \"run[title]=#{@title}\" http://manish.lvh.me:3000/api/v1/lines/#{@line.id}/runs.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
+        uri = "-X POST #{built_data} -d \"run[title]=#{@title}\" http://manish.lvh.me:3000/api/v1/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
 
         response = `curl #{uri}`
-        run_id = JSON.load(response)['_id']
-        url = "http://manish.lvh.me:3000/api/v1/runs/#{run_id}.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
+        debugger
+        run_id = JSON.load(response)['run']['id']
+        url = "http://manish.lvh.me:3000/api/v1/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs/#{run_id}.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
         respo = `curl -I #{url}`
         if respo.scan(/\d{3}/).first == "200"
           parsed_response = JSON.load(response)
@@ -68,7 +71,7 @@ module CF
           end
         end
       end
-      @id = resp.id
+      # @id = resp.id
     end
 
     # ==Creates a new Run
@@ -112,7 +115,7 @@ module CF
     
     def final_output
       resp = self.class.get("/runs/#{self.id}/final_outputs.json")
-      
+      debugger
       @final_output =[]
       resp.each do |r|
         result = FinalOutput.new()

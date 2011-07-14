@@ -6,51 +6,50 @@ module CF
     attr_accessor :type
 
     # line attribute is parent attribute for station & is required for making Api call
-    attr_accessor :line_id
+    attr_accessor :line_title
 
     # ID of the station
-    attr_accessor :id, :extra, :except
-
+    attr_accessor :id, :extra, :except, :index, :line
+    
+    ACCOUNT_NAME = CF.account_name
+    
     # ==Initializes a new station
     # ===Usage Example
     #   line = CF::Line.new("Digitize", "Survey")
     #   station = CF::Station.new({:line => line, :type => "Work"})
     def initialize(options={})
       @input_formats =[]
-      @line_id = options[:line].nil? ? nil : options[:line].id
+      @line_title = options[:line].nil? ? nil : options[:line].title
       @type = options[:type].nil? ? nil : options[:type].camelize
       @max_judges = options[:max_judges]
       @auto_judge = options[:auto_judge]
       @except = options[:input_formats][:except] if options[:input_formats].presence != nil
       @extra = options[:input_formats][:extra] if options[:input_formats].presence != nil
-      @line = options[:line]
-      if @line_id
+      @line_instance = options[:line]
+      if @line_title
         if @type == "Improve"
           line = options[:line]
           if line.stations.size < 1
             raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
           else
-            resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :input_formats => {:except => @except, :extra => @extra}})
-            @id = resp.id
+            resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@line_instance.title.downcase}/stations.json", :station => {:type => @type, :input_formats => {:except => @except, :extra => @extra}})
             resp.to_hash.each_pair do |k,v|
               self.send("#{k}=",v) if self.respond_to?(k)
             end
-            @line.stations = self
+            @line_instance.stations = self
           end
         elsif @type == "Tournament"
-          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :line_id => @line_id, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }, :input_formats => {:except => @except, :extra => @extra}})
-          @id = resp.id
+          resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@line_instance.title.downcase}/stations.json", :station => {:type => @type, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }, :input_formats => {:except => @except, :extra => @extra}})
           resp.to_hash.each_pair do |k,v|
             self.send("#{k}=",v) if self.respond_to?(k)
           end
-          @line.stations = self
+          @line_instance.stations = self
         else
-          resp = self.class.post("/lines/#{@line_id}/stations.json", :station => {:type => @type, :input_formats => {:except => @except, :extra => @extra}})
-          @id = resp.id
+          resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@line_instance.title.downcase}/stations.json", :station => {:type => @type, :input_formats => {:except => @except, :extra => @extra}})
           resp.to_hash.each_pair do |k,v|
             self.send("#{k}=",v) if self.respond_to?(k)
           end
-          @line.stations = self
+          @line_instance.stations = self
         end
       end
     end
@@ -118,7 +117,7 @@ module CF
         else
           number = worker_instance.number
           reward = worker_instance.reward
-          resp = CF::HumanWorker.post("/stations/#{self.id}/workers.json", :worker => {:number => number, :reward => reward, :type => "HumanWorker"})
+          resp = CF::HumanWorker.post("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:number => number, :reward => reward, :type => "HumanWorker"})
           worker = CF::HumanWorker.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
@@ -133,8 +132,24 @@ module CF
           @data = worker_instance.data
           @from = worker_instance.from
           @to = worker_instance.to
-          resp = CF::GoogleTranslateRobot.post("/stations/#{self.id}/workers.json", :worker => {:number => 1, :reward => 0, :type => "google_translate_robot", :data => @data, :from => @from, :to => @to})
+          resp = CF::GoogleTranslateRobot.post("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:number => 1, :reward => 0, :type => "google_translate_robot", :data => @data, :from => @from, :to => @to})
           worker = CF::GoogleTranslateRobot.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          @worker_instance = worker
+        end
+      
+      when "MediaConverterRobot"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @url = worker_instance.url
+          @to = worker_instance.to
+          @audio_quality = worker_instance.audio_quality
+          @video_quality = worker_instance.video_quality
+          resp = CF::MediaConverterRobot.post("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => [@url], :to => @to, :audio_quality => @audio_quality, :video_quality => @video_quality})
+          worker = CF::MediaConverterRobot.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
@@ -147,7 +162,7 @@ module CF
         else
           @number = worker_instance.number.nil? ? 1 : worker_instance.number
           @reward = worker_instance.reward.nil? ? 0 : worker_instance.reward
-          resp = worker_instance.class.post("/stations/#{self.id}/workers.json", :body => {:worker => {:number => @number, :reward => @reward, :type => type}})
+          resp = worker_instance.class.post("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :body => {:worker => {:number => @number, :reward => @reward, :type => type}})
           worker = worker_instance.class.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
@@ -194,15 +209,13 @@ module CF
           @html = @form.raw_html
           @css = @form.raw_css
           @javascript = @form.raw_javascript
-          @resp = CF::CustomTaskForm.post("/stations/#{self.id}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @html, :raw_css => @css, :raw_javascript => @javascript})
+          @resp = CF::CustomTaskForm.post("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @html, :raw_css => @css, :raw_javascript => @javascript})
         else
-          @resp = CF::TaskForm.post("/stations/#{self.id}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => type}) 
+          @resp = CF::TaskForm.post("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => type}) 
         end
-        
         @resp.to_hash.each_pair do |k,v|
           form.send("#{k}=",v) if form.respond_to?(k)
         end
-        
         form.station = self
         @form_instance = form
       end
@@ -221,15 +234,14 @@ module CF
         name = input_formats_value.name
         required = input_formats_value.required
         valid_type = input_formats_value.valid_type
-        resp = CF::InputFormat.post("/lines/#{self.line_id}/input_formats.json", :input_format => {:name => name, :required => required, :valid_type => valid_type})
-
+        resp = CF::InputFormat.post("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/input_formats.json", :input_format => {:name => name, :required => required, :valid_type => valid_type})
         input_format = CF::InputFormat.new()
-        resp.to_hash.each_pair do |k,v|
+        resp.input_format.to_hash.each_pair do |k,v|
           input_format.send("#{k}=",v) if input_format.respond_to?(k)
         end
         @input_formats << input_format
       else
-        @input_formats
+        @input_formats.first
       end
     end
     def input_formats=(input_formats_value) # :nodoc:
@@ -258,7 +270,7 @@ module CF
     #   got_station = line.stations[0].get
     # returns the station object
     def get
-      self.class.get("/lines/#{self.line_id}/stations/#{self.id}.json")
+      self.class.get("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}.json")
     end
 
     # ==Returns information of form
@@ -278,7 +290,7 @@ module CF
     #
     #   @got_form = line.stations[0].get_form
     def get_form
-      self.class.get("/stations/#{self.id}/form.json")
+      self.class.get("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}/form.json")
     end
 
     # ==Returns all the stations associated with a particular line
@@ -299,7 +311,7 @@ module CF
     #   CF::Station.all(line)
     # returns all stations
     def self.all(line)
-      get("/lines/#{line.id}/stations.json")
+      get("/lines/#{ACCOUNT_NAME}/#{line.title.downcase}/stations.json")
     end
 
     # ==Deletes a station
@@ -311,7 +323,7 @@ module CF
     #
     #   station.delete
     def delete
-      self.class.delete("/lines/#{self.line_id}/stations/#{self.id}.json")
+      self.class.delete("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}.json")
     end
   end
 end

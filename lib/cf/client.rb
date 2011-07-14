@@ -33,16 +33,17 @@ module CF
         when 500...600; raise ServerError.new(response.code)
         else; response
         end
-
+        
         unless response.length == 2
           parsed_response = JSON.load(response)
           if parsed_response.is_a?(Array)
             parsed_response.map{|item| Hashie::Mash.new(item)}
           else
-            new_response = parsed_response.inject({ }) do |x, (k,v)|
-                            x[k.sub(/\A_/, '')] = v
-                            x
-                          end
+            parsed_resp = parsed_response.merge("code" => response.code)
+            new_response = parsed_resp.inject({ }) do |x, (k,v)|
+              x[k.sub(/\A_/, '')] = v
+              x
+            end
             Hashie::Mash.new(new_response)
           end
         else

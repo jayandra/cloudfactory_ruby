@@ -11,7 +11,10 @@ module CF
       attr_accessor :reward
       attr_accessor :station
       attr_accessor :id, :data, :from, :to 
-
+      attr_accessor :url, :audio_quality, :video_quality
+      
+      # ACCOUNT_NAME = CF.account_name
+      
       case host
       when "HumanWorker"
         # Initializes new worker
@@ -20,7 +23,7 @@ module CF
           @number  = options[:number].nil? ? 1 : options[:number]
           @reward  = options[:reward]
           if @station
-            resp = CF::HumanWorker.post("/stations/#{@station.id}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
+            resp = CF::HumanWorker.post("/lines/#{ACCOUNT_NAME}/#{@station.line['title'].downcase}/stations/#{@station.index}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
             worker = CF::HumanWorker.new({})
             resp.to_hash.each_pair do |k,v|
               worker.send("#{k}=",v) if worker.respond_to?(k)
@@ -42,11 +45,23 @@ module CF
               @data = options[:data]
               @from = options[:from]
               @to = options[:to]
+            elsif type == "media_converter_robot"
+              @url = options[:url]
+              @to = options[:to]
+              @audio_quality = options[:audio_quality]
+              @video_quality = options[:video_quality]
             end
           end
           if @station
             if type == "google_translate_robot"
-              resp = self.post("/stations/#{@station.id}/workers.json", :worker => {:number => 1, :reward => 0, :type => type, :data => options[:data], :from => options[:from], :to => options[:to]})
+              resp = self.post("/lines/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:number => 1, :reward => 0, :type => type, :data => options[:data], :from => options[:from], :to => options[:to]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            elsif type == "media_converter_robot"
+              resp = self.post("/lines/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => ["#{options[:url]}"], :to => options[:to], :audio_quality => options[:audio_quality], :video_quality => options[:video_quality]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end

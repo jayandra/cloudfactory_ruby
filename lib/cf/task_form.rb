@@ -17,6 +17,8 @@ module CF
     # ID of Standard Instruction
     attr_accessor :id
 
+    ACCOUNT_NAME = CF.account_name
+    
     # ==Initializes a new Form
     # ==Usage of standard_instruction.new
     #   attrs = {:title => "Enter text from a business card image",
@@ -29,8 +31,10 @@ module CF
       @title       = options[:title]
       @instruction = options[:instruction]
       if !@station.nil?
-        resp = self.class.post("/stations/#{station.id}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "TaskForm"})
-        @id = resp.id
+        resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@station.line['title'].downcase}/stations/#{@station.index}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "TaskForm"})
+        resp.to_hash.each_pair do |k,v|
+          self.send("#{k}=",v) if self.respond_to?(k)
+        end
         @station.form = self
       end
     end
@@ -96,8 +100,7 @@ module CF
         label = form_fields.label
         field_type = form_fields.field_type
         required = form_fields.required
-        resp = CF::FormField.post("/stations/#{self.station.id}/form/form_fields.json", :form_field => 
-          {:label => label, :field_type => field_type, :required => required})
+        resp = CF::FormField.post("/lines/#{ACCOUNT_NAME}/#{self.station.line_title.downcase}/stations/#{self.station.index}/form_fields.json", :form_field => {:label => label, :field_type => field_type, :required => required})
         form_field = CF::FormField.new({})
         resp.to_hash.each_pair do |k,v|
           form_field.send("#{k}=",v) if form_field.respond_to?(k)
@@ -129,7 +132,7 @@ module CF
     #   CF::Form.delete_instruction(station)
     # deletes standard_instruction of a station
     def self.delete_instruction(station)
-      delete("/stations/#{station.id}/form.json")
+      delete("/lines/#{ACCOUNT_NAME}/#{station.line_title.downcase}/stations/#{station.index}/form.json")
     end
   end
 end

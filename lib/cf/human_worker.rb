@@ -13,6 +13,8 @@ module CF
   #
   class HumanWorker
     
+    ACCOUNT_NAME = CF.account_name
+    
     include Worker
     
   end
