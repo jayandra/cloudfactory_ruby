@@ -124,7 +124,7 @@ describe CF::Line do
   end
 
   context "an existing line" do
-    it "should get the line info" do
+    it "should get the line info by passing the line object" do
       # WebMock.allow_net_connect!
       VCR.use_cassette "lines/block/line-info", :record => :new_episodes do
         line = CF::Line.new("Digitize-22", "Digitization", {:public => true, :description => "this is description"})
@@ -135,7 +135,7 @@ describe CF::Line do
       end
     end
     
-    it "should get the line info" do
+    it "should get the line info by passing just the title" do
       # WebMock.allow_net_connect!
       VCR.use_cassette "lines/block/line-info-title", :record => :new_episodes do
         line = CF::Line.new("digitizee", "Digitization", {:public => true, :description => "this is description"})
@@ -145,6 +145,16 @@ describe CF::Line do
         get_line.description.should eql("this is description")
       end
     end
+
+    it "should render the error sent via the API overriding the RestClient one" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "lines/block/non-existing-line", :record => :new_episodes do
+        get_line = CF::Line.info("non-existing-line-title")
+        get_line.code.should eql(404)
+        get_line.error.message.should match("Line document not found using selector")
+      end
+    end
+
   end
 
   context "Updating a line" do

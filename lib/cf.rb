@@ -1,6 +1,7 @@
 require 'rails'
 require 'hashie'
 require 'active_support/concern'
+#require 'active_support/rescuable'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
@@ -34,25 +35,53 @@ module CF
     end
   end
   
-  class CFError < StandardError
-    attr_reader :data
-  
-    def initialize(data)
-      @data = data
-      super
-    end
-  end
-
-  class ClientError < StandardError; end
-  class ServerError < CFError; end
-  class General     < CFError; end
-  
-  class ImproveStationNotAllowed     < CFError; end
-  
-  class Unauthorized < ClientError; end
-  class NotFound     < ClientError; end
-  
-  class Unavailable  < StandardError; end
+  # FIX: raise the exception along with the response error message
+  # Ref: http://www.simonecarletti.com/blog/2009/12/inside-ruby-on-rails-rescuable-and-rescue_from/
+  # class CFError < StandardError
+  #   
+  #   include ActiveSupport::Rescuable
+  #   
+  #   attr_reader :data
+  #   rescue_from NotFound, :with => :render_error
+  #   
+  #   def initialize(data)
+  #     @data = data
+  #     # debugger
+  #     super
+  #   end
+  #   
+  #   def to_s
+  #     "Error: #{@data}"
+  #   end
+  #   
+  #   def render_error(exception)
+  #     @error = exception
+  #     "Error: #{exception.class}: #{exception.message}"
+  #     debugger
+  #     puts ""
+  #   end
+  #   
+  # end
+  # 
+  # 
+  # class ClientError < StandardError; end
+  # class ServerError < CFError; end
+  # class General     < CFError; end
+  # 
+  # class ImproveStationNotAllowed     < CFError; end
+  # 
+  # class Unauthorized < ClientError; end
+  # class NotFound     < ClientError
+  #   # attr_accessor :data
+  #   # def initialize(data)
+  #   #   
+  #   #   @data = data
+  #   #   debugger
+  #   #   puts ""
+  #   # end
+  # end
+  # 
+  # class Unavailable  < StandardError; end
 end
 
 require "#{directory}/cf/client"
