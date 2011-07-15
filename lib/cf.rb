@@ -85,6 +85,7 @@ module CF
 end
 
 require "#{directory}/cf/client"
+require "#{directory}/cf/account"
 require "#{directory}/cf/line"
 require "#{directory}/cf/input_format"
 require "#{directory}/cf/worker"
