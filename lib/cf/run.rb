@@ -15,7 +15,7 @@ module CF
     attr_accessor :id
 
     ACCOUNT_NAME = CF.account_name
-    
+
     # ==Initializes a new Run
     # ==Usage Example:
     #
@@ -45,43 +45,16 @@ module CF
         @input = input
         @param_data = input
         @param_for_input = :inputs
-        options = {
-          :body => {
-           :api_key => CF.api_key,
-           :data =>{:run => { :title => @title }, :inputs => @param_data
-            }
+        options = 
+        {
+          :body => 
+          {
+            :api_key => CF.api_key,
+            :data =>{:run => { :title => @title }, :inputs => @param_data}
           }
         }
-
         run =  HTTParty.post("#{CF.api_url}/#{CF.api_version}/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json",options)
-        
-        # built_data = " -d \"run[title]=#{@title}\""
-        #         @param_data.each do |d|
-        #           d.each do |k, v|
-        #             built_data += " -d \"inputs[][#{k}]=#{v}\""
-        #           end
-        #         end.join(" ")
-        #         debugger
-        #         uri = "-X POST #{:data => built_data} http://manish.lvh.me:3000/api/v1/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
-        #         response = `curl #{uri}`
-        #         debugger
-        #         run_id = JSON.load(response)['run']['id']
-        #         url = "http://manish.lvh.me:3000/api/v1/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs/#{run_id}.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
-        #         respo = `curl -I #{url}`
-        #         if respo.scan(/\d{3}/).first == "200"
-        #           parsed_response = JSON.load(response)
-        #           if parsed_response.is_a?(Array)
-        #             parsed_response.map{|item| Hashie::Mash.new(item)}
-        #           else
-        #             new_response = parsed_response.inject({ }) do |x, (k,v)|
-        #                             x[k.sub(/\A_/, '')] = v
-        #                             x
-        #                           end
-        #             resp = Hashie::Mash.new(new_response)
-        #           end
-        #         end
       end
-      # @id = resp.id
     end
 
     # ==Creates a new Run
@@ -108,10 +81,10 @@ module CF
     def get # :nodoc:
       self.class.get("/lines/#{@line.id}/runs/#{@id}.json")
     end
-    
+
     def self.get_final_output(run_id)
       resp = get("/runs/#{run_id}/final_outputs.json")
-      
+
       @final_output =[]
       resp.each do |r|
         result = FinalOutput.new()
@@ -122,35 +95,33 @@ module CF
       end
       return @final_output
     end
-    
+
     def final_output
-      resp = self.class.get("/runs/#{ACCOUNT_NAME}/#{self.title}/final_outputs.json")
-      debugger
+      resp = self.class.get("/runs/#{ACCOUNT_NAME}/#{self.title.downcase}/output.json")
       @final_output =[]
-      resp.each do |r|
+      resp['output'].each do |r|
         result = FinalOutput.new()
         r.to_hash.each_pair do |k,v|
           result.send("#{k}=",v) if result.respond_to?(k)
         end
-        debugger
         @final_output << result
       end
       return @final_output
     end
-    
+
     def output(options={})
       station_no = options[:station]
       line = self.line
       station = line.stations[station_no-1]
-      resp = self.class.get("/runs/#{self.id}/output/#{station.id}.json")
+      resp = self.class.get("/runs/#{ACCOUNT_NAME}/#{self.title.downcase}/output/#{station.index}.json")
       @final_output =[]
-        result = FinalOutput.new()
-        resp.to_hash.each_pair do |k,v|
-          result.send("#{k}=",v) if result.respond_to?(k)
-        end
-        @final_output << result
+      result = FinalOutput.new()
+      resp['output'].to_hash.each_pair do |k,v|
+        result.send("#{k}=",v) if result.respond_to?(k)
+      end
+      @final_output << result
       return @final_output
     end
-    
+
   end
 end

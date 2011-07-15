@@ -13,6 +13,8 @@ module CF
   #
   class MediaConverterRobot
     
+    ACCOUNT_NAME = CF.account_name
+    
     include Worker
 
   end

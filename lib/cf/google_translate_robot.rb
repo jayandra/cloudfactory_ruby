@@ -13,6 +13,8 @@ module CF
   #
   class GoogleTranslateRobot
     
+    ACCOUNT_NAME = CF.account_name
+    
     include Worker
 
   end

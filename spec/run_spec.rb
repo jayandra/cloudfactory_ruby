@@ -135,20 +135,20 @@ module CF
    
       it "should fetch result" do
         VCR.use_cassette "run/block/create-run-fetch-result", :record => :new_episodes do
-          line = CF::Line.create("Digarde-0081","Digitization") do |l|
+          line = CF::Line.create("Digarde-00111111111","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
             CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
               CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
-              CF::TaskForm.create({:station => s, :title => "Enter text from card image", :instruction => "Describe"}) do |i|
+              CF::TaskForm.create({:station => s, :title => "Enter blah from card image", :instruction => "Describe"}) do |i|
                 CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
                 CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
                 CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
               end
             end
           end
-          run = CF::Run.create(line, "run-name-result-1", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
-          debugger
+          run = CF::Run.create(line, "run-name-result-0111111111", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          # debugger
           @final_output = run.final_output
           @final_output.first.meta_data['company'].should eql("Apple")
           @final_output.first.final_outputs.last['first-name'].should eql("Bob")
@@ -158,10 +158,10 @@ module CF
       
       xit "should fetch result of the specified station" do
         VCR.use_cassette "run/block/fetch-result-of-specified-station", :record => :new_episodes do
-          line = CF::Line.create("Digitize Card","Digitization") do |l|
+          line = CF::Line.create("Digitizeard-run-111","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
-              CF::InputFormat.new({:station => s, :name => "Company", :required => true, :valid_type => "general"})
-              CF::InputFormat.new({:station => s, :name => "Website", :required => true, :valid_type => "url"})
               CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
               CF::TaskForm.create({:station => s, :title => "Enter name of CEO :station", :instruction => "Describe"}) do |i|
                 CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
@@ -170,16 +170,16 @@ module CF
               end
             end
           end
-          run = CF::Run.create(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
-          debugger
+          run = CF::Run.create(line, "run-name-run", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          # debugger
           @final_output = run.final_output
           @final_output.first.meta_data['company'].should eql("Apple")
           @final_output.first.final_outputs.last['first-name'].should eql("Bob")
           @final_output.first.final_outputs.last['last-name'].should eql("Marley")
           
           result_of_station_1 = run.output(:station => 1)
-          # debugger
-          # result_of_station_1.first.meta_data['company'].should eql("Apple")
+          debugger
+          result_of_station_1.first.meta_data['company'].should eql("Apple")
         end
       end
     end

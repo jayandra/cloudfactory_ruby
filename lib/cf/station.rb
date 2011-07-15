@@ -137,6 +137,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          worker.from = @from 
+          worker.to = @to
+          worker.data = @data
           @worker_instance = worker
         end
       
@@ -153,6 +156,10 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          worker.url = @url
+          worker.to = @to
+          worker.audio_quality = @audio_quality
+          worker.video_quality = @video_quality
           @worker_instance = worker
         end
       
@@ -270,7 +277,9 @@ module CF
     #   got_station = line.stations[0].get
     # returns the station object
     def get
-      self.class.get("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}.json")
+      resp = self.class.get("/lines/#{ACCOUNT_NAME}/#{self.line_title.downcase}/stations/#{self.index}.json")
+      # debugger
+      return resp
     end
 
     # ==Returns information of form
