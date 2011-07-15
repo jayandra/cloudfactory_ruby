@@ -29,8 +29,6 @@ module CF
     #attr_accessor :input_format_instance
     #attr_accessor :station_instance
 
-    ACCOUNT_NAME = CF.account_name
-    
     # ==Initializes a new line
     # ==Usage of line.new("line_name")
     #
@@ -42,7 +40,7 @@ module CF
       @department_name = department_name
       @public = options[:public]
       @description = options[:description]
-      resp = self.class.post("/lines/#{ACCOUNT_NAME}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
+      resp = self.class.post("/lines/#{CF.account_name}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       self.id = resp.id
     end
 
@@ -61,7 +59,7 @@ module CF
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
         else
-          resp = CF::Station.post("/lines/#{ACCOUNT_NAME}/#{self.title.downcase}/stations.json", :station => {:type => type, :input_formats => {:except => @except, :extra => @extra}})
+          resp = CF::Station.post("/lines/#{CF.account_name}/#{self.title.downcase}/stations.json", :station => {:type => type, :input_formats => {:except => @except, :extra => @extra}})
           station = CF::Station.new()
           resp.to_hash.each_pair do |k,v|
             station.send("#{k}=",v) if station.respond_to?(k)
@@ -126,7 +124,7 @@ module CF
         name = input_formats_value.name
         required = input_formats_value.required
         valid_type = input_formats_value.valid_type
-        resp = CF::InputFormat.post("/lines/#{ACCOUNT_NAME}/#{self.title.downcase}/input_formats.json", :input_format => {:name => name, :required => required, :valid_type => valid_type})
+        resp = CF::InputFormat.post("/lines/#{CF.account_name}/#{self.title.downcase}/input_formats.json", :input_format => {:name => name, :required => required, :valid_type => valid_type})
         input_format = CF::InputFormat.new()
         resp.each_pair do |k,v|
           input_format.send("#{k}=",v) if input_format.respond_to?(k)
@@ -145,9 +143,9 @@ module CF
     #   CF::Line.info(line)
     def self.info(line)
       if line.class == CF::Line
-        resp = get("/lines/#{ACCOUNT_NAME}/#{line.title.downcase}.json")
+        resp = get("/lines/#{CF.account_name}/#{line.title.downcase}.json")
       else
-        resp = get("/lines/#{ACCOUNT_NAME}/#{line.downcase}.json")
+        resp = get("/lines/#{CF.account_name}/#{line.downcase}.json")
       end
     end
 
@@ -161,7 +159,7 @@ module CF
     # ===Syntax for all method is
     #   CF::Line.all
     def self.all
-      get("/lines/#{ACCOUNT_NAME}.json")
+      get("/lines/#{CF.account_name}.json")
     end
 
     # ==Return all the lines whose public value is set true
@@ -182,7 +180,7 @@ module CF
       @department_name = options[:department_name]
       @public = options[:public]
       @description = options[:description]
-      self.class.put("/lines/#{ACCOUNT_NAME}/#{old_title.downcase}.json", :line => {:title => @title, :department_name => @department_name, :public => @public, :description => @description})
+      self.class.put("/lines/#{CF.account_name}/#{old_title.downcase}.json", :line => {:title => @title, :department_name => @department_name, :public => @public, :description => @description})
     end
 
     # ==Deletes a line
@@ -190,7 +188,7 @@ module CF
     #   line = CF::Line.new("Digitize Card", "Survey")
     #   line.delete
     def delete
-      self.class.delete("/lines/#{ACCOUNT_NAME}/#{self.title.downcase}.json")
+      self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json")
     end
   end
 end

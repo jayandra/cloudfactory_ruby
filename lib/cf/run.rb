@@ -14,8 +14,6 @@ module CF
 
     attr_accessor :id
 
-    ACCOUNT_NAME = CF.account_name
-    
     # ==Initializes a new Run
     # ==Usage Example:
     #
@@ -40,7 +38,7 @@ module CF
         @file = input
         @param_data = File.new(input, 'rb')
         @param_for_input = :file
-        resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json", {:data => {:run => {:title => @title}}, @param_for_input => @param_data})
+        resp = self.class.post("/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json", {:data => {:run => {:title => @title}}, @param_for_input => @param_data})
       else
         @input = input
         @param_data = input
@@ -53,7 +51,7 @@ module CF
           }
         }
 
-        run =  HTTParty.post("#{CF.api_url}/#{CF.api_version}/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json",options)
+        run =  HTTParty.post("#{CF.api_url}/#{CF.api_version}/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json",options)
         
         # built_data = " -d \"run[title]=#{@title}\""
         #         @param_data.each do |d|
@@ -62,11 +60,11 @@ module CF
         #           end
         #         end.join(" ")
         #         debugger
-        #         uri = "-X POST #{:data => built_data} http://manish.lvh.me:3000/api/v1/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
+        #         uri = "-X POST #{:data => built_data} http://manish.lvh.me:3000/api/v1/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
         #         response = `curl #{uri}`
         #         debugger
         #         run_id = JSON.load(response)['run']['id']
-        #         url = "http://manish.lvh.me:3000/api/v1/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs/#{run_id}.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
+        #         url = "http://manish.lvh.me:3000/api/v1/lines/#{CF.account_name}/#{@line.title.downcase}/runs/#{run_id}.json?api_key=f488a62d0307e79ec4f1e6131fa220be47e83d44"
         #         respo = `curl -I #{url}`
         #         if respo.scan(/\d{3}/).first == "200"
         #           parsed_response = JSON.load(response)
@@ -124,7 +122,7 @@ module CF
     end
     
     def final_output
-      resp = self.class.get("/runs/#{ACCOUNT_NAME}/#{self.title}/final_outputs.json")
+      resp = self.class.get("/runs/#{CF.account_name}/#{self.title}/final_outputs.json")
       debugger
       @final_output =[]
       resp.each do |r|
