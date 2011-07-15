@@ -50,9 +50,7 @@ module CF
             }
           }
         }
-
         run =  HTTParty.post("#{CF.api_url}/#{CF.api_version}/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json",options)
-        
         # built_data = " -d \"run[title]=#{@title}\""
         #         @param_data.each do |d|
         #           d.each do |k, v|

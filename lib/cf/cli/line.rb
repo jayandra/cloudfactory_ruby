@@ -64,8 +64,9 @@ module Cf
       if set_api_key(yaml_source)
         line_creation_file = YAML::load(File.open(yaml_source))
         line_title = line_creation_file['title']
+        line_description = line_creation_file['description']
         line_department = line_creation_file['department']
-        line = CF::Line.new(line_title, line_department)
+        line = CF::Line.new(line_title, line_department, :description => line_description)
         say "New Line has been created with title => #{line.title} and Department => #{line.department_name}", :green
 
         # Creation of InputFormat from yaml file
@@ -91,7 +92,7 @@ module Cf
             # Creation of TaskForm
             if station_file['station']['task_form'].present?
               title = station_file['station']['task_form']['form_title']
-              instruction = station_file['station']['task_form']['description']
+              instruction = station_file['station']['task_form']['instruction']
               form = CF::TaskForm.create({:station => s, :title => title, :instruction => instruction}) do |f|
                 say "New TaskForm has been created with Title => #{f.title} and Instruction => #{f.instruction}", :green
                 # Creation of FormFields
