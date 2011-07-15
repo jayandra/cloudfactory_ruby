@@ -185,10 +185,10 @@ describe CF::Station do
   end
   
   context "create multiple station" do
-     xit "should create two stations using different input format" do
-       WebMock.allow_net_connect!
-       # VCR.use_cassette "stations/block/multiple-station-adding-input-format", :record => :new_episodes do
-         line = CF::Line.create("Company Info -1","Digitization") do |l|
+     it "should create two stations using different input format" do
+       # WebMock.allow_net_connect!
+       VCR.use_cassette "stations/block/multiple-station-adding-input-format", :record => :new_episodes do
+         line = CF::Line.create("Company-info-209","Digitization") do |l|
            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
            CF::Station.create({:line => l, :type => "work", :input_formats=> {:except => ["Website"]}}) do |s|
@@ -201,7 +201,7 @@ describe CF::Station do
            end
          end
 
-         station = CF::Station.new({:type => "Improve", :input_formats=>{:extra => ["Website" => 0]}})
+         station = CF::Station.new({:type => "work", :input_formats=>{:except => ["Last Name"], :extra => [{"Website" => 0}]}})
          line.stations station
 
          worker = CF::HumanWorker.new({:number => 1, :reward => 10})
@@ -219,16 +219,21 @@ describe CF::Station do
          
          station_1 = line.stations.first.get
          station_1.input_formats.count.should eql(1)
-         station_1.input_formats.first.input_format.name.should eql("Company")
-         station_1.input_formats.first.input_format.required.should eql(true)
-         station_1.input_formats.first.input_format.valid_type.should eql("general")
+         station_1.input_formats.first.name.should eql("Company")
+         station_1.input_formats.first.required.should eql(true)
+         station_1.input_formats.first.valid_type.should eql("general")
          station_2 = line.stations.last.get
-         #got Company instead of Website
-         # station_2.input_formats.first.input_format.name.should eql("Website")
-         station_2.input_formats.first.input_format.required.should eql(true)
-         # station_2.input_formats.first.input_format.valid_type.should eql("url")
-         station_2.input_formats.count.should eql(1)
-       # end
+         station_2.input_formats.count.should eql(3)
+         station_2.input_formats[0].name.should eql("Website")
+         station_2.input_formats[1].name.should eql("First Name")
+         station_2.input_formats[2].name.should eql("Middle Name")
+         station_2.input_formats[0].required.should eql(true)
+         station_2.input_formats[1].required.should eql(false) #how to make it true
+         station_2.input_formats[2].required.should eql(false)
+         station_2.input_formats[0].valid_type.should eql("url")
+         station_2.input_formats[1].valid_type.should eql("general")
+         station_2.input_formats[2].valid_type.should eql("general")
+       end
      end
    end
 end

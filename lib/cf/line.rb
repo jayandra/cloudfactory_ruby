@@ -163,7 +163,10 @@ module CF
     def self.all
       get("/lines/#{ACCOUNT_NAME}.json")
     end
-
+    
+    def get_stations
+      CF::Station.get("/lines/#{ACCOUNT_NAME}/#{self.title.downcase}/stations.json")
+    end
     # ==Return all the lines whose public value is set true
     # ===Syntax for public_lines method is
     #   CF::Line.public_lines
