@@ -17,7 +17,6 @@ module CF
     # ID of Line with which input_format is associated
     attr_accessor :line_title
     
-    ACCOUNT_NAME = CF.account_name
     # ==Initializes a new input_format
     # * Syntax for creating new input_format: <b>InputFormat.new(</b> Hash <b>)</b>
     # ===Usage Example:
@@ -38,7 +37,7 @@ module CF
       @valid_type  = options[:valid_type]
       if !@station.nil? or !@line.nil?
         line_title = @station.nil? ? @line.title : @station.line_title
-        resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/input_formats.json", :input_format => {:name => @name, :required => @required, :valid_type => @valid_type})
+        resp = self.class.post("/lines/#{CF.account_name}/#{@line.title.downcase}/input_formats.json", :input_format => {:name => @name, :required => @required, :valid_type => @valid_type})
         @line_title = line_title
         if !@station.nil? && @station.except.nil? && @station.extra.nil?
           @station.input_formats = self
@@ -70,7 +69,7 @@ module CF
     #   input_formats_of_line = CF::InputFormat.all(line)
     # returns an array of input headers associated with line
     def self.all(line)
-      get("/lines/#{ACCOUNT_NAME}/#{line.title.downcase}/input_formats.json")
+      get("/lines/#{CF.account_name}/#{line.title.downcase}/input_formats.json")
     end
     
     # ==Returns a particular input header of a specific line
