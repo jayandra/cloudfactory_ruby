@@ -14,8 +14,6 @@ module CF
 
     attr_accessor :id
 
-    ACCOUNT_NAME = CF.account_name
-
     # ==Initializes a new Run
     # ==Usage Example:
     #
@@ -40,7 +38,7 @@ module CF
         @file = input
         @param_data = File.new(input, 'rb')
         @param_for_input = :file
-        resp = self.class.post("/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json", {:data => {:run => {:title => @title}}, @param_for_input => @param_data})
+        resp = self.class.post("/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json", {:data => {:run => {:title => @title}}, @param_for_input => @param_data})
       else
         @input = input
         @param_data = input
@@ -53,7 +51,7 @@ module CF
             :data =>{:run => { :title => @title }, :inputs => @param_data}
           }
         }
-        run =  HTTParty.post("#{CF.api_url}/#{CF.api_version}/lines/#{ACCOUNT_NAME}/#{@line.title.downcase}/runs.json",options)
+        run =  HTTParty.post("#{CF.api_url}/#{CF.api_version}/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json",options)
       end
     end
 
@@ -97,7 +95,7 @@ module CF
     end
 
     def final_output
-      resp = self.class.get("/runs/#{ACCOUNT_NAME}/#{self.title.downcase}/output.json")
+      resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output.json")
       @final_output =[]
       resp['output'].each do |r|
         result = FinalOutput.new()

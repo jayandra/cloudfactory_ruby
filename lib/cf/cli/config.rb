@@ -12,6 +12,21 @@ module Cf
       File.open(config_file, 'w') {|f| f.write({ :api_key => api_key }.to_yaml) }
     end
 
+    def get_api_key(line_yaml_file)
+      line_yml = YAML::load(File.read(line_yaml_file))
+      line_yml['api_key'].presence
+    end
+    
+    def set_api_key(yaml_source)
+      api_key = get_api_key(yaml_source)
+      if api_key.blank?
+        return false
+      else
+        CF.api_key = api_key unless CF.api_key.blank?
+        return true
+      end
+    end
+    
     # Ripped from rubygems
     unless ENV['TEST_CLI']
       def find_home
