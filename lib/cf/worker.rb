@@ -13,8 +13,6 @@ module CF
       attr_accessor :id, :data, :from, :to 
       attr_accessor :url, :audio_quality, :video_quality
       
-      # ACCOUNT_NAME = CF.account_name
-      
       case host
       when "HumanWorker"
         # Initializes new worker
@@ -23,7 +21,7 @@ module CF
           @number  = options[:number].nil? ? 1 : options[:number]
           @reward  = options[:reward]
           if @station
-            resp = CF::HumanWorker.post("/lines/#{ACCOUNT_NAME}/#{@station.line['title'].downcase}/stations/#{@station.index}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
+            resp = CF::HumanWorker.post("/lines/#{CF.account_name}/#{@station.line['title'].downcase}/stations/#{@station.index}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
             worker = CF::HumanWorker.new({})
             resp.to_hash.each_pair do |k,v|
               worker.send("#{k}=",v) if worker.respond_to?(k)

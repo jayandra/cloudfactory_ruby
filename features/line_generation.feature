@@ -20,3 +20,17 @@ Feature: Line manage
     Skipping .*.cf/brandiator/brandiator.yml because it already exists.
     Use the -f flag to force it to overwrite or check and delete it manually.
     """
+
+  Scenario: No api_key present in the yaml file
+    Given a file named ".cf/brandiator/brandiator.yml" with:
+      """
+      api_key:
+      title: brandiator
+      department: Survey
+      """
+
+    When I run `cf line create brandiator`
+    Then the output should match:
+      """
+      The api_key is missing in the line .*.cf/brandiator/brandiator.yml file
+      """
