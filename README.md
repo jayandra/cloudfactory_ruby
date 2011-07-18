@@ -12,7 +12,8 @@ gem install cloudfactory
 ```
 
 But until we publish the gem you need to clone, build and install it manually
-```ruby
+
+```bash
 git clone git@github.com:sprout/cloudfactory_ruby.git
 cd cloudfactory_ruby
 gem build cloud_factory.gemspec
