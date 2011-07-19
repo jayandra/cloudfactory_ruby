@@ -7,18 +7,15 @@ module Cf
     source_root File.expand_path('../templates', __FILE__)
     argument :title, :type => :string, :desc => "The line title"
     argument :yaml_destination, :type => :string, :required => true
-    # argument :with_custom_form
     
     def generate_line_template
       arr = yaml_destination.split("/")
       arr.pop
       line_destination = arr.join("/")
       template("line.tt", yaml_destination)
-      # if with_custom_form
-        copy_file("css_file.css.erb",     "#{line_destination}/css_file.css")
-        copy_file("html_file.html.erb",   "#{line_destination}/html_file.html")
-        copy_file("js_file.js.erb",       "#{line_destination}/js_file.js")
-      # end
+      copy_file("css_file.css.erb",     "#{line_destination}/station_2/form.css")
+      copy_file("html_file.html.erb",   "#{line_destination}/station_2/form.html")
+      copy_file("js_file.js.erb",       "#{line_destination}/station_2/form.js")
     end
   end
 end
@@ -27,14 +24,14 @@ end
 module Cf
   class Line < Thor
     include Cf::Config
-    desc "line generate LINE-TITLE", "genarates a line template at ~/.cf/<line-title>/<line-title>.yml"
+    desc "line generate LINE-TITLE", "genarates a line template at <line-title>/line.yml"
     method_option :force, :type => :boolean, :default => false, :aliases => "-f", :desc => "force to overwrite the files if the line already exists, default is false"
     # method_option :with_custom_form, :type => :boolean, :default => false, :aliases => "-wcf", :desc => "generate the template with custom task form and the sample files, default is true"
     
     def generate(title=nil)
       if title.present?
-        line_destination = "#{find_home}/.cf/#{title.underscore.dasherize}"
-        yaml_destination = "#{line_destination}/#{title.underscore.dasherize}.yml"
+        line_destination = "#{title.underscore.dasherize}"
+        yaml_destination = "#{line_destination}/line.yml"
         FileUtils.rm_rf(line_destination, :verbose => true) if options.force? && File.exist?(line_destination)
         if File.exist?(line_destination)
           say "Skipping #{yaml_destination} because it already exists.\nUse the -f flag to force it to overwrite or check and delete it manually.", :red
@@ -48,16 +45,13 @@ module Cf
       end
     end
     
-    desc "line create LINE-TITLE", "takes the yaml file at ~/.cf/<line-title>/<line-title>.yml file and creates a new line at http://cloudfactory.com"
-    def create(title=nil)
-      line_source = "#{find_home}/.cf/#{title.underscore.dasherize}"
-      yaml_source = "#{line_source}/#{title.underscore.dasherize}.yml"
-      unless title.present?
-        say "Line-Title is required", :red
-        return
-      end
+    desc "line create", "takes the yaml file at line.yml and creates a new line at http://cloudfactory.com"
+    def create
+      line_source = Dir.pwd
+      yaml_source = "#{line_source}/line.yml"
+      
       unless File.exist?(yaml_source)
-        say "Either the yml file is not present or doesn't match the title of the line with the filename.", :red
+        say "The line.yml file does not exist in this directory", :red
         return
       end
       
@@ -108,13 +102,15 @@ module Cf
               # Creation of CustomTaskForm
               title = station_file['station']['custom_task_form']['form_title']
               instruction = station_file['station']['custom_task_form']['instruction']
+              
               html_file = station_file['station']['custom_task_form']['html']
-              html = File.read("#{line_source}/#{html_file}")
+              html = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{html_file}")
               css_file = station_file['station']['custom_task_form']['css']
-              css = File.read("#{line_source}/#{css_file}")
+              css = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{css_file}")
               js_file = station_file['station']['custom_task_form']['js']
-              js = File.read("#{line_source}/#{js_file}")
+              js = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{js_file}")
               form = CF::CustomTaskForm.create({:station => s, :title => title, :instruction => instruction, :raw_html => html, :raw_css => css, :raw_javascript => js})
+              
               say "New CustomTaskForm has been created of line => #{form.title} and Description => #{form.instruction}.\nThe source file for html => #{html_file}, css => #{css_file} and js => #{js_file} ", :green
             end
             worker = station_file['station']['worker']
@@ -129,7 +125,7 @@ module Cf
         end
         say "Congrats! Since the line #{line_title} is setup, now you can do Production Runs on it.", :green        
       else
-        say "The api_key is missing in the line #{yaml_source} file", :red
+        say "The api_key is missing in the line.yml file", :red
       end
     end
   end

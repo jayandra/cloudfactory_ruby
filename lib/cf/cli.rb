@@ -1,4 +1,7 @@
 require 'thor'
+require 'yaml'
+require 'fileutils'
+
 require File.expand_path('../../cf', __FILE__) #=> requiring the gem
 require 'active_support/core_ext/string/inflections'
 require 'active_support/core_ext/object/blank'
@@ -7,7 +10,7 @@ cli_directory = File.expand_path("../cf/cli", File.dirname(__FILE__))
 require "#{cli_directory}/config"
 require "#{cli_directory}/line"
 require "#{cli_directory}/form"
-require "#{cli_directory}/run"
+require "#{cli_directory}/production"
 
 if ENV['TEST_CLI']
   require 'ruby-debug'
@@ -37,8 +40,8 @@ module Cf
     desc "form", "Commands to generate custom task forms. For more info, cf form help"
     subcommand "form", Cf::Form
     
-    desc "run", "Commands to create production run. For more info, cf run help"
+    desc "production", "Commands to create production runs. For more info, cf production help"
     # can use Run for the class name coz its a reserved word for Thor
-    subcommand "run", Cf::Run
+    subcommand "production", Cf::Production
   end
 end

@@ -5,16 +5,15 @@ module Cf
     include Thor::Actions
     include Cf::Config
     source_root File.expand_path('../templates', __FILE__)
-    argument :form_title, :type => :string
-    argument :line_title, :type => :string
+    argument :station, :type => :numeric
     argument :labels, :type => :string
     argument :fields, :type => :hash
     
     def generate_form_template
-      line_destination = "#{find_home}/.cf/#{line_title}"
-      template("html_file.html.erb",   "#{line_destination}/#{form_title}.html")
-      template("css_file.css.erb",     "#{line_destination}/#{form_title}.css")        
-      template("js_file.js.erb",       "#{line_destination}/#{form_title}.js")
+      line_destination = Dir.pwd
+      template("html_file.html.erb",   "#{line_destination}/station_#{station}/form.html")
+      template("css_file.css.erb",     "#{line_destination}/station_#{station}/form.css")        
+      template("js_file.js.erb",       "#{line_destination}/station_#{station}/form.js")
     end
   end
   
@@ -22,20 +21,17 @@ module Cf
     include Thor::Actions
     include Cf::Config
     source_root File.expand_path('../templates', __FILE__)
-    argument :form_title, :type => :string
-    argument :line_title, :type => :string
+    argument :station, :type => :numeric
     argument :form_content, :type => :string
     
     def generate_form_preview
-      line_destination = "#{find_home}/.cf/#{line_title}"
-      template("form_preview.html.erb",   "#{line_destination}/#{form_title}_preview.html")
-      # template("css_file.css.erb",     "#{line_destination}/#{form_title}.css")
-      # template("js_file.js.erb",       "#{line_destination}/#{form_title}.js")
+      line_destination = Dir.pwd
+      template("form_preview.html.erb",   "#{line_destination}/station_#{station}/form_preview.html")
     end
     
     def launch_preview
-      line_destination = "#{find_home}/.cf/#{line_title}"
-      system "open #{line_destination}/#{form_title}_preview.html"
+      line_destination = Dir.pwd
+      system "open #{line_destination}/station_#{station}/form_preview.html"
     end
   end
 end
@@ -45,53 +41,44 @@ module Cf
     include Cf::Config
     
     desc "form generate FORM-TITLE", "genarates a custom task form at ~/.cf/<line-title>/<form-title>.html and its associated css and js files"
-    method_option :line, :type => :string, :required => true, :aliases => "-l", :desc => "the line title with which this form should be associated with"
+    method_option :station, :type => :numeric, :required => true, :aliases => "-st", :desc => "the station index this form should be associated with"
     method_option :labels, :type => :string, :required => true, :aliases => "-lb", :desc => "the labels that will be shown to the worker on MTurk window"
     method_option :fields, :type => :hash, :required => true, :aliases => "-fd", :desc => "the actual form fields and types that the worker will work/fill on"
     method_option :force, :type => :boolean, :default => false, :aliases => "-f", :desc => "force to overwrite the files if the form already exists, default is false"
     
-    def generate(form_title=nil)
-      line_title = options[:line].underscore.dasherize
-      line_destination = "#{find_home}/.cf/#{line_title}"
-      
-      if form_title.present?
-        if Dir.exist?(line_destination)
-          FileUtils.rm_rf("#{line_destination}/#{form_title}.*", :verbose => true) if options.force? && File.exist?("#{line_destination}/#{form_title}.html")
-          if File.exist?("#{line_destination}/#{form_title}.html")
-            say "Skipping the form because it already exists.\nUse the -f flag to force it to overwrite or check and delete it manually.", :red
-          else
-            say "Generating #{form_title} form for line: #{line_title}", :green
-            Cf::Newform.start([form_title, line_title, options[:labels], options[:fields]])
-            say "A new custom task form named #{form_title} created."
-          end
-        else
-          say "The line with the name #{line_title} don't exist.\nFirst create a line with this name and generate the form.", :red
-        end
+    def generate
+      line_destination = Dir.pwd
+      unless File.exist?("#{line_destination}/line.yml")
+        say("The current directory is not a valid line directory.")
+        return
+      end
+  
+      FileUtils.rm_rf("#{line_destination}/station_#{options[:station]}", :verbose => true) if options.force? && Dir.exist?("#{line_destination}/station_#{options[:station]}")
+      if Dir.exist?("#{line_destination}/station_#{options[:station]}")
+        say "Skipping the form generation because the station_#{options[:station]} already exists with its custom form.\nUse the -f flag to force it to overwrite or check and delete the station_#{options[:station]} folder manually.", :red
       else
-        say "Title for the form is required.", :red
+        say "Generating form for station #{options[:station]}", :green
+        Cf::Newform.start([options[:station], options[:labels], options[:fields]])
+        say "A new custom task form created in station_#{options[:station]}."
       end
     end
     
-    desc "form preview FORM-TITLE", "genarates a html file with the contents of custom task form at ~/.cf/<line-title>/<form-title>.html and its associated css and js files appended to view it before uploading to CF"
-    method_option :line, :type => :string, :required => true, :aliases => "-l", :desc => "the line title of which the form to be previewd"
-    def preview(form_title=nil)
-      line_title = options[:line].underscore.dasherize
-      line_destination = "#{find_home}/.cf/#{line_title}"
-
-      if form_title.present?
-        if Dir.exist?(line_destination)
-          if File.exist?("#{line_destination}/#{form_title}.html")
-            say "Generating #{form_title} form for line: #{line_title}", :green
-            form_content = File.read("#{line_destination}/#{form_title}.html")
-            Cf::FormPreview.start([form_title, line_title, form_content])
-          else
-            say "The form named #{form_title} does not exist.", :red
-          end
-        else
-          say "The line with the name #{line_title} don't exist.\nFirst create a line with this name, generate the form and preview.", :red
-        end
+    desc "form preview FORM-TITLE", "genarates a html file with the contents of custom task form to preview"
+    method_option :station, :type => :numeric, :required => true, :aliases => "-s", :desc => "station index of the form to preview"
+    def preview
+      line_destination = Dir.pwd
+      unless File.exist?("#{line_destination}/line.yml")
+        say("The current directory is not a valid line directory.")
+        return
+      end
+      if Dir.exist?("#{line_destination}/station_#{options[:station]}") and !Dir["#{line_destination}/station_#{options[:station]}/*"].empty?
+        say "Generating preview form for station #{options[:station]}", :green
+        form_content = File.read("station_#{options[:station]}/form.html")
+        Cf::FormPreview.start([options[:station], form_content])
+      elsif Dir["#{line_destination}/station_#{options[:station]}/*"].empty?
+        say "No form exists for station #{options[:station]}", :red
       else
-        say "Title of the form is required to preview.", :red
+        say "The station #{options[:station]} doesn't exist.\nGenerate the form for station #{options[:station]} and then preview it.", :red
       end
     end
   end

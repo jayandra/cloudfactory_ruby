@@ -1,4 +1,4 @@
-<div id="<%= form_title %>_instructions" class="<%= line_title %> cf_form_instruction">
+<div id="station_<%= station %>_instructions" class="station_<%= station %> cf_form_instruction">
   <ul>
     <li>Sample bullet list of instruction</li>
     <li>Sample bullet list of instruction</li>
@@ -6,7 +6,7 @@
   </ul>
 </div>
 
-<div id="<%= form_title %>" class="<%= line_title %> cf_form_content">
+<div id="station_<%= station %>_form" class="station_<%= station %> cf_form_content">
 <%- labels.split(",").each do |label| -%>
 <label>{{<%= label %>}}</label>
 <%- end unless labels.nil? -%>

@@ -3,38 +3,44 @@ Feature: Generate Custom Task Forms
   As a CLI user
   I want to generate custom task forms
   
-  Scenario: Scaffolding a custom task form without the form title
-    When I run `cf form generate --line brandiator --labels company,website --fields ceo:string email:email`
+  Scenario: Scaffolding a custom task form but outside of the line directory
+    Given a directory named "brandiator"
+    When I run `cf form generate --station 1 --labels company,website --fields ceo:string email:email`
+    Then the output should contain:
+    """
+    The current directory is not a valid line directory.
+    """
+
+  Scenario: Warn if the given station already has the form created
+    Given an empty file named "brandiator/line.yml"
+    And a directory named "brandiator/station_2"
+    And I cd to "brandiator"
+    When I run `cf form generate --station 2 --labels company,website --fields ceo:string email:email`
     Then the output should contain:
       """
-      Title for the form is required.
+      Skipping the form generation because the station_2 already exists with its custom form.
+      Use the -f flag to force it to overwrite or check and delete the station_2 folder manually.
       """
 
-  Scenario: Scaffolding a custom task form but with no line created
-    When I run `cf form generate my_form --line brandiator --labels company,website --fields ceo:string email:email`
+  Scenario: Overwrite forcefully if the given station already has the form created
+    Given an empty file named "brandiator/line.yml"
+    And a directory named "brandiator/station_2"
+    And I cd to "brandiator"
+    When I run `cf form generate --force --station 2 --labels company,website --fields ceo:string email:email`
     Then the output should contain:
       """
-      The line with the name brandiator don't exist.
-      First create a line with this name and generate the form.
+      A new custom task form created in station_2.
       """
 
-  Scenario: Warn if the form with the same name already exists
-    Given an empty file named ".cf/brandiator/brandiator.yml"
-    And an empty file named ".cf/brandiator/my_form.html"
-    When I run `cf form generate my_form --line brandiator --labels company,website --fields ceo:string email:email`
-    Then the output should contain:
-      """
-      Skipping the form because it already exists.
-      Use the -f flag to force it to overwrite or check and delete it manually.
-      """
   Scenario: Scaffolding a custom task form with all the parameters and valid conditions
-    Given an empty file named ".cf/brandiator/brandiator.yml"
-    When I run `cf form generate my_form --line brandiator --labels company,website --fields ceo:string email:email`
+    Given an empty file named "brandiator/line.yml"
+    And I cd to "brandiator"
+    When I run `cf form generate --station 2 --labels company,website --fields ceo:string email:email`
     Then the following files should exist:
-      | .cf/brandiator/my_form.html |
-      | .cf/brandiator/my_form.css  |
-      | .cf/brandiator/my_form.js   |
+      | station_2/form.html |
+      | station_2/form.css  |
+      | station_2/form.js   |
     And the output should contain:
       """
-      A new custom task form named my_form created.
+      A new custom task form created in station_2.
       """
