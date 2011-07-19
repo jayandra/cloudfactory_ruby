@@ -3,32 +3,32 @@ Feature: Preview a generated custom form
   As a CLI user
   I want to preview the custom task form
 
-  Scenario: Previewing the generated form in the browser with the non-existing line
-    When I run `cf form preview my_form -l no-line`
+  Scenario: Previewing the generated form in the browser with the non-existing station
+    Given an empty file named "brandiator/line.yml"
+    And I cd to "brandiator"
+    When I run `cf form preview --station 2`
     Then the output should contain:
       """
-      The line with the name no-line don't exist.
-      First create a line with this name, generate the form and preview.
+      The station 2 doesn't exist.
+      Generate the form for station 2 and then preview it.
       """
     
-  Scenario: Previewing the generated form in the browser with existing line but not any form
-    Given a directory named ".cf/brandiator"
-    When I run `cf form preview my_form -l brandiator`
+  Scenario: Trying to preview the form for the empty station directory
+    Given an empty file named "brandiator/line.yml"
+    And a directory named "station_2"
+    And I cd to "brandiator"
+    When I run `cf form preview --station 2`
     Then the output should contain:
       """
-      The form named my_form does not exist.
+      No form exists for station 2
       """
-  Scenario: Previewing the generated form in the browser with existing line but without passing form name
-    Given a directory named ".cf/brandiator"
-    When I run `cf form preview -l brandiator`
-    Then the output should contain:
-      """
-      Title of the form is required to preview.
-      """
-
+  @announce
   Scenario: Previewing the generated form in the browser
-    Given a directory named ".cf/brandiator"
-    And a file named ".cf/brandiator/my_form.html" with:
+    Given an empty file named "brandiator/line.yml"
+    # And a directory named "station_2"
+    And I cd to "brandiator"
+
+    And a file named "station_2/form.html" with:
       """
       <div id="my_form_instructions" class="brandiator cf_form_instruction">
         <ul>
@@ -48,17 +48,17 @@ Feature: Preview a generated custom form
       </div>
       </div>
       """
-    And a file named ".cf/brandiator/my_form.css" with:
+    And a file named "station_2/form.css" with:
       """
       body { background-color: #777; color: #fefefe; }
       """
-    And a file named ".cf/brandiator/my_form.js" with:
+    And a file named "station_2/form.js" with:
       """
       alert("Hey! If you see me, it means I work.")
       """
   
-    When I run `cf form preview my_form -l brandiator`
-    Then a file named ".cf/brandiator/my_form_preview.html" should exist
+    When I run `cf form preview --station 2`
+    Then a file named "station_2/form_preview.html" should exist
     # And the file ".cf/brandiator/my_form_preview.html" should contain:
     #   """
     #   <!DOCTYPE html>

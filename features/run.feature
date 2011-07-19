@@ -3,44 +3,19 @@ Feature: Create a production run on CF
   As a CLI user
   I want to make a production run
 
+  @announce
   Scenario: Creating a production run without run title
-    Given a file named ".cf/brandiator/input_data.csv" with:
-    """
-    Company,Website,meta_data_company
-    Apple,apple.com,Apple
-    """
-    When I run `cf run create -l no-line -i input_data.csv`
+    Given an empty file named "brandiator/line.yml"
+    And I cd to "brandiator"
+    When I run `cf production start -i input_data.csv`
     Then the output should contain:
       """
-      The Run title is required so that you can trace the results using this title.
-      """
-
-  Scenario: Creating a production run without existing line
-    Given a file named ".cf/brandiator/input_data.csv" with:
-    """
-    Company,Website,meta_data_company
-    Apple,apple.com,Apple
-    """
-    When I run `cf run create my_run_title -l no-line -i input_data.csv`
-    Then the output should contain:
-      """
-      The line with the name no-line doesn't exist.
-      First create a line with this name and make a production run.
-      """
-
-  Scenario: Creating a production run existing line folder but missing yml file
-    Given a directory named ".cf/brandiator"
-    And an empty file named ".cf/brandiator/input_data.csv"
-    When I run `cf run create my_run_title -l no-line -i input_data.csv`
-    Then the output should contain:
-      """
-      The line with the name no-line doesn't exist.
-      First create a line with this name and make a production run.
+      No value provided for required options '--title'
       """
 
   @too_slow_process
-  Scenario: Creating a production run
-    Given a file named ".cf/brandiator/html_form.html" with:
+  Scenario: Starting a production
+    Given a file named "brandiator/station_2/form.html" with:
     """
     <div id="my_form_instructions" class="brandiator cf_form_instruction">
       <ul>
@@ -56,11 +31,11 @@ Feature: Create a production run on CF
     </div>
     </div>
     """
-    And a file named ".cf/brandiator/css_file.css" with:
+    And a file named "brandiator/station_2/form.css" with:
     """
     body { background: #e0e0d8; color: #000; }
     """
-    And a file named ".cf/brandiator/js_file.js" with:
+    And a file named "brandiator/station_2/form.js" with:
     """
     <script type="text/javascript">
     $(document).ready(function(){
@@ -69,7 +44,7 @@ Feature: Create a production run on CF
     </script>
     """
     
-    And a file named ".cf/brandiator/brandiator.yml" with:
+    And a file named "brandiator/line.yml" with:
     """
     api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
     title: brandiator
@@ -88,6 +63,7 @@ Feature: Create a production run on CF
 
     stations:
       - station:
+          station_index: 1
           station_type: work
           worker:
             worker_type: human
@@ -106,6 +82,7 @@ Feature: Create a production run on CF
                   field_type: email
                   required: true
       - station:
+          station_index: 2
           station_type: improve
           worker:
             worker_type: human
@@ -114,16 +91,17 @@ Feature: Create a production run on CF
           custom_task_form:
             form_title: Enter text from a business card image for CUSTOMTASKFORM
             instruction: Read the business card image and the fill the fields for CUSTOMTASKFORM
-            html: html_form.html
-            css: css_file.css
-            js: js_file.js
+            html: form.html
+            css: form.css
+            js: form.js
     """
-    And a file named ".cf/brandiator/input_data.csv" with:
+    And a file named "brandiator/input/input_data.csv" with:
     """
     company,website,meta_data_company
     Apple,apple.com,Apple
     """
-    When I run `cf run create my_run_title -l brandiator --input_data input_data.csv`
+    And I cd to "brandiator"
+    When I run `cf production start --title my_run_title --input_data input_data.csv`
     Then the output should match:
       """
       A run with title my_run_title using the line brandiator created successfully.

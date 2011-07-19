@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency  "hashie", "~> 1.0.0"
   s.add_dependency  "rest-client"
   s.add_dependency  "json"
-  s.add_dependency  "thor"
+  s.add_dependency  "thor", "0.14.6"
   s.add_dependency  "httparty", "~> 0.7.8"
   
   s.add_development_dependency "rails", "~> 3.0.3"

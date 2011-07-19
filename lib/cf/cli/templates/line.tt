@@ -15,6 +15,7 @@ input_formats:
 
 stations:
   - station:
+      station_index: 1
       station_type: work
       worker:
         worker_type: human
@@ -33,6 +34,7 @@ stations:
               field_type: email
               required: true
   - station:
+      station_index: 2
       station_type: improve
       worker:
         worker_type: human
@@ -41,6 +43,6 @@ stations:
       custom_task_form:
         form_title: Enter text from a business card image for CUSTOMTASKFORM
         instruction: Read the business card image and the fill the fields for CUSTOMTASKFORM
-        html: html_file.html
-        css: css_file.css
-        js: js_file.js
+        html: form.html
+        css: form.css
+        js: form.js
