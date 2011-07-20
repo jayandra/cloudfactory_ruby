@@ -193,6 +193,24 @@ module CF
           @worker_instance = worker
         end
         
+      when "TermExtraction"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @url = worker_instance.url
+          @max_retrieve = worker_instance.max_retrieve
+          @show_source_text = worker_instance.show_source_text
+          resp = CF::TermExtraction.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "TermExtraction", :url => @url, :max_retrieve => @max_retrieve, :show_source_text => @show_source_text})
+          worker = CF::TermExtraction.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          worker.url = @url
+          worker.max_retrieve = @max_retrieve
+          worker.show_source_text = @show_source_text
+          @worker_instance = worker
+        end
+      
       else
         if worker_instance.station
           @worker_instance = worker_instance 

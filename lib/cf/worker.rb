@@ -14,6 +14,7 @@ module CF
       attr_accessor :url, :audio_quality, :video_quality
       attr_accessor :document, :query
       attr_accessor :sanitize
+      attr_accessor :max_retrieve, :show_source_text
 
       case host
       when "HumanWorker"
@@ -56,6 +57,10 @@ module CF
             elsif type == "sentiment_robot"
               @document = options[:document]
               @sanitize = options[:sanitize]
+            elsif type == "term_extraction"
+              @url = options[:url]
+              @max_retrieve = options[:max_retrieve]
+              @show_source_text = options[:show_source_text]
             end
           end
           if @station
@@ -82,6 +87,13 @@ module CF
               @station.worker = worker
             elsif type == "sentiment_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "SentimentRobot", :document => options[:document], :sanitize => options[:sanitize]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            elsif type == "term_extraction"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TermExtraction", :url => options[:url], :max_retrieve => options[:max_retrieve], :show_source_text => options[:show_source_text]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
