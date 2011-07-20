@@ -12,6 +12,7 @@ module CF
       attr_accessor :station
       attr_accessor :id, :data, :from, :to 
       attr_accessor :url, :audio_quality, :video_quality
+      attr_accessor :document, :query
       
       case host
       when "HumanWorker"
@@ -48,18 +49,28 @@ module CF
               @to = options[:to]
               @audio_quality = options[:audio_quality]
               @video_quality = options[:video_quality]
+            elsif type == "content_scraping_robot"
+              @document = options[:document]
+              @query = options[:query]
             end
           end
           if @station
             if type == "google_translate_robot"
-              resp = self.post("/lines/#{ACCOUNT_NAME}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:number => 1, :reward => 0, :type => type, :data => options[:data], :from => options[:from], :to => options[:to]})
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:number => 1, :reward => 0, :type => type, :data => options[:data], :from => options[:from], :to => options[:to]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
               worker.station = @station
               @station.worker = worker
             elsif type == "media_converter_robot"
-              resp = self.post("/lines/#{ACCOUNT_NAME}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => ["#{options[:url]}"], :to => options[:to], :audio_quality => options[:audio_quality], :video_quality => options[:video_quality]})
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => ["#{options[:url]}"], :to => options[:to], :audio_quality => options[:audio_quality], :video_quality => options[:video_quality]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            elsif type == "content_scraping_robot"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "ContentScrapingRobot", :document => options[:document], :query => options[:query]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
