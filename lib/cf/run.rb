@@ -51,7 +51,7 @@ module CF
             :data =>{:run => { :title => @title }, :inputs => @param_data}
           }
         }
-        run =  HTTParty.post("#{CF.api_url}/#{CF.api_version}/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json",options)
+        run =  HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json",options)
       end
     end
 
@@ -101,6 +101,9 @@ module CF
         result = FinalOutput.new()
         r.to_hash.each_pair do |k,v|
           result.send("#{k}=",v) if result.respond_to?(k)
+        end
+        if result.final_output == nil
+          result.final_output = resp.output
         end
         @final_output << result
       end
