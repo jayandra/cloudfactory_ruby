@@ -13,7 +13,8 @@ module CF
       attr_accessor :id, :data, :from, :to 
       attr_accessor :url, :audio_quality, :video_quality
       attr_accessor :document, :query
-      
+      attr_accessor :sanitize
+
       case host
       when "HumanWorker"
         # Initializes new worker
@@ -52,6 +53,9 @@ module CF
             elsif type == "content_scraping_robot"
               @document = options[:document]
               @query = options[:query]
+            elsif type == "sentiment_robot"
+              @document = options[:document]
+              @sanitize = options[:sanitize]
             end
           end
           if @station
@@ -71,6 +75,13 @@ module CF
               @station.worker = worker
             elsif type == "content_scraping_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "ContentScrapingRobot", :document => options[:document], :query => options[:query]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            elsif type == "sentiment_robot"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "SentimentRobot", :document => options[:document], :sanitize => options[:sanitize]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
