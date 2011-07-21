@@ -86,7 +86,7 @@ describe CF::Station do
     end
     
     it "should create a station of Improve station as first station of line" do
-       # WebMock.allow_net_connect!
+      # WebMock.allow_net_connect!
       VCR.use_cassette "stations/block/improve-as-first-station", :record => :new_episodes do
         line = CF::Line.new("Digitd", "Digitization")
         station = CF::Station.new({:type => "improve"}) 
@@ -224,15 +224,15 @@ describe CF::Station do
          station_1.input_formats.first.valid_type.should eql("general")
          station_2 = line.stations.last.get
          station_2.input_formats.count.should eql(3)
-         station_2.input_formats[0].name.should eql("Website")
-         station_2.input_formats[1].name.should eql("First Name")
-         station_2.input_formats[2].name.should eql("Middle Name")
-         station_2.input_formats[0].required.should eql(true)
-         station_2.input_formats[1].required.should eql(false) #how to make it true
-         station_2.input_formats[2].required.should eql(false)
-         station_2.input_formats[0].valid_type.should eql("url")
-         station_2.input_formats[1].valid_type.should eql("general")
-         station_2.input_formats[2].valid_type.should eql("general")
+         station_2.input_formats.map(&:name).should include("Website")
+         station_2.input_formats.map(&:name).should include("First Name")
+         station_2.input_formats.map(&:name).should include("Middle Name")
+         station_2.input_formats.map(&:required).should include(true)
+         station_2.input_formats.map(&:required).should include(false) #how to make it true
+         station_2.input_formats.map(&:required).should include(false)
+         station_2.input_formats.map(&:valid_type).should include("url")
+         station_2.input_formats.map(&:valid_type).should include("general")
+         station_2.input_formats.map(&:valid_type).should include("general")
        end
      end
    end
