@@ -68,7 +68,8 @@ module CF
   # class ServerError < CFError; end
   # class General     < CFError; end
   # 
-  # class ImproveStationNotAllowed     < CFError; end
+  class CFError < StandardError; end
+  class ImproveStationNotAllowed < CFError; end
   # 
   # class Unauthorized < ClientError; end
   # class NotFound     < ClientError
