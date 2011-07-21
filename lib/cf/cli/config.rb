@@ -1,20 +1,33 @@
 module Cf
   module Config
     def config_file
-      File.join(find_home, '.cflogin')
+      File.join(find_home, '.cf_credentials')
     end
 
     def load_config
-      YAML::load(File.read(config_file))
+      YAML::load(File.read(config_file)) if File.exist?(config_file)
     end
 
-    def save_config(api_key)
-      File.open(config_file, 'w') {|f| f.write({ :api_key => api_key }.to_yaml) }
+    def save_config(target_url)
+      File.open(config_file, 'w') {|f| f.write({ :target_url => "#{target_url}/api/v1" }.to_yaml) }
     end
 
     def get_api_key(line_yaml_file)
       line_yml = YAML::load(File.read(line_yaml_file))
       line_yml['api_key'].presence
+    end
+    
+    def set_target_uri
+      if CF.api_url.blank? || CF.api_url.nil?
+        if load_config
+          target_url = load_config['target_url']  
+          CF.api_url = "#{target_url}"
+          return true
+        else
+          return false
+        end
+      end
+      return false
     end
     
     def set_api_key(yaml_source)
