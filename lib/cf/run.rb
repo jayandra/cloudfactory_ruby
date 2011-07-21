@@ -114,14 +114,15 @@ module CF
       station_no = options[:station]
       line = self.line
       station = line.stations[station_no-1]
-      resp = self.class.get("/runs/#{ACCOUNT_NAME}/#{self.title.downcase}/output/#{station.index}.json")
+      resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output/#{station.index}.json")
+      debugger
       @final_output =[]
-      result = FinalOutput.new()
-      resp['output'].to_hash.each_pair do |k,v|
-        result.send("#{k}=",v) if result.respond_to?(k)
-      end
-      @final_output << result
-      return @final_output
+      #       result = FinalOutput.new()
+      #       resp['output'].to_hash.each_pair do |k,v|
+      #         result.send("#{k}=",v) if result.respond_to?(k)
+      #       end
+      #       @final_output << result
+      #       return @final_output
     end
 
   end

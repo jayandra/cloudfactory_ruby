@@ -61,6 +61,9 @@ module CF
               @url = options[:url]
               @max_retrieve = options[:max_retrieve]
               @show_source_text = options[:show_source_text]
+            elsif type == "text_appending_robot"
+              @append = options[:append]
+              @separator = options[:separator]
             end
           end
           if @station
@@ -94,6 +97,13 @@ module CF
               @station.worker = worker
             elsif type == "term_extraction"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TermExtraction", :url => options[:url], :max_retrieve => options[:max_retrieve], :show_source_text => options[:show_source_text]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            elsif type == "text_appending_robot"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TextAppendingRobot", :append => options[:append], :separator => options[:separator]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
