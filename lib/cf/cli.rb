@@ -27,12 +27,15 @@ module Cf
     include Thor::Actions
     include Cf::Config
     
-    # desc "login", "Asks for the login information"
-    # def login
-    #   api_key = ask("Enter the api_key:")
-    #   save_config(api_key)
-    #   say("API Key saved at #{config_file}", :green)
-    # end
+    desc "login", "Setup the cloudfactory credentials"
+    method_option :url, :type => :string, :required => true, :desc => "sets the target url e.g. http://cloudfactory.com or http://sandbox.cloudfactory.com"
+    def target
+      target_url = options[:url]
+      # account_name = ask("Enter your account name:")
+      save_config(target_url)
+      say("Your cloudfactory target url is saved as #{target_url}", :green)
+      say("All the best to run your factory on top of CloudFactory.com", :blue)
+    end
 
     desc "line", "Commands to manage the Lines. For more info, cf line help"
     subcommand "line", Cf::Line

@@ -20,28 +20,34 @@ module Cf
         return
       end
       
-      # before starting the run creation process, we need to make sure whether the line exists or not
-      # if not, then we got to first create the line and then do the production run
-      # else we just simply do the production run
-      if set_api_key(yaml_source)
-        CF.account_name = CF::Account.info.name
-        line = CF::Line.info(line_title)
+      if set_target_uri
+        # before starting the run creation process, we need to make sure whether the line exists or not
+        # if not, then we got to first create the line and then do the production run
+        # else we just simply do the production run
+        if set_api_key(yaml_source)
+          CF.account_name = CF::Account.info.name
+          line = CF::Line.info(line_title)
         
-        if line.error.blank?
-          say "Creating a production run with title #{run_title}", :green
-          run = CF::Run.create(line, run_title, input_data)
-          say "A run with title #{run.title} created successfully."
+          if line.error.blank?
+            say "Creating a production run with title #{run_title}", :green
+            run = CF::Run.create(line, run_title, input_data)
+            say "A run with title #{run.title} created successfully."
+          else
+            # first create line
+            say "Creating the line: #{line_title}", :green
+            Cf::Line.new.create
+            # Now create a production run with the title run_title
+            run = CF::Run.create(CF::Line.info(line_title), run_title, input_data)
+            say "A run with title #{run.title} using the line #{line_title} created successfully."
+          end
         else
-          # first create line
-          say "Creating the line: #{line_title}", :green
-          Cf::Line.new.create
-          # Now create a production run with the title run_title
-          run = CF::Run.create(CF::Line.info(line_title), run_title, input_data)
-          say "A run with title #{run.title} using the line #{line_title} created successfully."
+          say "The api_key is missing in the line.yml file", :red
         end
       else
-        say "The api_key is missing in the line.yml file", :red
+        say "You have not set the target url.", :yellow
+        say "cf target --url=http://sandbox.cloudfactory.com will set it to run on sandbox environment", :yellow
       end
+      
     end
   end
 end
