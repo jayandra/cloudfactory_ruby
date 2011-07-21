@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 module CF
-  describe CF::SentimentRobot do
+  describe CF::TermExtraction do
     context "create a sentiment robot worker" do
       it "should create content_scraping_robot worker for first station in Block DSL way" do
         # WebMock.allow_net_connect!
