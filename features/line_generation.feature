@@ -3,7 +3,7 @@ Feature: Line manage
   As a CLI user
   I want to scaffold a line
   
-  @slow_process
+  @slow_process, @announce
   Scenario: Scaffolding a line
     Given a directory named "cf_apps"
     And I cd to "cf_apps"
@@ -16,7 +16,8 @@ Feature: Line manage
       
     And the output should contain:
       """
-      A new line named brandiator created.
+      A new line named brandiator generated.
+      Modify the line.yml file and you can create this line with: cf line create
       """
 
   @slow_process, @no-clobber
