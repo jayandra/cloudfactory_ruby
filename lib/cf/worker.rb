@@ -69,6 +69,8 @@ module CF
               @to = options[:to]
               @template = options[:template]
               @template_variables = options[:template_variables]
+            elsif type == "entity_extraction_robot"
+              @document = options[:document]
             end
           end
           if @station
@@ -116,6 +118,13 @@ module CF
               @station.worker = worker
             elsif type == "mailer_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MailerRobot", :to => options[:to], :template => options[:template], :template_variables => options[:template_variables]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            elsif type == "entity_extraction_robot"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "EntityExtractionRobot", :document => options[:document]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
