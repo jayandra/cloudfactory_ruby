@@ -15,6 +15,7 @@ module CF
       attr_accessor :document, :query
       attr_accessor :sanitize
       attr_accessor :max_retrieve, :show_source_text
+      attr_accessor :template, :template_variables
 
       case host
       when "HumanWorker"
@@ -64,6 +65,10 @@ module CF
             elsif type == "text_appending_robot"
               @append = options[:append]
               @separator = options[:separator]
+            elsif type == "mailer_robot"
+              @to = options[:to]
+              @template = options[:template]
+              @template_variables = options[:template_variables]
             end
           end
           if @station
@@ -104,6 +109,13 @@ module CF
               @station.worker = worker
             elsif type == "text_appending_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TextAppendingRobot", :append => options[:append], :separator => options[:separator]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            elsif type == "mailer_robot"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MailerRobot", :to => options[:to], :template => options[:template], :template_variables => options[:template_variables]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end

@@ -210,6 +210,24 @@ module CF
           worker.show_source_text = @show_source_text
           @worker_instance = worker
         end
+        
+      when "MailerRobot"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @to = worker_instance.to
+          @template = worker_instance.template
+          @template_variables = worker_instance.template_variables
+          resp = CF::MailerRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "MailerRobot", :to => @to, :template => @template, :template_variables => @template_variables})
+          worker = CF::MailerRobot.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          worker.to = @to
+          worker.template = @template
+          worker.template_variables = @template_variables
+          @worker_instance = worker
+        end
       
       else
         if worker_instance.station
