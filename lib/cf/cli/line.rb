@@ -38,7 +38,9 @@ module Cf
         else
           say "Generating #{yaml_destination}", :green
           Cf::Newline.start([title, yaml_destination])
-          say "A new line named #{title.underscore.dasherize} created."
+          say "A new line named #{line_destination} generated.", :green
+          FileUtils.chdir(line_destination) if Dir.exist?(line_destination)
+          say "Modify the line.yml file and you can create this line with: cf line create", :blue
         end
       else
         say "Title for the line is required.", :red
@@ -56,15 +58,18 @@ module Cf
       end
       
       if set_api_key(yaml_source)
-        line_creation_file = YAML::load(File.open(yaml_source))
-        line_title = line_creation_file['title']
-        line_description = line_creation_file['description']
-        line_department = line_creation_file['department']
+
+        CF.account_name = CF::Account.info.name
+        
+        line_dump = YAML::load(File.open(yaml_source))
+        line_title = line_dump['title']
+        line_description = line_dump['description']
+        line_department = line_dump['department']
         line = CF::Line.new(line_title, line_department, :description => line_description)
         say "New Line has been created with title => #{line.title} and Department => #{line.department_name}", :green
 
         # Creation of InputFormat from yaml file
-        input_formats = line_creation_file['input_formats']
+        input_formats = line_dump['input_formats']
         input_formats.each do |input_format|
           attrs = {
             :name => input_format['input_format']['name'],
@@ -77,7 +82,7 @@ module Cf
         end
 
         # Creation of Station
-        stations = line_creation_file['stations']
+        stations = line_dump['stations']
         stations.each do |station_file|
           type = station_file['station']['station_type']
           station = CF::Station.create(:line => line, :type => type) do |s|
@@ -123,7 +128,9 @@ module Cf
             end
           end
         end
-        say "Congrats! Since the line #{line_title} is setup, now you can do Production Runs on it.", :green        
+        say "Congrats! Since the line #{line_title} is setup, now you can start the production using it.", :green
+        say "You can check your line at https://#{CF.account_name}.cloudfactory.com/lines/#{CF.account_name}/#{line.title}", :blue
+        say "Now you can do your production run with: cf production start --input-data=input_data.csv", :green
       else
         say "The api_key is missing in the line.yml file", :red
       end
