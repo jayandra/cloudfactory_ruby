@@ -13,9 +13,16 @@ Feature: Create a production run on CF
       No value provided for required options '--title'
       """
 
-  @too_slow_process
+  @announce, @too_slow_process
   Scenario: Starting a production
-    Given a file named "brandiator/station_2/form.html" with:
+    Given a file named ".cf_credentials" with:
+    """
+    ---
+    :target_url: http://lvh.me:3000/api/
+    :api_version: v1
+  
+    """
+    And a file named "brandiator/station_2/form.html" with:
     """
     <div id="my_form_instructions" class="brandiator cf_form_instruction">
       <ul>
@@ -104,5 +111,5 @@ Feature: Create a production run on CF
     When I run `cf production start --title my_run_title --input_data input_data.csv`
     Then the output should match:
       """
-      A run with title my_run_title using the line brandiator created successfully.
+      A run with title my-run-title using the line brandiator created successfully.
       """

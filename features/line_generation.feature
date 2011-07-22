@@ -31,6 +31,14 @@ Feature: Line manage
     """
 
   Scenario: No api_key present in the yaml file
+    Given a file named ".cf_credentials" with:
+    """
+    ---
+    :target_url: http://lvh.me:3000/api/
+    :api_version: v1
+    
+    """
+    
     Given a directory named "cf_apps"
     And I cd to "cf_apps"
     And a file named "brandiator/line.yml" with:

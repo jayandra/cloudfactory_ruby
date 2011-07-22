@@ -5,7 +5,14 @@ Feature: Create a new line on CF
 
   @announce, @too_slow_process
   Scenario: Creating a Line
-    Given a file named "brandiator/line.yml" with:
+    Given a file named ".cf_credentials" with:
+    """
+    ---
+    :target_url: http://lvh.me:3000/api/
+    :api_version: v1
+  
+    """
+    And a file named "brandiator/line.yml" with:
     """
     api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
     title: brandiator

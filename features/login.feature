@@ -5,13 +5,14 @@ Feature: Login
   As a CLI user
   I want to setup login credentials
   
-  @slow_process, @announce
+  @announce
   Scenario: Logging In
     When I run `cf target --url=http://sandbox.cloudfactory.com`
     Then the file ".cf_credentials" should contain exactly:
       """
       ---
-      :target_url: http://sandbox.cloudfactory.com/api/v1
+      :target_url: http://sandbox.cloudfactory.com/api/
+      :api_version: v1
       
       """
     Then the output should match:
@@ -19,6 +20,7 @@ Feature: Login
       Your cloudfactory target url is saved as http://sandbox.cloudfactory.com
       All the best to run your factory on top of CloudFactory.com
       """
+      
   @announce
   Scenario: Trying to create line without config credentials
     Given an empty file named "brandiator/line.yml"
