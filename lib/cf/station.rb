@@ -242,6 +242,24 @@ module CF
           worker.document = @document
           @worker_instance = worker
         end
+        
+      when "MediaSplittingRobot"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @url = worker_instance.url
+          @split_duration = worker_instance.split_duration
+          @overlapping_time = worker_instance.overlapping_time
+          resp = CF::MediaSplittingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "MediaSplittingRobot", :url => @url, :split_duration => @split_duration, :overlapping_time => @overlapping_time})
+          worker = CF::MediaSplittingRobot.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          worker.url = @url
+          worker.split_duration = @split_duration
+          worker.overlapping_time = @overlapping_time
+          @worker_instance = worker
+        end
       
       else
         if worker_instance.station

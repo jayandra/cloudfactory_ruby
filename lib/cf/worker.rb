@@ -16,6 +16,7 @@ module CF
       attr_accessor :sanitize
       attr_accessor :max_retrieve, :show_source_text
       attr_accessor :template, :template_variables
+      attr_accessor :split_duration, :overlapping_time
 
       case host
       when "HumanWorker"
@@ -71,6 +72,10 @@ module CF
               @template_variables = options[:template_variables]
             elsif type == "entity_extraction_robot"
               @document = options[:document]
+            elsif type == "media_splitting_robot"
+              @url = options[:url]
+              @split_duration  = options[:split_duration]
+              @overlapping_time = options[:overlapping_time]
             end
           end
           if @station
@@ -125,6 +130,13 @@ module CF
               @station.worker = worker
             elsif type == "entity_extraction_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "EntityExtractionRobot", :document => options[:document]})
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+            elsif type == "media_splitting_robot"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MediaSplittingRobot", :url => options[:url], :split_duration => options[:split_duration], :overlapping_time => options[:overlapping_time]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
