@@ -113,13 +113,13 @@ Feature: Create a production run on CF
             css: form.css
             js: form.js
     """
-    And a file named "brandiator/input/brandiator.csv" with:
+    And a file named "brandiator/input/my-run-title.csv" with:
     """
     company,website,meta_data_company
     Apple,apple.com,Apple
     """
     And I cd to "brandiator"
-    When I run `cf production start --title my_run_title --input_data input_data.csv`
+    When I run `cf production start --title my_run_title --input_data my-run-title.csv`
     Then the output should match:
       """
       A run with title my-run-title using the line brandiator created successfully.
