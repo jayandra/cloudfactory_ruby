@@ -16,6 +16,8 @@ module Cf
       copy_file("css_file.css.erb",     "#{line_destination}/station_2/form.css")
       copy_file("html_file.html.erb",   "#{line_destination}/station_2/form.html")
       copy_file("js_file.js.erb",       "#{line_destination}/station_2/form.js")
+      FileUtils.mkdir("#{line_destination}/input")
+      FileUtils.mkdir("#{line_destination}/output")
     end
   end
 end
@@ -39,8 +41,7 @@ module Cf
           say "Generating #{yaml_destination}", :green
           Cf::Newline.start([title, yaml_destination])
           say "A new line named #{line_destination} generated.", :green
-          FileUtils.chdir(line_destination) if Dir.exist?(line_destination)
-          say "Modify the line.yml file and you can create this line with: cf line create", :yellow
+          say "Modify the #{yaml_destination} file and you can create this line with: cf line create", :yellow
         end
       else
         say "Title for the line is required.", :red

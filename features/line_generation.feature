@@ -13,11 +13,12 @@ Feature: Line manage
       | brandiator/station_2/form.html |
       | brandiator/station_2/form.css  |
       | brandiator/station_2/form.js   |
-      
+    And a directory named "brandiator/input" should exist
+    And a directory named "brandiator/output" should exist
     And the output should contain:
       """
       A new line named brandiator generated.
-      Modify the line.yml file and you can create this line with: cf line create
+      Modify the brandiator/line.yml file and you can create this line with: cf line create
       """
 
   @slow_process, @no-clobber
