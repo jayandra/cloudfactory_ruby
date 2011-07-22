@@ -1,5 +1,6 @@
 module CF
   class Line
+    require 'httparty'
     include Client
 
     # Title of the Line
@@ -54,12 +55,33 @@ module CF
     def stations stations = nil
       if stations
         type = stations.type
-        @except = stations.except if stations.except.presence != nil
-        @extra = stations.extra if stations.extra.presence != nil
+        @station_input_formats = stations.station_input_formats
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
         else
-          resp = CF::Station.post("/lines/#{CF.account_name}/#{self.title.downcase}/stations.json", :station => {:type => type, :input_formats => {:except => @except, :extra => @extra}})
+          @request_general = 
+          {
+            :body => 
+            {
+              :api_key => CF.api_key,
+              :station => {:type => type, :input_formats => @station_input_formats}
+            }
+          }
+          if type == "Tournament"
+            @max_judges = stations.max_judges
+            @auto_judge = stations.auto_judge
+            @request_tournament = 
+            {
+              :body => 
+              {
+                :api_key => CF.api_key,
+                :station => {:type => type, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }, :input_formats => @station_input_formats}
+              }
+            }
+            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",@request_tournament)
+          else
+            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",@request_general)         
+          end
           station = CF::Station.new()
           resp.to_hash.each_pair do |k,v|
             station.send("#{k}=",v) if station.respond_to?(k)
