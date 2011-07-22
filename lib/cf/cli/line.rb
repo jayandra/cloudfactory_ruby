@@ -4,7 +4,7 @@ module Cf
   class Newline < Thor::Group
     include Thor::Actions
     include Cf::Config
-    source_root File.expand_path('../templates', __FILE__)
+    source_root File.expand_path('../templates/', __FILE__)
     argument :title, :type => :string, :desc => "The line title"
     argument :yaml_destination, :type => :string, :required => true
     
@@ -12,11 +12,11 @@ module Cf
       arr = yaml_destination.split("/")
       arr.pop
       line_destination = arr.join("/")
-      template("line.tt", yaml_destination)
-      copy_file("css_file.css.erb",     "#{line_destination}/station_2/form.css")
-      copy_file("html_file.html.erb",   "#{line_destination}/station_2/form.html")
-      copy_file("js_file.js.erb",       "#{line_destination}/station_2/form.js")
-      FileUtils.mkdir("#{line_destination}/input")
+      template("sample-line/line.yml.erb", yaml_destination)
+      copy_file("sample-line/form.css",    "#{line_destination}/station_2/form.css")
+      copy_file("sample-line/form.html",   "#{line_destination}/station_2/form.html")
+      copy_file("sample-line/form.js",     "#{line_destination}/station_2/form.js")
+      copy_file("sample-line/sample-line.csv",        "#{line_destination}/input/#{title.underscore.dasherize}.csv")
       FileUtils.mkdir("#{line_destination}/output")
     end
   end

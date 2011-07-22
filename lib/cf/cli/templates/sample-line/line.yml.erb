@@ -1,0 +1,53 @@
+api_key: fill_in_your_api_key
+title: <%= title.underscore.dasherize %>
+description: A sample line generated via CLI to use both standard and custom form.
+department: Data Processing
+
+input_formats:
+  - name: company
+    required: true
+    valid_type: general
+  - name: website
+    required: false
+    valid_type: url
+stations:
+  - station:
+      station_index: 1
+      station_type: work
+      input_formats:
+        station_0: 
+          - name: website
+            except: true
+      worker:
+        worker_type: human
+        num_workers: 2
+        reward: 5
+      task_form:
+        form_title: Need the name and email.
+        instruction: Enter text CEO name and his Email
+        form_fields:
+          - label: CEO Name
+            field_type: short_answer
+            required: true
+          - label: CEO Email
+            field_type: email
+            required: true
+  - station:
+      station_index: 2
+      station_type: work
+      input_formats:
+        station_0:
+          - name: website
+        station_1:
+          - name: CEO Name
+            except: true
+      worker:
+        worker_type: human
+        num_workers: 1
+        reward: 3
+      custom_task_form:
+        form_title: Get study background
+        instruction: Find qualification info of given CEO
+        html: form.html
+        css: form.css
+        js: form.js
