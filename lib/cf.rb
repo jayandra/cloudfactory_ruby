@@ -26,6 +26,10 @@ module CF
   # Set ENV['TEST'] is true for testing against the api
   # TEST=true bundle exec rspec spec/.....
   if ENV['TEST']
+    require 'ruby-debug'
+    ::Debugger.start
+    ::Debugger.settings[:autoeval] = true if ::Debugger.respond_to?(:settings)
+    
     API_CONFIG = YAML.load_file(File.expand_path("../../fixtures/api_credentials.yml", __FILE__))
     CF.configure do |config|
       config.account_name = API_CONFIG['account_name']

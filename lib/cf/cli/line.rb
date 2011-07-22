@@ -16,6 +16,8 @@ module Cf
       copy_file("css_file.css.erb",     "#{line_destination}/station_2/form.css")
       copy_file("html_file.html.erb",   "#{line_destination}/station_2/form.html")
       copy_file("js_file.js.erb",       "#{line_destination}/station_2/form.js")
+      FileUtils.mkdir("#{line_destination}/input")
+      FileUtils.mkdir("#{line_destination}/output")
     end
   end
 end
@@ -39,8 +41,7 @@ module Cf
           say "Generating #{yaml_destination}", :green
           Cf::Newline.start([title, yaml_destination])
           say "A new line named #{line_destination} generated.", :green
-          FileUtils.chdir(line_destination) if Dir.exist?(line_destination)
-          say "Modify the line.yml file and you can create this line with: cf line create", :yellow
+          say "Modify the #{yaml_destination} file and you can create this line with: cf line create", :yellow
         end
       else
         say "Title for the line is required.", :red
@@ -73,9 +74,9 @@ module Cf
           input_formats = line_dump['input_formats']
           input_formats.each do |input_format|
             attrs = {
-              :name => input_format['input_format']['name'],
-              :required => input_format['input_format']['required'],
-              :valid_type => input_format['input_format']['valid_type']
+              :name => input_format['name'],
+              :required => input_format['required'],
+              :valid_type => input_format['valid_type']
             }
             input_format_for_line = CF::InputFormat.new(attrs)
             line.input_formats input_format_for_line
@@ -97,9 +98,9 @@ module Cf
                   say "New TaskForm has been created with Title => #{f.title} and Instruction => #{f.instruction}", :green
                   # Creation of FormFields
                   station_file['station']['task_form']['form_fields'].each do |form_field|
-                    field_type = form_field['form_field']['field_type']
-                    label = form_field['form_field']['label']
-                    required = form_field['form_field']['required']
+                    field_type = form_field['field_type']
+                    label = form_field['label']
+                    required = form_field['required']
                     field = CF::FormField.new({:form => f, :label => label, :field_type => field_type, :required => required})
                     say "New FormField has been created of label => #{field.label}, field_type => #{field.field_type} and required => #{field.required}", :green
                   end
