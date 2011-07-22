@@ -1,5 +1,6 @@
 module CF
   class Station
+    require 'httparty'
     include Client
 
     # type of the station, e.g. station = Station.new(line, {:type => "Work"})
@@ -9,7 +10,7 @@ module CF
     attr_accessor :line_title
 
     # ID of the station
-    attr_accessor :id, :extra, :except, :index, :line
+    attr_accessor :id, :extra, :except, :index, :line, :station_input_formats, :max_judges, :auto_judge
     
     # ==Initializes a new station
     # ===Usage Example
@@ -21,29 +22,44 @@ module CF
       @type = options[:type].nil? ? nil : options[:type].camelize
       @max_judges = options[:max_judges]
       @auto_judge = options[:auto_judge]
-      @except = options[:input_formats][:except] if options[:input_formats].presence != nil
-      @extra = options[:input_formats][:extra] if options[:input_formats].presence != nil
+      @station_input_formats = options[:input_formats]
       @line_instance = options[:line]
+      @request_general = 
+      {
+        :body => 
+        {
+          :api_key => CF.api_key,
+          :station => {:type => @type, :input_formats => @station_input_formats}
+        }
+      }
+      @request_tournament = 
+      {
+        :body => 
+        {
+          :api_key => CF.api_key,
+          :station => {:type => @type, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }, :input_formats => @station_input_formats}
+        }
+      }
       if @line_title
         if @type == "Improve"
           line = options[:line]
           if line.stations.size < 1
             raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
           else
-            resp = self.class.post("/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json", :station => {:type => @type, :input_formats => {:except => @except, :extra => @extra}})
+            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",@request_general)
             resp.to_hash.each_pair do |k,v|
               self.send("#{k}=",v) if self.respond_to?(k)
             end
             @line_instance.stations = self
           end
         elsif @type == "Tournament"
-          resp = self.class.post("/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json", :station => {:type => @type, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }, :input_formats => {:except => @except, :extra => @extra}})
+          resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",@request_tournament)
           resp.to_hash.each_pair do |k,v|
             self.send("#{k}=",v) if self.respond_to?(k)
           end
           @line_instance.stations = self
         else
-          resp = self.class.post("/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json", :station => {:type => @type, :input_formats => {:except => @except, :extra => @extra}})
+          resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",@request_general)
           resp.to_hash.each_pair do |k,v|
             self.send("#{k}=",v) if self.respond_to?(k)
           end
