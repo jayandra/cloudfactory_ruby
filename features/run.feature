@@ -13,6 +13,17 @@ Feature: Create a production run on CF
       No value provided for required options '--title'
       """
 
+  @announce
+  Scenario: Warn about the missing input/run-title.csv input file if not present
+    Given an empty file named "brandiator/line.yml"
+    And I cd to "brandiator"
+    And a directory named "input"
+    When I run `cf production start -t my_first-run -i input_data.csv`
+    Then the output should contain:
+      """
+      The input data csv file named input/my-first-run.csv is missing.
+      """
+
   @announce, @too_slow_process
   Scenario: Starting a production
     Given a file named ".cf_credentials" with:
@@ -102,7 +113,7 @@ Feature: Create a production run on CF
             css: form.css
             js: form.js
     """
-    And a file named "brandiator/input/input_data.csv" with:
+    And a file named "brandiator/input/brandiator.csv" with:
     """
     company,website,meta_data_company
     Apple,apple.com,Apple
