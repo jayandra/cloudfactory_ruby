@@ -21,10 +21,12 @@ module Cf
     include Thor::Actions
     include Cf::Config
     source_root File.expand_path('../templates', __FILE__)
+    debugger
     argument :station, :type => :numeric
     argument :form_content, :type => :string
     
     def generate_form_preview
+      debugger
       line_destination = Dir.pwd
       template("form_preview.html.erb",   "#{line_destination}/station_#{station}/form_preview.html")
     end
@@ -40,7 +42,7 @@ module Cf
   class Form < Thor
     include Cf::Config
     
-    desc "form generate FORM-TITLE", "genarates a custom task form at ~/.cf/<line-title>/<form-title>.html and its associated css and js files"
+    desc "form generate", "genarates a custom task form at <line-title>/<form-title>.html and its associated css and js files"
     method_option :station, :type => :numeric, :required => true, :aliases => "-st", :desc => "the station index this form should be associated with"
     method_option :labels, :type => :string, :required => true, :aliases => "-lb", :desc => "the labels that will be shown to the worker on MTurk window"
     method_option :fields, :type => :hash, :required => true, :aliases => "-fd", :desc => "the actual form fields and types that the worker will work/fill on"
@@ -63,7 +65,7 @@ module Cf
       end
     end
     
-    desc "form preview FORM-TITLE", "genarates a html file with the contents of custom task form to preview"
+    desc "form preview", "genarates a html file with the contents of custom task form to preview"
     method_option :station, :type => :numeric, :required => true, :aliases => "-s", :desc => "station index of the form to preview"
     def preview
       line_destination = Dir.pwd
@@ -71,9 +73,11 @@ module Cf
         say("The current directory is not a valid line directory.")
         return
       end
+      debugger
       if Dir.exist?("#{line_destination}/station_#{options[:station]}") and !Dir["#{line_destination}/station_#{options[:station]}/*"].empty?
         say "Generating preview form for station #{options[:station]}", :green
         form_content = File.read("station_#{options[:station]}/form.html")
+        say form_content, :yellow
         Cf::FormPreview.start([options[:station], form_content])
       elsif Dir["#{line_destination}/station_#{options[:station]}/*"].empty?
         say "No form exists for station #{options[:station]}", :red
