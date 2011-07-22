@@ -87,7 +87,8 @@ module Cf
           stations = line_dump['stations']
           stations.each do |station_file|
             type = station_file['station']['station_type']
-            station = CF::Station.create(:line => line, :type => type) do |s|
+            input_formats_for_station = station_file['station']['input_formats']
+            station = CF::Station.create(:line => line, :type => type, :input_formats => input_formats_for_station) do |s|
               say "New Station has been created of type => #{s.type}", :green
               # Creation of Form
               # Creation of TaskForm
@@ -105,7 +106,8 @@ module Cf
                     say "New FormField has been created of label => #{field.label}, field_type => #{field.field_type} and required => #{field.required}", :green
                   end
                 end
-              else
+                
+              elsif station_file['station']['custom_task_form'].present?
                 # Creation of CustomTaskForm
                 title = station_file['station']['custom_task_form']['form_title']
                 instruction = station_file['station']['custom_task_form']['instruction']
@@ -120,6 +122,8 @@ module Cf
               
                 say "New CustomTaskForm has been created of line => #{form.title} and Description => #{form.instruction}.\nThe source file for html => #{html_file}, css => #{css_file} and js => #{js_file} ", :green
               end
+              
+              # For Worker
               worker = station_file['station']['worker']
               number = worker['num_workers']
               reward = worker['reward']
@@ -127,6 +131,9 @@ module Cf
               if worker_type == "human"
                 human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
                 say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
+              elsif worker_type == "google_translate_robot"
+                robot_worker = CF::GoogleTranslateRobot.create({:station => s, :data => worker['data'], :from => worker['from'], :to => worker['to']})
+                say "New Worker has been created of type => #{worker_type}, Data => #{worker['data']}, From => #{worker['from']} and To => #{worker['to']}", :green
               end
             end
           end
