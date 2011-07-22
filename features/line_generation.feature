@@ -13,7 +13,8 @@ Feature: Line manage
       | brandiator/station_2/form.html |
       | brandiator/station_2/form.css  |
       | brandiator/station_2/form.js   |
-    And a directory named "brandiator/input" should exist
+      | brandiator/input/brandiator.csv |
+
     And a directory named "brandiator/output" should exist
     And the output should contain:
       """
