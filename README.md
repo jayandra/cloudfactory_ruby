@@ -25,6 +25,21 @@ gem install cloud_factory-0.0.1.gem
 
 After installing the gem, you will get a `cf` cmd tool.
 
+Now you've to setup the `target uri`. Its necessary while creating a line and starting a production run.
+
+```bash
+  cf target --url=http://staging.cloudfactory.com
+```
+
+## Generate a line
+```bash
+  cf line generate first-line
+```
+
+Change the `api_key` in the generated `first-line/line.yml` file.
+Then run `cf production start --title=first-line-run --input-data=first-line-run.csv`
+This should create a line and do production run.
+
 ```bash
 ± cf                                                                                                                                                                                                
 Tasks:
