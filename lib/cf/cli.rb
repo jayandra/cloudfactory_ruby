@@ -12,16 +12,6 @@ require "#{cli_directory}/line"
 require "#{cli_directory}/form"
 require "#{cli_directory}/production"
 
-if ENV['TEST_CLI']
-  require 'ruby-debug'
-  API_CONFIG = YAML.load_file(File.expand_path("../../../fixtures/api_credentials.yml", __FILE__))
-  CF.configure do |config|
-    config.api_version = API_CONFIG['api_version']
-    config.api_url = API_CONFIG['api_url']
-    config.api_key = API_CONFIG['api_key']
-  end
-end
-
 module Cf
   class CLI < Thor
     include Thor::Actions
@@ -34,7 +24,7 @@ module Cf
       # account_name = ask("Enter your account name:")
       save_config(target_url)
       say("Your cloudfactory target url is saved as #{target_url}", :green)
-      say("All the best to run your factory on top of CloudFactory.com", :blue)
+      say("All the best to run your factory on top of CloudFactory.com", :green)
     end
 
     desc "line", "Commands to manage the Lines. For more info, cf line help"

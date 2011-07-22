@@ -40,7 +40,7 @@ module Cf
           Cf::Newline.start([title, yaml_destination])
           say "A new line named #{line_destination} generated.", :green
           FileUtils.chdir(line_destination) if Dir.exist?(line_destination)
-          say "Modify the line.yml file and you can create this line with: cf line create", :blue
+          say "Modify the line.yml file and you can create this line with: cf line create", :yellow
         end
       else
         say "Title for the line is required.", :red
@@ -130,8 +130,9 @@ module Cf
             end
           end
           say "Congrats! Since the line #{line_title} is setup, now you can start the production using it.", :green
-          say "You can check your line at https://#{CF.account_name}.cloudfactory.com/lines/#{CF.account_name}/#{line.title}", :blue
-          say "Now you can do your production run with: cf production start --input-data=input_data.csv", :green
+          say "You can check your line at https://#{CF.account_name}.cloudfactory.com/lines/#{CF.account_name}/#{line.title}", :yellow
+          say "Now you can do your production run with: cf production start --title=<your_run_title> --input-data=input_data.csv", :green
+          say "Note: Make sure input_data.csv file is in the inputs directory.", :green
         else
           say "The api_key is missing in the line.yml file", :red
         end
