@@ -35,8 +35,9 @@ Feature: Login
   @announce
   Scenario: Trying to do production run without config credentials
     Given an empty file named "brandiator/line.yml"
+    And an empty file named "brandiator/input/my-run-title.csv"
     And I cd to "brandiator"
-    When I run `cf production start --title my_run_title --input_data input_data.csv`
+    When I run `cf production start --title my_run_title --input_data my-run-title.csv`
     Then the output should match:
       """
       You have not set the target url.
