@@ -9,33 +9,35 @@ module Cf
     end
 
     def save_config(target_url)
-      File.open(config_file, 'w') {|f| f.write({ :target_url => "#{target_url}/api/v1" }.to_yaml) }
+      File.open(config_file, 'w') {|f| f.write({ :target_url => "#{target_url}/api/", :api_version => "v1" }.to_yaml) }
     end
 
+    def set_target_uri
+      if CF.api_url.blank? || CF.api_url.nil?
+        if load_config
+          CF.api_url = load_config[:target_url]
+          CF.api_version = load_config[:api_version]
+          return true
+        else
+          return false
+        end
+      else
+        return true
+      end
+    end
+    
     def get_api_key(line_yaml_file)
       line_yml = YAML::load(File.read(line_yaml_file))
       line_yml['api_key'].presence
     end
     
-    def set_target_uri
-      if CF.api_url.blank? || CF.api_url.nil?
-        if load_config
-          target_url = load_config['target_url']  
-          CF.api_url = "#{target_url}"
-          return true
-        else
-          return false
-        end
-      end
-      return false
-    end
-    
     def set_api_key(yaml_source)
+      # debugger
       api_key = get_api_key(yaml_source)
       if api_key.blank?
         return false
       else
-        CF.api_key = api_key unless CF.api_key.blank?
+        CF.api_key = api_key if CF.api_key.blank?
         return true
       end
     end
