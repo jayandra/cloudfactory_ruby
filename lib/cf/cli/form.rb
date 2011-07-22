@@ -21,12 +21,10 @@ module Cf
     include Thor::Actions
     include Cf::Config
     source_root File.expand_path('../templates', __FILE__)
-    debugger
     argument :station, :type => :numeric
     argument :form_content, :type => :string
     
     def generate_form_preview
-      debugger
       line_destination = Dir.pwd
       template("form_preview.html.erb",   "#{line_destination}/station_#{station}/form_preview.html")
     end
@@ -73,7 +71,6 @@ module Cf
         say("The current directory is not a valid line directory.")
         return
       end
-      debugger
       if Dir.exist?("#{line_destination}/station_#{options[:station]}") and !Dir["#{line_destination}/station_#{options[:station]}/*"].empty?
         say "Generating preview form for station #{options[:station]}", :green
         form_content = File.read("station_#{options[:station]}/form.html")
