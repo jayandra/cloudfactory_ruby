@@ -73,9 +73,9 @@ module Cf
           input_formats = line_dump['input_formats']
           input_formats.each do |input_format|
             attrs = {
-              :name => input_format['input_format']['name'],
-              :required => input_format['input_format']['required'],
-              :valid_type => input_format['input_format']['valid_type']
+              :name => input_format['name'],
+              :required => input_format['required'],
+              :valid_type => input_format['valid_type']
             }
             input_format_for_line = CF::InputFormat.new(attrs)
             line.input_formats input_format_for_line
@@ -97,9 +97,9 @@ module Cf
                   say "New TaskForm has been created with Title => #{f.title} and Instruction => #{f.instruction}", :green
                   # Creation of FormFields
                   station_file['station']['task_form']['form_fields'].each do |form_field|
-                    field_type = form_field['form_field']['field_type']
-                    label = form_field['form_field']['label']
-                    required = form_field['form_field']['required']
+                    field_type = form_field['field_type']
+                    label = form_field['label']
+                    required = form_field['required']
                     field = CF::FormField.new({:form => f, :label => label, :field_type => field_type, :required => required})
                     say "New FormField has been created of label => #{field.label}, field_type => #{field.field_type} and required => #{field.required}", :green
                   end
