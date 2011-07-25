@@ -141,7 +141,6 @@ module Cf
               else
                 robot_type = ("CF::"+worker_type.camelize).constantize
                 settings = worker['settings']
-                debugger
                 robot_params = settings.merge(:station => s)
                 robot_worker = robot_type.create(robot_params.symbolize_keys)
     
