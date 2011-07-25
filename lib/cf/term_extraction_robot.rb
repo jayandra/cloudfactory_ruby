@@ -11,7 +11,7 @@ module CF
   #     end
   #   end
   #
-  class TermExtraction
+  class TermExtractionRobot
     
     include Worker
 

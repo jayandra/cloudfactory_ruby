@@ -59,7 +59,7 @@ module CF
             elsif type == "sentiment_robot"
               @document = options[:document]
               @sanitize = options[:sanitize]
-            elsif type == "term_extraction"
+            elsif type == "term_extraction_robot"
               @url = options[:url]
               @max_retrieve = options[:max_retrieve]
               @show_source_text = options[:show_source_text]
@@ -107,8 +107,8 @@ module CF
               end
               worker.station = @station
               @station.worker = worker
-            elsif type == "term_extraction"
-              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TermExtraction", :url => options[:url], :max_retrieve => options[:max_retrieve], :show_source_text => options[:show_source_text]})
+            elsif type == "term_extraction_robot"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TermExtractionRobot", :url => options[:url], :max_retrieve => options[:max_retrieve], :show_source_text => options[:show_source_text]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
