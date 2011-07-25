@@ -1,53 +1,67 @@
+# ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
+# Assembly Line: <%= title.underscore.dasherize %>
+# ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
+# See docs at http://developers.cloudfactory.com/lines/yaml.html
+# See examples at http://developers.cloudfactory.com/lines/examples.html
+# Fill in your API key below! (See http://developers.cloudfactory.com/account#settings)
 api_key: fill_in_your_api_key
 title: <%= title.underscore.dasherize %>
 description: A sample line generated via CLI to use both standard and custom form.
-department: Data Processing
+department: Data Processing  # Digitization, Web Research, etc
 
-input_formats:
-  - name: company
-    required: true
-    valid_type: general
-  - name: website
-    required: false
-    valid_type: url
-stations:
-  - station:
-      station_index: 1
-      station_type: work
-      input_formats:
-        station_0: 
-          - name: website
-            except: true
-      worker:
-        worker_type: human
-        num_workers: 2
-        reward: 5
-      task_form:
-        form_title: Need the name and email.
-        instruction: Enter text CEO name and his Email
-        form_fields:
-          - label: CEO Name
-            field_type: short_answer
-            required: true
-          - label: CEO Email
-            field_type: email
-            required: true
-  - station:
-      station_index: 2
-      station_type: work
-      input_formats:
-        station_0:
-          - name: website
-        station_1:
-          - name: CEO Name
-            except: true
-      worker:
-        worker_type: human
-        num_workers: 1
-        reward: 3
-      custom_task_form:
-        form_title: Get study background
-        instruction: Find qualification info of given CEO
-        html: form.html
-        css: form.css
-        js: form.js
+# Line Input Formats (see http://developers.cloudfactory.com/lines/yaml.html#line-input-formats)
+# input_formats:
+#   - name: company
+#     required: true
+#     valid_type: general  # general, url, date, email, ...
+
+# Stations (see http://developers.cloudfactory.com/lines/yaml.html#stations)
+# stations:
+#   # Sample Station #1: Human Worker
+#   - station:
+#       station_index: 1
+#       station_type: work   # work, improve, tournament
+#       # Worker (see http://developers.cloudfactory.com/lines/yaml.html#workers)
+#       worker:
+#         worker_type: human   # "human" or name of robot (google_translate_robot, etc)
+#         num_workers: 2
+#         reward: 5
+#       # Task Form (see http://developers.cloudfactory.com/lines/yaml.html#task-forms)
+#       task_form:
+#         form_title: Research to find CEO of a company.
+#         instruction: Enter name and email of the CEO for the company below
+#         form_fields:
+#           - label: CEO Name
+#             field_type: short_answer
+#             required: true
+#           - label: CEO Email
+#             field_type: email
+#             required: true
+
+#   # Sample Station #2: Robot Worker
+#   - station:
+#       station_index: 2
+#       station_type: work   # work, improve, tournament
+#       # Worker (see http://developers.cloudfactory.com/lines/yaml.html#workers)
+#       worker:
+#         worker_type: google_translate_robot   # "human" or name of robot (content_scraper_robot, etc)
+#       # Robot Settings (see http://developers.cloudfactory.com/robots/)
+#       settings:
+#         data: ["{sentence}"]
+#         from: en
+#         to:   fr
+#
+#   # Sample Station #3: Tournament
+#   - station:
+#       station_index: 3
+#       station_type: tournament
+#       worker:
+#         worker_type: human
+#         num_workers: 2
+#         reward: 3
+#       custom_task_form:
+#         form_title: Get study background
+#         instruction: Find qualification info of given CEO
+#         html: form.html
+#         css: form.css
+#         js: form.js

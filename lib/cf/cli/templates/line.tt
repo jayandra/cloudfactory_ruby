@@ -1,24 +1,34 @@
+#  ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
+# See docs at http://developers.cloudfactory.com/lines/yaml.html
+# See examples at http://developers.cloudfactory.com/lines/examples.html
+#
+# Fill in your API key below (see http://cloudfactory.com/account#settings)
+#  ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
+
+# Line settings (see http://cloudfactory.com/lines/yaml.html#line-settings)
 api_key: fill_in_your_api_key
 title: <%= title.underscore.dasherize %>
 description: Describe the line what its purpose is and what it does. You got the idea, right?
 department: Survey
 
-input_formats:
-  - name: company
-    required: true
-    valid_type: general
-  - name: website
-    required: false
-    valid_type: url
 
+# Line Input Formats (see http://cloudfactory.com/lines/yaml.html#line-input-formats)
+# input_formats:
+#   - name: company
+#     required: true
+#     valid_type: general  # general, url, date, email, ...
+
+# Stations (see http://cloudfactory.com/lines/yaml.html#stations)
 stations:
   - station:
       station_index: 1
       station_type: work
+      # Worker (see http://cloudfactory.com/lines/yaml.html#workers)
       worker:
-        worker_type: human
+        worker_type: human   # human, impr
         num_workers: 2
         reward: 5
+      # Task Form (see http://cloudfactory.com/lines/yaml.html#task-forms)
       task_form:
         form_title: Enter text from a business card image for TASKFORM
         instruction: Read the business card image and the fill the fields for TASKFORM
@@ -36,6 +46,7 @@ stations:
         worker_type: human
         num_workers: 1
         reward: 3
+      # Custom Task Form (see http://cloudfactory.com/lines/yaml.html#custom-task-form)
       custom_task_form:
         form_title: Enter text from a business card image for CUSTOMTASKFORM
         instruction: Read the business card image and the fill the fields for CUSTOMTASKFORM
