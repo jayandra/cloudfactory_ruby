@@ -3,66 +3,80 @@ require 'spec_helper'
 
 module CF
   describe CF::TextAppendingRobot do
-    context "create a sentiment robot worker" do
-      xit "should create content_scraping_robot worker for first station in Block DSL way" do
-        WebMock.allow_net_connect!
-        # VCR.use_cassette "term_extraction/block/create-worker-single-station", :record => :new_episodes do
-          line = CF::Line.create("text_appending_robot_3", "Digitization") do
-            CF::InputFormat.new({:line => self,:name => "Description", :required => true, :valid_type => "general"})
-            # CF::InputFormat.new({:line => self,:name => "Country", :required => true, :valid_type => "general"})
-            # CF::Station.create({:line => self, :type => "work"}) do |station|
-            #               CF::HumanWorker.new({:station => station, :number => 1, :reward => 20})
-            #               CF::TaskForm.create({:station => station, :title => "Write your view about given Companies", :instruction => "Describe"}) do |i|
-            #                 CF::FormField.new({:form => i, :label => "description", :field_type => "SA", :required => "true"})
-            #               end
-            #             end
+    context "create a text appending robot worker" do
+      it "should create text appending robot worker for first station in Block DSL way" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "text_appending_robot/block/create-worker-single-station", :record => :new_episodes do
+          html =   '<textarea name = "output[description][]"></textarea>
+          <textarea name = "output[description][]"></textarea>
+          <textarea name = "output[description][]"></textarea>
+          <textarea name = "output[description][]"></textarea>'
+
+          line = CF::Line.create("text_appending_robot_30", "Digitization") do
+            CF::InputFormat.new({:line => self,:name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => self,:name => "Website", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => self, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::CustomTaskForm.create({:station => s, :title => "Descibe about given Company", :instruction => "Describe", :raw_html => html})
+            end
             CF::Station.create({:line => self, :type => "work"}) do |s1|
-              CF::TextAppendingRobot.create({:station => s1, :append => ["this is Cloudfactory", "it will blow your mind off"], :separator => "||"})
+              CF::TextAppendingRobot.create({:station => s1, :append => ["{description}"], :separator => "||"})
             end
           end
-          run = CF::Run.create(line, "text_appending_robot_run_10", [{"Description" => "this is Cloudfactory"}, {"Description" => "it will blow your mind off"}])
-          debugger
+          run = CF::Run.create(line, "text_appending_robot_run_19", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          # debugger
           output = run.final_output
           station_1_output = run.output(:station => 1)
-          debugger
-          # output.first.final_output.first.keyword_relevance_url.should eql([99.7991, 95.6566, 83.2383, 79.39450000000001, 76.0281])
-          #           output.first.final_output.first.keywords_url.should eql(["Web App", "web application", "Web App Development", "Web App Management", "world-class web development"])
-          #           output.first.final_output.first.max_retrieve.should eql("5")
-          #           output.first.final_output.first.show_source_text.should eql("true")
-                    line.stations.last.worker.class.should eql(CF::TextAppendingRobot)
-          #           line.stations.first.worker.reward.should eql(8)
-          #           line.stations.first.worker.number.should eql(1)
-          #           line.stations.first.worker.url.should eql(["{url}"])
-          #           line.stations.first.worker.max_retrieve.should eql(5)
-          #           line.stations.first.worker.show_source_text.should eql(true)
-        # end
+          station_1_output['description'].should eql(["this is description", "about company", "the company works on", "Ruby on Rails"])
+          output.first.final_output.first.append_description.should eql("this is description||about company||the company works on||Ruby on Rails")
+          line.stations.last.worker.class.should eql(CF::TextAppendingRobot)
+          line.stations.first.worker.reward.should eql(20)
+          line.stations.first.worker.number.should eql(1)
+          line.stations.last.worker.append.should eql(["{description}"])
+          line.stations.last.worker.separator.should eql("||")
+        end
       end
 
-      xit "should create content_scraping_robot worker for first station in a plain ruby way" do
+      it "should create content_scraping_robot worker for first station in a plain ruby way" do
         # WebMock.allow_net_connect!
-        VCR.use_cassette "term_extraction/plain/create-worker-in-first-station", :record => :new_episodes do
-          line = CF::Line.new("term_extraction_7","Digitization")
-          input_format = CF::InputFormat.new({:name => "url", :required => true, :valid_type => "url"})
+        VCR.use_cassette "text_appending_robot/plain/create-worker-in-first-station", :record => :new_episodes do
+          html =   '<textarea name = "output[description][]"></textarea>
+          <textarea name = "output[description][]"></textarea>
+          <textarea name = "output[description][]"></textarea>
+          <textarea name = "output[description][]"></textarea>'
+          
+          line = CF::Line.new("term_extraction_25","Digitization")
+          input_format = CF::InputFormat.new({:name => "Company", :required => true, :valid_type => "general"})
+          input_format_1 = CF::InputFormat.new({:name => "Website", :required => true, :valid_type => "url"})
           line.input_formats input_format
+          line.input_formats input_format_1
 
           station = CF::Station.new({:type => "work"})
           line.stations station
 
-          worker = CF::TermExtraction.create({:url => ["{url}"], :max_retrieve => 5, :show_source_text => true})
+          worker = CF::HumanWorker.new({:number => 1, :reward => 20})
           line.stations.first.worker = worker
+          
+          form = CF::CustomTaskForm.create({:title => "Descibe about given Company", :instruction => "Describe", :raw_html => html})
+          line.stations.first.form = form
 
-          run = CF::Run.create(line, "term_extraction_run_7", [{"url"=> "http://www.sprout-technology.com"}])
+          station = CF::Station.new({:type => "work"})
+          line.stations station
+
+          worker_1 = CF::TextAppendingRobot.create({:append => ["{description}"], :separator => "||"})
+          line.stations.last.worker = worker_1
+          
+          run = CF::Run.create(line, "text_appending_robot_run_25", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          # debugger
           output = run.final_output
-          output.first.final_output.first.keyword_relevance_url.should eql([99.7991, 95.6566, 83.2383, 79.39450000000001, 76.0281])
-          output.first.final_output.first.keywords_url.should eql(["Web App", "web application", "Web App Development", "Web App Management", "world-class web development"])
-          output.first.final_output.first.max_retrieve.should eql("5")
-          output.first.final_output.first.show_source_text.should eql("true")
-          line.stations.first.worker.class.should eql(CF::TermExtraction)
-          line.stations.first.worker.reward.should eql(8)
+          station_1_output = run.output(:station => 1)
+          station_1_output['description'].should eql(["this is description", "about company", "the company works on", "Ruby on Rails"])
+          output.first.final_output.first.append_description.should eql("this is description||about company||the company works on||Ruby on Rails")
+          line.stations.last.worker.class.should eql(CF::TextAppendingRobot)
+          line.stations.first.worker.reward.should eql(20)
           line.stations.first.worker.number.should eql(1)
-          line.stations.first.worker.url.should eql(["{url}"])
-          line.stations.first.worker.max_retrieve.should eql(5)
-          line.stations.first.worker.show_source_text.should eql(true)
+          line.stations.last.worker.append.should eql(["{description}"])
+          line.stations.last.worker.separator.should eql("||")
         end
       end
     end

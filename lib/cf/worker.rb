@@ -17,6 +17,7 @@ module CF
       attr_accessor :max_retrieve, :show_source_text
       attr_accessor :template, :template_variables
       attr_accessor :split_duration, :overlapping_time
+      attr_accessor :append, :separator
 
       case host
       when "HumanWorker"
