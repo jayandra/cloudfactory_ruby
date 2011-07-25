@@ -1,4 +1,5 @@
-  require 'thor/group'
+# encoding: utf-8
+require 'thor/group'
 
 module Cf
   class Newline < Thor::Group
