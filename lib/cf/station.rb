@@ -277,6 +277,21 @@ module CF
           @worker_instance = worker
         end
       
+      when "TextAppendingRobot"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @append = worker_instance.append
+          @separator = worker_instance.separator
+          resp = CF::TextAppendingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "TextAppendingRobot", :append => @append, :separator => @separator})
+          worker = CF::TextAppendingRobot.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          worker.append = @append
+          worker.separator = @separator
+          @worker_instance = worker
+        end
       else
         if worker_instance.station
           @worker_instance = worker_instance 
