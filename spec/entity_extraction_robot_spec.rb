@@ -7,13 +7,13 @@ module CF
       it "should create entity extraction robot worker for first station in Block DSL way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "entity_extraction_robot/block/create-worker-single-station", :record => :new_episodes do
-          line = CF::Line.create("entity_extraction_robot-1","Digitization") do |l|
+          line = CF::Line.create("entity_extraction_robot-11","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "text", :valid_type => "general", :required => "true"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
               CF::EntityExtractionRobot.create({:station => s, :document => ["Franz Kafka and George Orwell are authors. Ludwig Von Beethoven and Mozart are musicians. China and Japan are countries"]})
             end
           end
-          run = CF::Run.create(line, "entity_extraction_robot_run-1", [{"text"=> "Franz Kafka and George Orwell are authors. Ludwig Von Beethoven and Mozart are musicians. China and Japan are countries"}])
+          run = CF::Run.create(line, "entity_extraction_robot_run-11", [{"text"=> "Franz Kafka and George Orwell are authors. Ludwig Von Beethoven and Mozart are musicians. China and Japan are countries"}])
           output = run.final_output
           output.first.final_output.first.entity_counts_of_document.should eql([["2", "2", "1", "1", "2", "1"]])
           output.first.final_output.first.entity_names_of_document.should eql([["Ludwig Von Beethoven", "Franz Kafka", "George Orwell", "Mozart", "China", "Japan"]])
@@ -29,7 +29,7 @@ module CF
       it "should create entity extraction robot worker for first station in a plain ruby way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "entity_extraction_robot/plain/create-worker-in-first-station", :record => :new_episodes do
-          line = CF::Line.new("entity_extraction_robot-2","Digitization")
+          line = CF::Line.new("entity_extraction_robot-21","Digitization")
           input_format = CF::InputFormat.new({:name => "text", :required => "true", :valid_type => "general"})
           line.input_formats input_format
 
@@ -39,7 +39,7 @@ module CF
           worker = CF::EntityExtractionRobot.create({:document => ["Franz Kafka and George Orwell are authors. Ludwig Von Beethoven and Mozart are musicians. China and Japan are countries"]})
           line.stations.first.worker = worker
 
-          run = CF::Run.create(line, "entity_extraction_robot_run-2", [{"text"=> "Franz Kafka and George Orwell are authors. Ludwig Von Beethoven and Mozart are musicians. China and Japan are countries"}])
+          run = CF::Run.create(line, "entity_extraction_robot_run-21", [{"text"=> "Franz Kafka and George Orwell are authors. Ludwig Von Beethoven and Mozart are musicians. China and Japan are countries"}])
           output = run.final_output
           output.first.final_output.first.entity_counts_of_document.should eql([["2", "2", "1", "1", "2", "1"]])
           output.first.final_output.first.entity_names_of_document.should eql([["Ludwig Von Beethoven", "Franz Kafka", "George Orwell", "Mozart", "China", "Japan"]])
