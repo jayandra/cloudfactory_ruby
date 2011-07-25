@@ -87,11 +87,15 @@ module Cf
           stations = line_dump['stations']
           stations.each do |station_file|
             type = station_file['station']['station_type']
-            # max_judges = station_file['station']['max_judges']
-            # auto_judge = station_file['station']['auto_judge']
             input_formats_for_station = station_file['station']['input_formats']
-            # station = CF::Station.create(:line => line, :type => type, :max_judges => max_judges, :auto_judge => auto_judge, :input_formats => input_formats_for_station) do |s|
-            station = CF::Station.create(:line => line, :type => type, :input_formats => input_formats_for_station) do |s|
+            if type == "tournament"
+              max_judges = station_file['station']['max_judges']
+              auto_judge = station_file['station']['auto_judge']
+              station_params = {:line => line, :type => type, :max_judges => max_judges, :auto_judge => auto_judge, :input_formats => input_formats_for_station}
+            else
+              station_params = {:line => line, :type => type, :input_formats => input_formats_for_station}
+            end
+            station = CF::Station.create(station_params) do |s|
               say "New Station has been created of type => #{s.type}", :green
               # Creation of Form
               # Creation of TaskForm
@@ -135,9 +139,9 @@ module Cf
                 human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
                 say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
               elsif worker_type == "google_translate_robot"
-                robot_worker = CF::GoogleTranslateRobot.create({:station => s, :data => worker['data'], :from => worker['from'], :to => worker['to']})
+                robot_worker = CF::GoogleTranslateRobot.create({:station => s, :data => worker['settings']['data'], :from => worker['settings']['from'], :to => worker['settings']['to']})
     
-                say "New Worker has been created of type => #{worker_type}, Data => #{worker['data']}, From => #{worker['from']} and To => #{worker['to']}", :green
+                say "New Worker has been created of type => #{worker_type}, Data => #{worker['settings']}", :green
               end
             end
           end
