@@ -138,10 +138,14 @@ module Cf
               if worker_type == "human"
                 human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
                 say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
-              elsif worker_type == "google_translate_robot"
-                robot_worker = CF::GoogleTranslateRobot.create({:station => s, :data => worker['settings']['data'], :from => worker['settings']['from'], :to => worker['settings']['to']})
+              else
+                robot_type = ("CF::"+worker_type.camelize).constantize
+                settings = worker['settings']
+                debugger
+                robot_params = settings.merge(:station => s)
+                robot_worker = robot_type.create(robot_params.symbolize_keys)
     
-                say "New Worker has been created of type => #{worker_type}, Data => #{worker['settings']}", :green
+                say "New Worker has been created of type => #{ worker['settings']}", :green
               end
             end
           end
