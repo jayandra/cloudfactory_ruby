@@ -5,11 +5,11 @@ module Cf
       # argument :account_name, :required => true,
       #                         :desc => "The account name that you used to signup at http://cloudfactory.com"
       argument :api_key, :required => true,
-                              :desc => "The api key that you can find at the account settings page"
+                              :desc => "Your API key(s) can be found at http://cloudfactory.com/account#settings"
 
       desc "Creates a CF initializer"
       def generate_initializer
-        say_status("Generating", "Cloud Factory initializer", :green)
+        say_status("Generating", "CloudFactory initializer", :green)
         template "cloud_factory.rb", "config/initializers/cloud_factory.rb"
       end
 
@@ -18,5 +18,5 @@ module Cf
       end
 
     end
-  end  
+  end
 end

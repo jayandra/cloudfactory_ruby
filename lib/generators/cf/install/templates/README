@@ -1,15 +1,13 @@
 
 ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
 
-CloudFactory initializer file is generated.
-From here, you can see the api documentation at http://developer.cloudfactory.com
+CloudFactory initializer file successfully generated.
+See the documentation at http://developers.cloudfactory.com
 
-Or
+Or dive right in with the CloudFactory TaskForm generator. To list the commands, type:
 
-Use the built in CloudFactory TaskForm generator. To list the commands, do type
+> rails generate cf:form
 
-  1. rails generate cf:form
+> rails generate cf:form company ceo:name website:url
 
-  2. rails generate cf:form company ceo:name website:url
-  
 ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
