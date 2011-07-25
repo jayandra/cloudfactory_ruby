@@ -7,13 +7,13 @@ module CF
       it "should create content_scraping_robot worker for first station in Block DSL way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "sentiment_robot/block/create-worker-single-station", :record => :new_episodes do
-          line = CF::Line.create("sentiment_robot_12","Digitization") do |l|
+          line = CF::Line.create("sentiment_robot_19","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
               CF::SentimentRobot.create({:station => s, :document => ["{url}"], :sanitize => true})
             end
           end
-          run = CF::Run.create(line, "sentiment_robot_12", [{"url"=> "http://www.thehappyguy.com/happiness-self-help-book.html"}])
+          run = CF::Run.create(line, "sentiment_robot_19", [{"url"=> "http://www.thehappyguy.com/happiness-self-help-book.html"}])
           output = run.final_output
           output.first.final_output.first.sanitize.should eql("true")
           output.first.final_output.first.sentiment_of_url.should eql("positive")
@@ -29,7 +29,7 @@ module CF
       it "should create content_scraping_robot worker for first station in a plain ruby way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "sentiment_robot/plain/create-worker-in-first-station", :record => :new_episodes do
-          line = CF::Line.new("sentiment_robot_13","Digitization")
+          line = CF::Line.new("sentiment_robot_20","Digitization")
           input_format = CF::InputFormat.new({:name => "url", :required => true, :valid_type => "url"})
           line.input_formats input_format
 
@@ -39,7 +39,7 @@ module CF
           worker = CF::SentimentRobot.create({:document => ["{url}"], :sanitize => true})
           line.stations.first.worker = worker
 
-          run = CF::Run.create(line, "sentiment_robot_run_13", [{"url"=> "http://www.thehappyguy.com/happiness-self-help-book.html"}])
+          run = CF::Run.create(line, "sentiment_robot_run_20", [{"url"=> "http://www.thehappyguy.com/happiness-self-help-book.html"}])
           output = run.final_output
           output.first.final_output.first.sanitize.should eql("true")
           output.first.final_output.first.sentiment_of_url.should eql("positive")
