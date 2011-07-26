@@ -1,5 +1,6 @@
 module CF
   class FormField
+    require 'httparty'
     include Client
 
     # Label for "form_field" object, e.g. :label => "First Name"
@@ -16,6 +17,7 @@ module CF
 
     # station id attribute required for API Calls
     attr_accessor :station_id
+    attr_accessor :form_field_params
 
     # ==Initializes a new "form_field" object
     # ==Usage of form_field.new(hash):
@@ -31,12 +33,26 @@ module CF
       @label        = options[:label]
       @field_type   = options[:field_type]
       @required     = options[:required]
+      
       if !@form.nil?
-        resp = self.class.post("/lines/#{CF.account_name}/#{@form.station.line['title'].downcase}/stations/#{@form.station.index}/form_fields.json", :form_field => {:label => @label, :field_type => @field_type, :required => @required})
-        resp.to_hash.each_pair do |k,v|
+        options.delete(:form)
+        party_param = 
+        {
+          :body => 
+          {
+            :api_key => CF.api_key,
+            :form_field => options
+          }
+        }
+        resp =  HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@form.station.line['title'].downcase}/stations/#{@form.station.index}/form_fields.json",party_param)
+        resp.parsed_response.each_pair do |k,v|
           self.send("#{k}=",v) if self.respond_to?(k)
         end
+        self.form_field_params = options
         @form.station.form.form_fields = self
+        return self
+      else
+        @form_field_params = options
       end
     end
   end
