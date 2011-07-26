@@ -149,7 +149,7 @@ module Cf
           end
           say " ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁", :white
           say "Congrats! #{line_title} was successfully created.", :green
-          say "View your line at http://#{CF.account_name}.cloudfactory.com/lines/#{CF.account_name}/#{line.title}", :yellow
+          say "View your line at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/lines/#{CF.account_name}/#{line.title}", :yellow
           say "Now you can do production runs with: cf production start --title=<your_run_title> --input-data=input_data.csv", :green
           say "Note: Make sure input_data.csv file is in the input directory.", :green
         else
