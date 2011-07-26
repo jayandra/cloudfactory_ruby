@@ -10,7 +10,7 @@ module CF
     attr_accessor :line_title
 
     # ID of the station
-    attr_accessor :id, :extra, :except, :index, :line, :station_input_formats, :max_judges, :auto_judge
+    attr_accessor :id, :extra, :except, :index, :line, :station_input_formats, :jury_worker, :auto_judge
     
     # ==Initializes a new station
     # ===Usage Example
@@ -20,7 +20,7 @@ module CF
       @input_formats =[]
       @line_title = options[:line].nil? ? nil : options[:line].title
       @type = options[:type].nil? ? nil : options[:type].camelize
-      @max_judges = options[:max_judges]
+      @jury_worker = options[:jury_worker]
       @auto_judge = options[:auto_judge]
       @station_input_formats = options[:input_formats]
       @line_instance = options[:line]
@@ -37,7 +37,7 @@ module CF
         :body => 
         {
           :api_key => CF.api_key,
-          :station => {:type => @type, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }, :input_formats => @station_input_formats}
+          :station => {:type => @type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
         }
       }
       if @line_title
