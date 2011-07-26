@@ -90,9 +90,9 @@ module Cf
             type = station_file['station']['station_type']
             input_formats_for_station = station_file['station']['input_formats']
             if type == "tournament"
-              max_judges = station_file['station']['max_judges']
+              jury_worker = station_file['station']['jury_worker']
               auto_judge = station_file['station']['auto_judge']
-              station_params = {:line => line, :type => type, :max_judges => max_judges, :auto_judge => auto_judge, :input_formats => input_formats_for_station}
+              station_params = {:line => line, :type => type, :jury_worker => jury_worker, :auto_judge => auto_judge, :input_formats => input_formats_for_station}
             else
               station_params = {:line => line, :type => type, :input_formats => input_formats_for_station}
             end
@@ -107,11 +107,9 @@ module Cf
                   say "New TaskForm has been created with Title => #{f.title} and Instruction => #{f.instruction}", :green
                   # Creation of FormFields
                   station_file['station']['task_form']['form_fields'].each do |form_field|
-                    field_type = form_field['field_type']
-                    label = form_field['label']
-                    required = form_field['required']
-                    field = CF::FormField.new({:form => f, :label => label, :field_type => field_type, :required => required})
-                    say "New FormField has been created of label => #{field.label}, field_type => #{field.field_type} and required => #{field.required}", :green
+                    form_field_params = form_field.merge(:form => f)
+                    field = CF::FormField.new(form_field_params.symbolize_keys)
+                    say "New FormField has been created with following attributes => #{form_field}", :green
                   end
                 end
 
