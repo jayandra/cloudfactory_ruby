@@ -19,6 +19,7 @@ module CF
       attr_accessor :split_duration, :overlapping_time
       attr_accessor :append, :separator
       attr_accessor :settings
+      attr_accessor :content, :keywords
 
       case host
       when "HumanWorker"
@@ -82,7 +83,12 @@ module CF
               options.delete(:station)
               @settings = options    
             elsif type == "concept_tagging_robot"
-              @url = options[:url]          
+              @url = options[:url]   
+            elsif type == "text_extraction_robot"
+              @url = options[:url]
+            elsif type == "keyword_matching_robot"
+              @content = options[:content]       
+              @keywords = options[:keywords]
             end
           end
           if @station
@@ -157,14 +163,27 @@ module CF
               end
               worker.station = @station
               @station.worker = worker
-              
             elsif type == "concept_tagging_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "ConceptTaggingRobot", :url => options[:url]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
               worker.station = @station
-              @station.worker = worker
+              @station.worker = worker              
+             elsif type == "keyword_matching_robot"
+                resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "KeywordMatchingRobot", :content => options[:content], :keywords => options[:keywords]})
+                resp.to_hash.each_pair do |k,v|
+                  worker.send("#{k}=",v) if worker.respond_to?(k)
+                end
+                worker.station = @station
+                @station.worker = worker
+             elsif type == "text_extraction_robot"
+                resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TextExtractionRobot", :url => options[:url]})
+                resp.to_hash.each_pair do |k,v|
+                  worker.send("#{k}=",v) if worker.respond_to?(k)
+                end
+                worker.station = @station
+                @station.worker = worker
             end
           else
             return worker
