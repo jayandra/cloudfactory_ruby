@@ -320,6 +320,36 @@ module CF
           worker.url = @url
           @worker_instance = worker
         end
+        
+      when "KeywordMatchingRobot"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @content = worker_instance.content
+          @keywords = worker_instance.keywords
+          resp = CF::KeywordMatchingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker =>{:type => "KeywordMatchingRobot", :content => @content, :keywords => @keywords})
+          worker = CF::KeywordMatchingRobot.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          worker.content = @content
+          worker.keywords = @keywords
+          @worker_instance = worker
+        end
+      
+      when "TextExtractionRobot"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @url = worker_instance.url
+          resp = CF::TextExtractionRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker =>{:type => "TextExtractionRobot", :url => @url})
+          worker = CF::TextExtractionRobot.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          worker.url = @url
+          @worker_instance = worker
+        end
       else
         if worker_instance.station
           @worker_instance = worker_instance 
