@@ -18,7 +18,7 @@ module CF
       attr_accessor :template, :template_variables
       attr_accessor :split_duration, :overlapping_time
       attr_accessor :append, :separator
-      attr_accessor :image, :sharpen
+      attr_accessor :settings
 
       case host
       when "HumanWorker"
@@ -79,8 +79,8 @@ module CF
               @split_duration  = options[:split_duration]
               @overlapping_time = options[:overlapping_time]
             elsif type == "image_processing_robot"
-              @image = options[:image]
-              @sharpen  = options[:sharpen]
+              options.delete(:station)
+              @settings = options              
             end
           end
           if @station
@@ -147,8 +147,9 @@ module CF
               end
               worker.station = @station
               @station.worker = worker
-            elsif type == "image_processing_robot"
-              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "ImageProcessingRobot", :image => options[:image], :sharpen => options[:sharpen]})
+            elsif type == "image_processing_robot"              
+              @settings = options
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => options.merge(:type => "ImageProcessingRobot"))
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
