@@ -68,14 +68,14 @@ module CF
             }
           }
           if type == "Tournament"
-            @max_judges = stations.max_judges
+            @jury_worker = stations.jury_worker
             @auto_judge = stations.auto_judge
             @request_tournament = 
             {
               :body => 
               {
                 :api_key => CF.api_key,
-                :station => {:type => type, :jury_worker => {:max_judges => @max_judges}, :auto_judge => {:enabled => @auto_judge }, :input_formats => @station_input_formats}
+                :station => {:type => type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
               }
             }
             resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",@request_tournament)

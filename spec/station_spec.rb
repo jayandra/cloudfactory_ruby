@@ -65,7 +65,7 @@ describe CF::Station do
       VCR.use_cassette "stations/block/tournament-station", :record => :new_episodes do
         line = CF::Line.create("Digitized-9", "Digitization") do
           CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
-          CF::Station.create({:line => self, :type => "tournament", :max_judges => 10, :auto_judge => true}) do |s|
+          CF::Station.create({:line => self, :type => "tournament", :jury_worker=> {:max_judges => 10}, :auto_judge => {:enabled => true}}) do |s|
             CF::HumanWorker.new({:station => s, :number => 3, :reward => 20})
             CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
               CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
@@ -75,6 +75,8 @@ describe CF::Station do
           end
         end
         line.stations.first.type.should eq("TournamentStation")
+        line.stations.first.jury_worker.should eql({:max_judges => 10})
+        line.stations.first.auto_judge.should eql({:enabled => true})
         line.stations.first.worker.number.should eql(3)
         line.stations.first.worker.reward.should eql(20)
         line.stations.first.form.title.should eq("Enter text from a business card image")
