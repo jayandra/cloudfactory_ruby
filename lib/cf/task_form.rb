@@ -1,5 +1,6 @@
 module CF
   class TaskForm
+    require 'httparty'
     include Client
     
     # title of the standard_instruction
@@ -95,14 +96,21 @@ module CF
     #
     def form_fields form_fields = nil
       if form_fields
-        label = form_fields.label
-        field_type = form_fields.field_type
-        required = form_fields.required
-        resp = CF::FormField.post("/lines/#{CF.account_name}/#{self.station.line_title.downcase}/stations/#{self.station.index}/form_fields.json", :form_field => {:label => label, :field_type => field_type, :required => required})
+        form_field_params = form_fields.form_field_params
+        party_param = 
+        {
+          :body => 
+          {
+            :api_key => CF.api_key,
+            :form_field => form_field_params
+          }
+        }
+        resp =  HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.station.line_title.downcase}/stations/#{self.station.index}/form_fields.json",party_param)
         form_field = CF::FormField.new({})
-        resp.to_hash.each_pair do |k,v|
+        resp.parsed_response.to_hash.each_pair do |k,v|
           form_field.send("#{k}=",v) if form_field.respond_to?(k)
         end
+        form_field.form_field_params = form_field_params
         @form_fields << form_field
       else
         @form_fields
