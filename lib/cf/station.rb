@@ -306,6 +306,20 @@ module CF
           worker.settings = @settings
           @worker_instance = worker
         end
+        
+      when "ConceptTaggingRobot"
+        if worker_instance.station
+          @worker_instance = worker_instance
+        else
+          @url = worker_instance.url
+          resp = CF::ConceptTaggingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker =>{:type => "ConceptTaggingRobot", :url => @url})
+          worker = CF::ConceptTaggingRobot.new({})
+          resp.to_hash.each_pair do |k,v|
+            worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          worker.url = @url
+          @worker_instance = worker
+        end
       else
         if worker_instance.station
           @worker_instance = worker_instance 

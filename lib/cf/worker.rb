@@ -80,7 +80,9 @@ module CF
               @overlapping_time = options[:overlapping_time]
             elsif type == "image_processing_robot"
               options.delete(:station)
-              @settings = options              
+              @settings = options    
+            elsif type == "concept_tagging_robot"
+              @url = options[:url]          
             end
           end
           if @station
@@ -150,6 +152,14 @@ module CF
             elsif type == "image_processing_robot"              
               @settings = options
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => options.merge(:type => "ImageProcessingRobot"))
+              resp.to_hash.each_pair do |k,v|
+                worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              worker.station = @station
+              @station.worker = worker
+              
+            elsif type == "concept_tagging_robot"
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "ConceptTaggingRobot", :url => options[:url]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
