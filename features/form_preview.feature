@@ -9,7 +9,7 @@ Feature: Preview a generated custom form
     When I run `cf form preview --station 2`
     Then the output should contain:
       """
-      The station 2 doesn't exist.
+      No form exists for station 2
       Generate the form for station 2 and then preview it.
       """
     
@@ -21,6 +21,7 @@ Feature: Preview a generated custom form
     Then the output should contain:
       """
       No form exists for station 2
+      Generate the form for station 2 and then preview it.
       """
   @announce
   Scenario: Previewing the generated form in the browser

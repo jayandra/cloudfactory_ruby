@@ -49,8 +49,7 @@ module Cf
     def generate
       line_destination = Dir.pwd
       unless File.exist?("#{line_destination}/line.yml")
-        say("The current directory is not a valid line directory.")
-        return
+        say("The current directory is not a valid line directory.", :red) and return
       end
 
       FileUtils.rm_rf("#{line_destination}/station_#{options[:station]}", :verbose => true) if options.force? && Dir.exist?("#{line_destination}/station_#{options[:station]}")
@@ -68,18 +67,15 @@ module Cf
     def preview
       line_destination = Dir.pwd
       unless File.exist?("#{line_destination}/line.yml")
-        say("The current directory is not a valid line directory.")
-        return
+        say("The current directory is not a valid line directory.", :red) and return
       end
       if Dir.exist?("#{line_destination}/station_#{options[:station]}") and !Dir["#{line_destination}/station_#{options[:station]}/*"].empty?
         say "Generating preview form for station #{options[:station]}", :green
         form_content = File.read("station_#{options[:station]}/form.html")
-        say form_content, :yellow
         Cf::FormPreview.start([options[:station], form_content])
-      elsif Dir["#{line_destination}/station_#{options[:station]}/*"].empty?
-        say "No form exists for station #{options[:station]}", :red
       else
-        say "The station #{options[:station]} doesn't exist.\nGenerate the form for station #{options[:station]} and then preview it.", :red
+        say "No form exists for station #{options[:station]}", :red
+        say "Generate the form for station 2 and then preview it.", :red
       end
     end
   end
