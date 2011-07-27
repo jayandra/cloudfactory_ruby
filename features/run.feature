@@ -81,14 +81,12 @@ Feature: Create a production run on CF
     department: Survey
 
     input_formats:
-      - input_format:
-          name: company
-          required: true
-          valid_type: general
-      - input_format:
-          name: website
-          required: false
-          valid_type: url
+      - name: company
+        required: true
+        valid_type: general
+      - name: website
+        required: false
+        valid_type: url
 
     stations:
       - station:
@@ -102,17 +100,15 @@ Feature: Create a production run on CF
             form_title: Enter text from a business card image for TASKFORM
             instruction: Read the business card image and the fill the fields for TASKFORM
             form_fields:
-              - form_field:
-                  label: CEO Name
-                  field_type: short_answer
-                  required: true
-              - form_field:
-                  label: CEO Email
-                  field_type: email
-                  required: true
+              - label: CEO Name
+                field_type: short_answer
+                required: true
+              - label: CEO Email
+                field_type: email
+                required: true
       - station:
           station_index: 2
-          station_type: improve
+          station_type: work
           worker:
             worker_type: human
             num_workers: 1
@@ -133,5 +129,5 @@ Feature: Create a production run on CF
     When I run `cf production start my_run_title`
     Then the output should match:
       """
-      A run with title my-run-title using the line brandiator created successfully.
+      A run with title my-run-title using the line brandiator was successfully created.
       """
