@@ -7,18 +7,29 @@ Feature: Create a production run on CF
   Scenario: Creating a production run without run title
     Given an empty file named "brandiator/line.yml"
     And I cd to "brandiator"
-    When I run `cf production start -i input_data.csv`
+    When I run `cf production start`
     Then the output should contain:
       """
-      No value provided for required options '--title'
+      The run title is required to start the production.
       """
 
   @announce
-  Scenario: Warn about the missing input/run-title.csv input file if not present
+  Scenario: Warn about the missing input/input_data.csv input file if not present
     Given an empty file named "brandiator/line.yml"
     And I cd to "brandiator"
     And a directory named "input"
-    When I run `cf production start -t my_first-run -i input_data.csv`
+    When I run `cf production start my_first-run -i input_data.csv`
+    Then the output should contain:
+      """
+      The input data csv file named input/input_data.csv is missing.
+      """
+
+  @announce
+  Scenario: Warn about the missing input/run-title.csv input file if not present when -i optional value is not passed
+    Given an empty file named "brandiator/line.yml"
+    And I cd to "brandiator"
+    And a directory named "input"
+    When I run `cf production start my_first-run`
     Then the output should contain:
       """
       The input data csv file named input/my-first-run.csv is missing.
@@ -119,7 +130,7 @@ Feature: Create a production run on CF
     Apple,apple.com,Apple
     """
     And I cd to "brandiator"
-    When I run `cf production start --title my_run_title --input_data my-run-title.csv`
+    When I run `cf production start my_run_title`
     Then the output should match:
       """
       A run with title my-run-title using the line brandiator created successfully.

@@ -12,7 +12,7 @@ GIT
 PATH
   remote: .
   specs:
-    cloud_factory (0.0.1)
+    cloudfactory (0.0.1)
       activesupport (~> 3.0.3)
       hashie (~> 1.0.0)
       httparty (~> 0.7.8)
@@ -160,7 +160,7 @@ PLATFORMS
 DEPENDENCIES
   aruba!
   bundler (~> 1.0.0)
-  cloud_factory!
+  cloudfactory!
   cucumber
   generator_spec (~> 0.8.3)
   rails (~> 3.0.3)
