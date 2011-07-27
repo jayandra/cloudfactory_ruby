@@ -59,105 +59,101 @@ module Cf
         return
       end
 
-      if set_target_uri
-        if set_api_key(yaml_source)
+      set_target_uri(false)
+      if set_api_key(yaml_source)
 
-          CF.account_name = CF::Account.info.name
+        CF.account_name = CF::Account.info.name
 
-          line_dump = YAML::load(File.open(yaml_source))
-          line_title = line_dump['title']
-          line_description = line_dump['description']
-          line_department = line_dump['department']
-          line = CF::Line.new(line_title, line_department, :description => line_description)
-          say "New Line has been created with title => #{line.title} and Department => #{line.department_name}", :green
+        line_dump = YAML::load(File.open(yaml_source))
+        line_title = line_dump['title']
+        line_description = line_dump['description']
+        line_department = line_dump['department']
+        line = CF::Line.new(line_title, line_department, :description => line_description)
+        say "New Line has been created with title => #{line.title} and Department => #{line.department_name}", :green
 
-          # Creation of InputFormat from yaml file
-          input_formats = line_dump['input_formats']
-          input_formats.each do |input_format|
-            attrs = {
-              :name => input_format['name'],
-              :required => input_format['required'],
-              :valid_type => input_format['valid_type']
-            }
-            input_format_for_line = CF::InputFormat.new(attrs)
-            line.input_formats input_format_for_line
-            say "New Input Format has been created with following attributes => #{attrs}", :green
-          end
-
-          # Creation of Station
-          stations = line_dump['stations']
-          stations.each do |station_file|
-            type = station_file['station']['station_type']
-            input_formats_for_station = station_file['station']['input_formats']
-            if type == "tournament"
-              jury_worker = station_file['station']['jury_worker']
-              auto_judge = station_file['station']['auto_judge']
-              station_params = {:line => line, :type => type, :jury_worker => jury_worker, :auto_judge => auto_judge, :input_formats => input_formats_for_station}
-            else
-              station_params = {:line => line, :type => type, :input_formats => input_formats_for_station}
-            end
-            station = CF::Station.create(station_params) do |s|
-              say "New Station has been created of type => #{s.type}", :green
-              # Creation of Form
-              # Creation of TaskForm
-              if station_file['station']['task_form'].present?
-                title = station_file['station']['task_form']['form_title']
-                instruction = station_file['station']['task_form']['instruction']
-                form = CF::TaskForm.create({:station => s, :title => title, :instruction => instruction}) do |f|
-                  say "New TaskForm has been created with Title => #{f.title} and Instruction => #{f.instruction}", :green
-                  # Creation of FormFields
-                  station_file['station']['task_form']['form_fields'].each do |form_field|
-                    form_field_params = form_field.merge(:form => f)
-                    field = CF::FormField.new(form_field_params.symbolize_keys)
-                    say "New FormField has been created with following attributes => #{form_field}", :green
-                  end
-                end
-
-              elsif station_file['station']['custom_task_form'].present?
-                # Creation of CustomTaskForm
-                title = station_file['station']['custom_task_form']['form_title']
-                instruction = station_file['station']['custom_task_form']['instruction']
-
-                html_file = station_file['station']['custom_task_form']['html']
-                html = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{html_file}")
-                css_file = station_file['station']['custom_task_form']['css']
-                css = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{css_file}")
-                js_file = station_file['station']['custom_task_form']['js']
-                js = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{js_file}")
-                form = CF::CustomTaskForm.create({:station => s, :title => title, :instruction => instruction, :raw_html => html, :raw_css => css, :raw_javascript => js})
-
-                say "New CustomTaskForm has been created of line => #{form.title} and Description => #{form.instruction}.\nThe source file for html => #{html_file}, css => #{css_file} and js => #{js_file} ", :green
-              end
-
-              # For Worker
-              worker = station_file['station']['worker']
-              number = worker['num_workers']
-              reward = worker['reward']
-              worker_type = worker['worker_type']
-              if worker_type == "human"
-                human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
-                say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
-              else
-                robot_type = ("CF::"+worker_type.camelize).constantize
-                settings = worker['settings']
-                robot_params = settings.merge(:station => s)
-                robot_worker = robot_type.create(robot_params.symbolize_keys)
-
-                say "New Worker has been created of type => #{worker['settings']}", :green
-              end
-            end
-          end
-          say " ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁", :white
-          say "Congrats! #{line_title} was successfully created.", :green
-          say "View your line at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/lines/#{CF.account_name}/#{line.title}", :yellow
-          say "Now you can do production runs with: cf production start <your_run_title>", :green
-          say "Note: Make sure your-run-title.csv file is in the input directory.", :green
-        else
-          say "The api_key is missing in the line.yml file", :red
+        # Creation of InputFormat from yaml file
+        input_formats = line_dump['input_formats']
+        input_formats.each do |input_format|
+          attrs = {
+            :name => input_format['name'],
+            :required => input_format['required'],
+            :valid_type => input_format['valid_type']
+          }
+          input_format_for_line = CF::InputFormat.new(attrs)
+          line.input_formats input_format_for_line
+          say "New Input Format has been created with following attributes => #{attrs}", :green
         end
+
+        # Creation of Station
+        stations = line_dump['stations']
+        stations.each do |station_file|
+          type = station_file['station']['station_type']
+          input_formats_for_station = station_file['station']['input_formats']
+          if type == "tournament"
+            jury_worker = station_file['station']['jury_worker']
+            auto_judge = station_file['station']['auto_judge']
+            station_params = {:line => line, :type => type, :jury_worker => jury_worker, :auto_judge => auto_judge, :input_formats => input_formats_for_station}
+          else
+            station_params = {:line => line, :type => type, :input_formats => input_formats_for_station}
+          end
+          station = CF::Station.create(station_params) do |s|
+            say "New Station has been created of type => #{s.type}", :green
+            # Creation of Form
+            # Creation of TaskForm
+            if station_file['station']['task_form'].present?
+              title = station_file['station']['task_form']['form_title']
+              instruction = station_file['station']['task_form']['instruction']
+              form = CF::TaskForm.create({:station => s, :title => title, :instruction => instruction}) do |f|
+                say "New TaskForm has been created with Title => #{f.title} and Instruction => #{f.instruction}", :green
+                # Creation of FormFields
+                station_file['station']['task_form']['form_fields'].each do |form_field|
+                  form_field_params = form_field.merge(:form => f)
+                  field = CF::FormField.new(form_field_params.symbolize_keys)
+                  say "New FormField has been created with following attributes => #{form_field}", :green
+                end
+              end
+
+            elsif station_file['station']['custom_task_form'].present?
+              # Creation of CustomTaskForm
+              title = station_file['station']['custom_task_form']['form_title']
+              instruction = station_file['station']['custom_task_form']['instruction']
+
+              html_file = station_file['station']['custom_task_form']['html']
+              html = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{html_file}")
+              css_file = station_file['station']['custom_task_form']['css']
+              css = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{css_file}")
+              js_file = station_file['station']['custom_task_form']['js']
+              js = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{js_file}")
+              form = CF::CustomTaskForm.create({:station => s, :title => title, :instruction => instruction, :raw_html => html, :raw_css => css, :raw_javascript => js})
+
+              say "New CustomTaskForm has been created of line => #{form.title} and Description => #{form.instruction}.\nThe source file for html => #{html_file}, css => #{css_file} and js => #{js_file} ", :green
+            end
+
+            # For Worker
+            worker = station_file['station']['worker']
+            number = worker['num_workers']
+            reward = worker['reward']
+            worker_type = worker['worker_type']
+            if worker_type == "human"
+              human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
+              say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
+            else
+              robot_type = ("CF::"+worker_type.camelize).constantize
+              settings = worker['settings']
+              robot_params = settings.merge(:station => s)
+              robot_worker = robot_type.create(robot_params.symbolize_keys)
+
+              say "New Worker has been created of type => #{worker['settings']}", :green
+            end
+          end
+        end
+        say " ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁", :white
+        say "Congrats! #{line_title} was successfully created.", :green
+        say "View your line at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/lines/#{CF.account_name}/#{line.title}", :yellow
+        say "Now you can do production runs with: cf production start <your_run_title>", :green
+        say "Note: Make sure your-run-title.csv file is in the input directory.", :green
       else
-        say "You have not set the target url.", :yellow
-        say "cf target --url=http://sandbox.cloudfactory.com will set it to run on sandbox environment", :yellow
+        say "The api_key is missing in the line.yml file", :red
       end
     end
   end

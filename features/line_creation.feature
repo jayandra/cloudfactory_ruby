@@ -47,7 +47,7 @@ Feature: Create a new line on CF
                 required: true
       - station:
           station_index: 2
-          station_type: improve
+          station_type: work
           worker:
             worker_type: human
             num_workers: 1

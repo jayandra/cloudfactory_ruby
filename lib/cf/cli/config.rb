@@ -12,17 +12,23 @@ module Cf
       File.open(config_file, 'w') {|f| f.write({ :target_url => "#{target_url}/api/", :api_version => "v1" }.to_yaml) }
     end
 
-    def set_target_uri
-      if CF.api_url.blank? || CF.api_url.nil?
-        if load_config
-          CF.api_url = load_config[:target_url]
-          CF.api_version = load_config[:api_version]
-          return true
-        else
-          return false
-        end
+    def set_target_uri(live)
+      if load_config
+        CF.api_url = load_config[:target_url]
+        CF.api_version = load_config[:api_version]
       else
-        return true
+        CF.api_url = "http://sandbox.cloudfactory.com/api"
+        CF.api_version = "v1"
+      end
+
+      if live
+        if CF.api_url == "http://sandbox.staging.cloudfactory.com/api"  
+          CF.api_url = "http://staging.cloudfactory.com/api"
+        end
+
+        if CF.api_url == "http://sandbox.cloudfactory.com/api"
+          CF.api_url = "http://cloudfactory.com/api"
+        end
       end
     end
     
