@@ -15,12 +15,14 @@ module Cf
       
       run_title         = title.underscore.dasherize
       line_destination  = Dir.pwd
-      line_title        = line_destination.split("/").last
       yaml_source       = "#{line_destination}/line.yml"
-
+      
       unless File.exist?("#{yaml_source}")
         say("The current directory is not a valid line directory.", :red) and return
       end
+
+      line_yaml_dump = YAML::load(File.open(yaml_source))
+      line_title = line_yaml_dump['title']
 
       if !options[:input_data].nil? 
         input_data = "input/#{options[:input_data]}"
