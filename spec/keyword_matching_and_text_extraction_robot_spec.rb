@@ -13,22 +13,24 @@ module CF
               CF::TextExtractionRobot.create({:station => s, :url => ["{url}"]})
             end
             CF::Station.create({:line => l, :type => "work"}) do |s1|
-              CF::KeywordMatchingRobot.create({:station => s1, :content => ["{contents_of_url}"], :keywords => "SaaS,see,additional,deepak,saroj"})
+              CF::KeywordMatchingRobot.create({:station => s1, :content => ["{contents_of_url}"], :keywords => ["SaaS","see","additional","deepak","saroj"]})
             end
           end
           run = CF::Run.create(line, "keyword_matching_robot_run_1", [{"url"=> "http://techcrunch.com/2011/07/26/with-v2-0-assistly-brings-a-simple-pricing-model-rewards-and-a-bit-of-free-to-customer-service-software"}])
           output = run.final_output
-          output.first.final_output.first.keyword_included_in_contents_of_url.should eql(["SaaS", "see", "additional"])
-          output.first.final_output.first.keywords.should eql("SaaS,see,additional,deepak,saroj")
+          output.first.final_output.first.keyword_included_in_contents_of_url.SaaS.should eql(3)
+          output.first.final_output.first.keyword_included_in_contents_of_url.additional.should eql(2)
+          output.first.final_output.first.keyword_included_in_contents_of_url.see.should eql(2)
+          output.first.final_output.first.keywords.should eql(["SaaS", "see", "additional", "deepak", "saroj"])
           line.stations.first.worker.class.should eql(CF::TextExtractionRobot)
-          line.stations.first.worker.reward.should eql(100)
+          line.stations.first.worker.reward.should eql(1)
           line.stations.first.worker.number.should eql(1)
           line.stations.first.worker.url.should eql(["{url}"])
           line.stations.last.worker.class.should eql(CF::KeywordMatchingRobot)
-          line.stations.last.worker.reward.should eql(200)
+          line.stations.last.worker.reward.should eql(1)
           line.stations.last.worker.number.should eql(1)
           line.stations.last.worker.content.should eql(["{contents_of_url}"])
-          line.stations.last.worker.keywords.should eql("SaaS,see,additional,deepak,saroj")
+          line.stations.last.worker.keywords.should eql(["SaaS", "see", "additional", "deepak", "saroj"])
         end
       end
 
@@ -48,22 +50,24 @@ module CF
           station_1 = CF::Station.new({:type => "work"})
           line.stations station
           
-          worker = CF::KeywordMatchingRobot.create({:content => ["{contents_of_url}"], :keywords => "SaaS,see,additional,deepak,saroj"})
+          worker = CF::KeywordMatchingRobot.create({:content => ["{contents_of_url}"], :keywords => ["SaaS","see","additional","deepak","saroj"]})
           line.stations.last.worker = worker
 
           run = CF::Run.create(line, "keyword_matching_robot_run_1", [{"url"=> "http://techcrunch.com/2011/07/26/with-v2-0-assistly-brings-a-simple-pricing-model-rewards-and-a-bit-of-free-to-customer-service-software"}])
           output = run.final_output
-          output.first.final_output.first.keyword_included_in_contents_of_url.should eql(["SaaS", "see", "additional"])
-          output.first.final_output.first.keywords.should eql("SaaS,see,additional,deepak,saroj")
+          output.first.final_output.first.keyword_included_in_contents_of_url.SaaS.should eql(3)
+          output.first.final_output.first.keyword_included_in_contents_of_url.additional.should eql(2)
+          output.first.final_output.first.keyword_included_in_contents_of_url.see.should eql(2)
+          output.first.final_output.first.keywords.should eql(["SaaS", "see", "additional", "deepak", "saroj"])
           line.stations.first.worker.class.should eql(CF::TextExtractionRobot)
-          line.stations.first.worker.reward.should eql(100)
+          line.stations.first.worker.reward.should eql(1)
           line.stations.first.worker.number.should eql(1)
           line.stations.first.worker.url.should eql(["{url}"])
           line.stations.last.worker.class.should eql(CF::KeywordMatchingRobot)
-          line.stations.last.worker.reward.should eql(200)
+          line.stations.last.worker.reward.should eql(1)
           line.stations.last.worker.number.should eql(1)
           line.stations.last.worker.content.should eql(["{contents_of_url}"])
-          line.stations.last.worker.keywords.should eql("SaaS,see,additional,deepak,saroj")
+          line.stations.last.worker.keywords.should eql(["SaaS", "see", "additional", "deepak", "saroj"])
         end
       end
     end
