@@ -15,7 +15,11 @@ Feature: Create a production run on CF
 
   @announce
   Scenario: Warn about the missing input/input_data.csv input file if not present
-    Given an empty file named "brandiator/line.yml"
+    Given a file named "brandiator/line.yml" with:
+    """
+    api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
+    title: brandiator
+    """
     And I cd to "brandiator"
     And a directory named "input"
     When I run `cf production start my_first-run -i input_data.csv`
@@ -26,7 +30,11 @@ Feature: Create a production run on CF
 
   @announce
   Scenario: Warn about the missing input/run-title.csv input file if not present when -i optional value is not passed
-    Given an empty file named "brandiator/line.yml"
+    Given a file named "brandiator/line.yml" with:
+    """
+    api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
+    title: brandiator
+    """
     And I cd to "brandiator"
     And a directory named "input"
     When I run `cf production start my_first-run`
