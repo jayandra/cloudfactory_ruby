@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["CloudFactory.com"]
   s.email       = ["info@cloudfactory.com"]
   s.homepage    = "http://cloudfactory.com"
-  s.summary     = %q{Cloudfactory}
-  s.description = %q{Cloudfactory}
+  s.summary     = %q{A Ruby wrapper and CLI for Cloudfactory.com}
+  s.description = %q{A Ruby wrapper and CLI for to interact with Cloudfactory.com REST API}
 
   s.rubyforge_project = "cloudfactory"
 
@@ -19,37 +19,41 @@ Gem::Specification.new do |s|
   s.executables   = ["cf"]
   s.require_paths = ["lib"]
 
-  s.post_install_message = <<-eos
-   ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
-    Sweet. You now have the 'cf' command installed. Test drive it with:
-    > cf help
+  s.post_install_message =<<eos
+ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
+ 
+  Sweet. You now have the 'cf' command installed. Test drive it with:
+  > cf help
 
-    1. Sign up for your CloudFactory account and get your API key
-    http://cloudfactory.com/users/sign_up
-    Get API key from welcome email or http://cloudfactory.com/account#settings
+  1. Sign up for your CloudFactory account and get your API key
+  http://cloudfactory.com/users/sign_up
+  Get API key from welcome email or http://cloudfactory.com/account#settings
 
-    2. Generate your first assembly line...
-    > cf line generate <line-title>
+  2. Generate your first assembly line...
+  > cf line generate <line-title>
 
-    3. Edit the generated line.yml to design your perfect assembly line
-    See http://developers.cloudfactory.com/lines/yaml.html
+  3. Edit the generated line.yml to design your perfect assembly line
+  See http://developers.cloudfactory.com/lines/yaml.html
 
-    4. Create your line in CloudFactory
-    > cf line create
+  4. Create your line in CloudFactory
+  > cf line create
 
-    5. Do a test production run in the sandbox first...
-    > cf production start -i=INPUT_DATA.CSV -t=TITLE
+  5. Do a test production run in the sandbox first...
+  > cf production start TITLE -i=INPUT_DATA.CSV
 
-    6. Go live! Send your production run to real workers...
-    > cf production start -i=INPUT_DATA.CSV -t=TITLE --live
-   ------------------------------------------------------------------------------
-    Follow @thecloudfactory on Twitter for announcements, updates, and news.
-    https://twitter.com/thecloudfactory
+  6. Go live! Send your production run to real workers...
+  > cf production start TITLE -i=INPUT_DATA.CSV --live
+  
+ ------------------------------------------------------------------------------
+ 
+  Follow @thecloudfactory on Twitter for announcements, updates, and news.
+  https://twitter.com/thecloudfactory
 
-    Add your project or organization to the apps wiki!
-    https://github.com/sprout/cloudfactory_ruby/wiki/Apps
-   ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
-  eos
+  Add your project or organization to the apps wiki!
+  https://github.com/sprout/cloudfactory_ruby/wiki/Apps
+  
+ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
+eos
 
   s.add_dependency  "i18n"
   s.add_dependency  "activesupport", '~> 3.0.3'
