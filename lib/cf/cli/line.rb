@@ -143,15 +143,15 @@ module Cf
                 robot_params = settings.merge(:station => s)
                 robot_worker = robot_type.create(robot_params.symbolize_keys)
 
-                say "New Worker has been created of type => #{ worker['settings']}", :green
+                say "New Worker has been created of type => #{worker['settings']}", :green
               end
             end
           end
           say " ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁", :white
           say "Congrats! #{line_title} was successfully created.", :green
           say "View your line at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/lines/#{CF.account_name}/#{line.title}", :yellow
-          say "Now you can do production runs with: cf production start --title=<your_run_title> --input-data=input_data.csv", :green
-          say "Note: Make sure input_data.csv file is in the input directory.", :green
+          say "Now you can do production runs with: cf production start <your_run_title>", :green
+          say "Note: Make sure your-run-title.csv file is in the input directory.", :green
         else
           say "The api_key is missing in the line.yml file", :red
         end
