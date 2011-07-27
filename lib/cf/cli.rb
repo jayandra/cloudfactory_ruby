@@ -17,14 +17,22 @@ module Cf
     include Thor::Actions
     include Cf::Config
     
-    desc "login", "Setup the cloudfactory credentials"
-    method_option :url, :type => :string, :required => true, :desc => "sets the target url e.g. http://cloudfactory.com or http://sandbox.cloudfactory.com"
+    desc "target", "Setup the cloudfactory credentials"
+    method_option :url, :type => :string, :desc => "sets the target url e.g. http://cloudfactory.com or http://sandbox.cloudfactory.com"
     def target
-      target_url = options[:url]
-      # account_name = ask("Enter your account name:")
-      save_config(target_url)
-      say("Your cloudfactory target url is saved as #{target_url}", :green)
-      say("All the best to run your factory on top of CloudFactory.com", :green)
+      target_url = options[:url] if options[:url]
+      if target_url
+        save_config(target_url)
+        say("\nYour cloudfactory target url is saved as #{target_url}", :green)
+        say("All the best to run your factory on top of CloudFactory.com\n", :green)
+      else
+        if load_config
+          say("\n#{load_config[:target_url]}\n", :green)
+        else
+          say("\nYou have not set the target url yet.", :yellow)
+          say("Set the target uri with: cf target --url=http://sandbox.staging.cloudfactory.com\n", :yellow)
+        end
+      end
     end
 
     desc "line", "Commands to manage the Lines. For more info, cf line help"
@@ -34,7 +42,8 @@ module Cf
     subcommand "form", Cf::Form
     
     desc "production", "Commands to create production runs. For more info, cf production help"
-    # can use Run for the class name coz its a reserved word for Thor
+    # cannot use Run for the class name coz its a reserved word for Thor
+    # later it can be replaced with hacked millisami-thor version of the thor library with run-time dependency via Bundler
     subcommand "production", Cf::Production
   end
 end
