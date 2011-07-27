@@ -17,13 +17,11 @@ module Cf
     include Thor::Actions
     include Cf::Config
     
-    desc "target", "Setup the cloudfactory credentials"
-    method_option :url, :type => :string, :desc => "sets the target url e.g. http://cloudfactory.com or http://sandbox.cloudfactory.com"
-    def target
-      target_url = options[:url] if options[:url]
-      if target_url
-        save_config(target_url)
-        say("\nYour cloudfactory target url is saved as #{target_url}", :green)
+    desc "target", "Setup the cloudfactory credentials. e.g. cf target staging #=> http://sandbox.staging.cloudfactory.com (options: staging/development/production)"
+    def target(target_url=nil)
+      if target_url.present?
+        target_set_url = save_config(target_url)
+        say("\nYour cloudfactory target url is saved as #{target_set_url}", :green)
         say("All the best to run your factory on top of CloudFactory.com\n", :green)
       else
         if load_config
