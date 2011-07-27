@@ -238,4 +238,26 @@ describe CF::Station do
       end
     end
   end
+
+  context "create a station without passing station type" do
+    it "in plain ruby way and it should display an error message" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/plain-ruby/create-without-type", :record => :new_episodes do
+        line = CF::Line.new("Digitize--ard", "Digitization")
+        station = CF::Station.new()
+        line.stations station
+        line.stations.first.error.should eql("The Station type  is invalid.")
+      end
+    end
+    
+    it "in block DSL way and it should display an error message" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/create-without-type", :record => :new_episodes do
+        line = CF::Line.create("Digitize--ard1", "Digitization") do |l|
+          CF::Station.new({:line => l})
+        end
+        line.stations.first.error.should eql("The Station type  is invalid.")
+      end
+    end
+  end
 end

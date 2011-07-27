@@ -10,7 +10,7 @@ module CF
     attr_accessor :line_title
 
     # ID of the station
-    attr_accessor :id, :extra, :except, :index, :line, :station_input_formats, :jury_worker, :auto_judge
+    attr_accessor :id, :extra, :except, :index, :line, :station_input_formats, :jury_worker, :auto_judge, :error
     
     # ==Initializes a new station
     # ===Usage Example
@@ -24,7 +24,7 @@ module CF
       @auto_judge = options[:auto_judge]
       @station_input_formats = options[:input_formats]
       @line_instance = options[:line]
-      @request_general = 
+      request_general = 
       {
         :body => 
         {
@@ -32,7 +32,7 @@ module CF
           :station => {:type => @type, :input_formats => @station_input_formats}
         }
       }
-      @request_tournament = 
+      request_tournament = 
       {
         :body => 
         {
@@ -46,24 +46,19 @@ module CF
           if line.stations.size < 1
             raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
           else
-            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",@request_general)
-            resp.to_hash.each_pair do |k,v|
-              self.send("#{k}=",v) if self.respond_to?(k)
-            end
-            @line_instance.stations = self
+            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",request_general)
           end
         elsif @type == "Tournament"
-          resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",@request_tournament)
-          resp.to_hash.each_pair do |k,v|
-            self.send("#{k}=",v) if self.respond_to?(k)
-          end
-          @line_instance.stations = self
+          resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",request_tournament)
         else
-          resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",@request_general)
-          resp.to_hash.each_pair do |k,v|
-            self.send("#{k}=",v) if self.respond_to?(k)
-          end
-          @line_instance.stations = self
+          resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_instance.title.downcase}/stations.json",request_general)
+        end
+        resp.to_hash.each_pair do |k,v|
+          self.send("#{k}=",v) if self.respond_to?(k)
+        end
+        @line_instance.stations = self
+        if resp.response.code != "200"
+          self.error = resp.parsed_response['error']['message']
         end
       end
     end
