@@ -20,14 +20,12 @@ Feature: Create a new line on CF
     department: Survey
 
     input_formats:
-      - input_format:
-          name: company
-          required: true
-          valid_type: general
-      - input_format:
-          name: website
-          required: false
-          valid_type: url
+      - name: company
+        required: true
+        valid_type: general
+      - name: website
+        required: false
+        valid_type: url
 
     stations:
       - station:
@@ -41,14 +39,12 @@ Feature: Create a new line on CF
             form_title: Enter text from a business card image for TASKFORM
             instruction: Read the business card image and the fill the fields for TASKFORM
             form_fields:
-              - form_field:
-                  label: CEO Name
-                  field_type: short_answer
-                  required: true
-              - form_field:
-                  label: CEO Email
-                  field_type: email
-                  required: true
+              - label: CEO Name
+                field_type: short_answer
+                required: true
+              - label: CEO Email
+                field_type: email
+                required: true
       - station:
           station_index: 2
           station_type: improve
@@ -96,7 +92,8 @@ Feature: Create a new line on CF
     When I run `cf line create`
     Then the output should match:
       """
-      Congrats! Since the line brandiator is setup, now you can start the production using it.
-      You can check your line at https://taken.cloudfactory.com/lines/taken/brandiator
-      Now you can do your production run with: cf production start --input-data=input_data.csv
+      Congrats! brandiator was successfully created.
+      View your line at http://taken.lvh.me:3000/lines/taken/brandiator
+      Now you can do production runs with: cf production start <your_run_title>
+      Note: Make sure your-run-title.csv file is in the input directory.
       """
