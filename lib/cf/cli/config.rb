@@ -9,7 +9,15 @@ module Cf
     end
 
     def save_config(target_url)
-      File.open(config_file, 'w') {|f| f.write({ :target_url => "#{target_url}/api/", :api_version => "v1" }.to_yaml) }
+      if target_url == "staging"
+        target_set_url = "http://sandbox.staging.cloudfactory.com/api/"
+      elsif target_url == "development"
+        target_set_url = "http://lvh.me:3000/api/"
+      elsif target_url == "production"
+        target_set_url = "http://sandbox.cloudfactory.com/api/"
+      end
+      File.open(config_file, 'w') {|f| f.write({ :target_url => "#{target_set_url}", :api_version => "v1" }.to_yaml) }
+      return target_set_url
     end
 
     def set_target_uri(live)
