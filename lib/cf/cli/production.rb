@@ -4,25 +4,32 @@ module Cf
   class Production < Thor
     include Cf::Config
 
-    desc "production start", "creates a production run with input data file at input/<run-title>.csv"
-    method_option :input_data, :type => :string, :required => true, :aliases => "-i", :desc => "the name of the input data file"
-    method_option :title, :type => :string, :required => true, :aliases => "-t", :desc => "the title of the run"
+    desc "production start <run-title>", "creates a production run with input data file at input/<run-title>.csv"
+    method_option :input_data, :type => :string, :aliases => "-i", :desc => "the name of the input data file"
 
-    def start
-      run_title         = options[:title].underscore.dasherize
+    def start(title=nil)
+      
+      if title.nil?
+        say("The run title is required to start the production.", :red) and return
+      end
+      
+      run_title         = title.underscore.dasherize
       line_destination  = Dir.pwd
-      input_data        = "#{line_destination}/input/#{options[:input_data]}"
       line_title        = line_destination.split("/").last
       yaml_source       = "#{line_destination}/line.yml"
 
       unless File.exist?("#{yaml_source}")
-        say("The current directory is not a valid line directory.")
-        return
+        say("The current directory is not a valid line directory.", :red) and return
       end
 
-      unless File.exist?("input/#{run_title}.csv")
-        say("The input data csv file named input/#{run_title}.csv is missing.", :red)
-        return
+      if !options[:input_data].nil? 
+        input_data = "input/#{options[:input_data]}"
+      else
+        input_data = "input/#{run_title}.csv"
+      end
+      
+      unless File.exist?(input_data)
+        say("The input data csv file named #{input_data} is missing.", :red) and return
       end
 
       if set_target_uri
@@ -32,7 +39,7 @@ module Cf
         if set_api_key(yaml_source)
           CF.account_name = CF::Account.info.name
           line = CF::Line.info(line_title)
-          input_data_path = "#{Dir.pwd}/input/#{run_title}.csv"
+          input_data_path = "#{Dir.pwd}/#{input_data}"
           if line.error.blank?
             say "Creating a production run with title #{run_title}", :green
             run = CF::Run.create(line, run_title, input_data_path)
