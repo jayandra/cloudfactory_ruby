@@ -317,4 +317,15 @@ describe CF::Line do
       end
     end
   end
+  
+  context "create a line" do
+    it "the plain ruby way" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "line/plain-ruby/create-line-with-used-title", :record => :new_episodes do
+        line = CF::Line.new("new_line", "Digitization")
+        line_1 = CF::Line.new("new_line", "Digitization")
+        line_1.error.should eql("Line not valid")
+      end
+    end
+  end
 end

@@ -27,6 +27,7 @@ module CF
 
     # input_formats contained within line object
     attr_accessor :input_formats
+    attr_accessor :error
     #attr_accessor :input_format_instance
     #attr_accessor :station_instance
 
@@ -42,7 +43,9 @@ module CF
       @public = options[:public]
       @description = options[:description]
       resp = self.class.post("/lines/#{CF.account_name}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
-      self.id = resp.id
+      if resp.code != 200
+        self.error = resp.error['message']
+      end
     end
 
     # ==Usage of line.stations << station
@@ -59,7 +62,7 @@ module CF
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
         else
-          @request_general = 
+          request_general = 
           {
             :body => 
             {
@@ -70,7 +73,7 @@ module CF
           if type == "Tournament"
             @jury_worker = stations.jury_worker
             @auto_judge = stations.auto_judge
-            @request_tournament = 
+            request_tournament = 
             {
               :body => 
               {
@@ -78,17 +81,19 @@ module CF
                 :station => {:type => type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
               }
             }
-            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",@request_tournament)
+            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_tournament)
           else
-            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",@request_general)         
+            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_general)
           end
           station = CF::Station.new()
           resp.to_hash.each_pair do |k,v|
             station.send("#{k}=",v) if station.respond_to?(k)
           end
           station.line = self
-          # station.id = resp.id
           station.line_title = self.title
+          if resp.response.code != "200"
+            station.error = resp.parsed_response['error']['message']
+          end
           @stations << station
         end
       else
