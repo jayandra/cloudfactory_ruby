@@ -30,12 +30,12 @@ describe CF::InputFormat do
         line.stations station
 
         line.title.should eq("Digitize-121")
-        line.stations.first.input_formats.first.name.should eq("image_url")
-        line.stations.first.input_formats.first.required.should eq(true)
-        line.stations.first.input_formats.first.valid_type.should eq("url")
-        line.stations.first.input_formats.last.name.should eq("image")
-        line.stations.first.input_formats.last.required.should eq(true)
-        line.stations.first.input_formats.last.valid_type.should eq("url")
+        line.input_formats.first.name.should eq("image_url")
+        line.input_formats.first.required.should eq(true)
+        line.input_formats.first.valid_type.should eq("url")
+        line.input_formats.last.name.should eq("image")
+        line.input_formats.last.required.should eq(true)
+        line.input_formats.last.valid_type.should eq("url")
       end
     end
 
@@ -129,6 +129,34 @@ describe CF::InputFormat do
         end
         input_format = line.stations.first.input_formats[0].delete
         input_format['message'].should eql ("succesfully deleted")
+      end
+    end
+  end
+  
+  context "create an input_format" do
+    it "in Block DSL way without name to set the error attribute" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "input_formats/block/create-invalid-input-formats", :record => :new_episodes do 
+        line = CF::Line.create("Digitize-2","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::InputFormat.new({:line => l, :required => true, :valid_type => "url"})
+        end
+        line.input_formats[0].name.should eq("image_url")
+        line.input_formats[1].errors.should eql("Name can't be blank")
+      end
+    end
+    
+    it "in plain Ruby way with invalid data to set the error attribute" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "input_formats/plain-ruby/create-invalid-input-formats", :record => :new_episodes do 
+        line = CF::Line.new("Digitize-3","Digitization")
+        input_format_1 = CF::InputFormat.new({:name => "image_url", :required => true, :valid_type => "url"})
+        line.input_formats input_format_1
+        input_format_2 = CF::InputFormat.new({:required => true, :valid_type => "url"})
+        line.input_formats input_format_2
+        
+        line.input_formats[0].name.should eq("image_url")
+        line.input_formats[1].errors.should eql("Name can't be blank")
       end
     end
   end

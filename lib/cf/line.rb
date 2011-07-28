@@ -158,7 +158,7 @@ module CF
           input_format.send("#{k}=",v) if input_format.respond_to?(k)
         end
         if resp.code != 200
-          input_format.error = resp.error.message.first
+          input_format.errors = resp.error.message.first
         end
         @input_formats << input_format
       else
