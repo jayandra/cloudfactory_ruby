@@ -89,13 +89,12 @@ module Cf
         stations.each do |station_file|
           type = station_file['station']['station_type']
           input_formats_for_station = station_file['station']['input_formats']
-          multiple = station_file['station']['multiple']
           if type == "tournament"
             jury_worker = station_file['station']['jury_worker']
             auto_judge = station_file['station']['auto_judge']
-            station_params = {:line => line, :type => type, :jury_worker => jury_worker, :auto_judge => auto_judge, :multiple => multiple, :input_formats => input_formats_for_station}
+            station_params = {:line => line, :type => type, :jury_worker => jury_worker, :auto_judge => auto_judge, :input_formats => input_formats_for_station}
           else
-            station_params = {:line => line, :type => type, :multiple => multiple, :input_formats => input_formats_for_station}
+            station_params = {:line => line, :type => type, :input_formats => input_formats_for_station}
           end
           station = CF::Station.create(station_params) do |s|
             say "New Station has been created of type => #{s.type}", :green
