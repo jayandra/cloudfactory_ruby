@@ -111,7 +111,7 @@ module CF
           form_field.send("#{k}=",v) if form_field.respond_to?(k)
         end
         if resp.code != 200
-          form_field.errors = resp.parsed_response['error']
+          form_field.errors = resp.parsed_response['error']['message']
         end
         form_field.form_field_params = form_field_params
         @form_fields << form_field

@@ -44,7 +44,7 @@ module CF
       @description = options[:description]
       resp = self.class.post("/lines/#{CF.account_name}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       if resp.code != 200
-        self.errors = resp.error
+        self.errors = resp.error.message
       end
     end
 
@@ -92,7 +92,7 @@ module CF
           station.line = self
           station.line_title = self.title
           if resp.response.code != "200"
-            station.errors = resp.parsed_response['error']
+            station.errors = resp.parsed_response['error']['message']
           end
           @stations << station
         end
@@ -157,7 +157,7 @@ module CF
           input_format.send("#{k}=",v) if input_format.respond_to?(k)
         end
         if resp.code != 200
-          input_format.errors = resp.error.message.first
+          input_format.errors = resp.error.message
         end
         @input_formats << input_format
       else
