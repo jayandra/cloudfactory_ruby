@@ -177,7 +177,6 @@ module CF
           @final_output.first.final_outputs.last['last-name'].should eql("Marley")
           
           result_of_station_1 = run.output(:station => 1)
-          debugger
           result_of_station_1.first.meta_data['company'].should eql("Apple")
         end
       end
