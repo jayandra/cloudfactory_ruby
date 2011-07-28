@@ -142,7 +142,7 @@ describe CF::InputFormat do
           CF::InputFormat.new({:line => l, :required => true, :valid_type => "url"})
         end
         line.input_formats[0].name.should eq("image_url")
-        line.input_formats[1].errors.should eql("Name can't be blank")
+        line.input_formats[1].errors.should eql(["Name can't be blank"])
       end
     end
     
@@ -156,7 +156,7 @@ describe CF::InputFormat do
         line.input_formats input_format_2
         
         line.input_formats[0].name.should eq("image_url")
-        line.input_formats[1].errors.should eql("Name can't be blank")
+        line.input_formats[1].errors.should eql(["Name can't be blank"])
       end
     end
   end

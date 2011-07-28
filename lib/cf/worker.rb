@@ -20,6 +20,7 @@ module CF
       attr_accessor :append, :separator
       attr_accessor :settings
       attr_accessor :content, :keywords
+      attr_accessor :errors
 
       case host
       when "HumanWorker"
@@ -33,6 +34,9 @@ module CF
             worker = CF::HumanWorker.new({})
             resp.to_hash.each_pair do |k,v|
               worker.send("#{k}=",v) if worker.respond_to?(k)
+            end
+            if resp.code != 200
+              worker.errors = resp.error.message
             end
             worker.station = @station
             @station.worker = worker
@@ -97,12 +101,18 @@ module CF
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
+              if resp.code != 200
+                worker.errors = resp.error.message
+              end
               worker.station = @station
               @station.worker = worker
             elsif type == "media_converter_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => ["#{options[:url]}"], :to => options[:to], :audio_quality => options[:audio_quality], :video_quality => options[:video_quality]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              if resp.code != 200
+                worker.errors = resp.error.message
               end
               worker.station = @station
               @station.worker = worker
@@ -111,12 +121,18 @@ module CF
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
+              if resp.code != 200
+                worker.errors = resp.error.message
+              end
               worker.station = @station
               @station.worker = worker
             elsif type == "sentiment_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "SentimentRobot", :document => options[:document], :sanitize => options[:sanitize]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              if resp.code != 200
+                worker.errors = resp.error.message
               end
               worker.station = @station
               @station.worker = worker
@@ -125,12 +141,18 @@ module CF
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
+              if resp.code != 200
+                worker.errors = resp.error.message
+              end
               worker.station = @station
               @station.worker = worker
             elsif type == "text_appending_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TextAppendingRobot", :append => options[:append], :separator => options[:separator]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              if resp.code != 200
+                worker.errors = resp.error.message
               end
               worker.station = @station
               @station.worker = worker
@@ -139,6 +161,9 @@ module CF
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
+              if resp.code != 200
+                worker.errors = resp.error.message
+              end
               worker.station = @station
               @station.worker = worker
             elsif type == "entity_extraction_robot"
@@ -146,12 +171,18 @@ module CF
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
+              if resp.code != 200
+                worker.errors = resp.error.message
+              end
               worker.station = @station
               @station.worker = worker
             elsif type == "media_splitting_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MediaSplittingRobot", :url => options[:url], :split_duration => options[:split_duration], :overlapping_time => options[:overlapping_time]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              if resp.code != 200
+                worker.errors = resp.error.message
               end
               worker.station = @station
               @station.worker = worker
@@ -161,12 +192,18 @@ module CF
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
+              if resp.code != 200
+                worker.errors = resp.error.message
+              end
               worker.station = @station
               @station.worker = worker
             elsif type == "concept_tagging_robot"
               resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "ConceptTaggingRobot", :url => options[:url]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
+              end
+              if resp.code != 200
+                worker.errors = resp.error.message
               end
               worker.station = @station
               @station.worker = worker              
@@ -175,12 +212,18 @@ module CF
                 resp.to_hash.each_pair do |k,v|
                   worker.send("#{k}=",v) if worker.respond_to?(k)
                 end
+                if resp.code != 200
+                  worker.errors = resp.error.message
+                end
                 worker.station = @station
                 @station.worker = worker
              elsif type == "text_extraction_robot"
                 resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "TextExtractionRobot", :url => options[:url]})
                 resp.to_hash.each_pair do |k,v|
                   worker.send("#{k}=",v) if worker.respond_to?(k)
+                end
+                if resp.code != 200
+                  worker.errors = resp.error.message
                 end
                 worker.station = @station
                 @station.worker = worker
