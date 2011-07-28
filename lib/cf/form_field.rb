@@ -49,7 +49,7 @@ module CF
           self.send("#{k}=",v) if self.respond_to?(k)
         end
         if resp.code != 200
-          self.errors = resp.parsed_response['error']
+          self.errors = resp.parsed_response['error']['message']
         end
         self.form_field_params = options
         @form.station.form.form_fields = self
