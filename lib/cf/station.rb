@@ -10,7 +10,7 @@ module CF
     attr_accessor :line_title
 
     # ID of the station
-    attr_accessor :id, :extra, :except, :index, :line, :station_input_formats, :jury_worker, :auto_judge, :error
+    attr_accessor :id, :extra, :except, :index, :line, :station_input_formats, :jury_worker, :auto_judge, :errors, :multiple
     
     # ==Initializes a new station
     # ===Usage Example
@@ -24,12 +24,13 @@ module CF
       @auto_judge = options[:auto_judge]
       @station_input_formats = options[:input_formats]
       @line_instance = options[:line]
+      @multiple = options[:multiple]
       request_general = 
       {
         :body => 
         {
           :api_key => CF.api_key,
-          :station => {:type => @type, :input_formats => @station_input_formats}
+          :station => {:type => @type, :input_formats => @station_input_formats, :multiple => @multiple}
         }
       }
       request_tournament = 
@@ -37,7 +38,7 @@ module CF
         :body => 
         {
           :api_key => CF.api_key,
-          :station => {:type => @type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
+          :station => {:type => @type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats, :multiple => @multiple}
         }
       }
       if @line_title
@@ -58,7 +59,7 @@ module CF
         end
         @line_instance.stations = self
         if resp.response.code != "200"
-          self.error = resp.parsed_response['error']['message']
+          self.errors = resp.parsed_response['error']['message']
         end
       end
     end
