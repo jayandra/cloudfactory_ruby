@@ -44,7 +44,7 @@ module CF
       @description = options[:description]
       resp = self.class.post("/lines/#{CF.account_name}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       if resp.code != 200
-        self.errors = resp.error['message']
+        self.errors = resp.error
       end
     end
 
@@ -92,7 +92,7 @@ module CF
           station.line = self
           station.line_title = self.title
           if resp.response.code != "200"
-            station.errors = resp.parsed_response['error']['message']
+            station.errors = resp.parsed_response['error']
           end
           @stations << station
         end
@@ -220,8 +220,12 @@ module CF
     # ===Syantax for delete method
     #   line = CF::Line.new("Digitize Card", "Survey")
     #   line.delete
-    def delete
+    def destroy
       self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json")
+    end
+    
+    def self.destroy(title)
+      delete("/lines/#{CF.account_name}/#{title.downcase}.json")
     end
   end
 end

@@ -176,18 +176,25 @@ describe CF::Line do
   end
 
   context "deleting" do
-    xit "should delete a line" do
+    it "should delete a line" do
       # WebMock.allow_net_connect!
       VCR.use_cassette "lines/block/delete-line", :record => :new_episodes do
         line = CF::Line.new("Digitizerd-2", "Digitization", {:public => true, :description => "this is description"})
-        resp = line.delete
+        resp = line.destroy
         resp.code.should eql(200)
         deleted_resp = CF::Line.info(line)
-        # => should send a custom message from API as "Resource not found."
-        
-        # debugger
-        deleted_resp.message.should eql("Resource not found.")
-          # no message sent
+        deleted_resp.error.message.should eql("Line document not found using selector: {:public=>true, :title=>\"digitizerd-2\"}")
+      end
+    end
+    
+    it "should delete a line" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "lines/block/delete-line-with-title", :record => :new_episodes do
+        line = CF::Line.new("Digitizerd-2", "Digitization", {:public => true, :description => "this is description"})
+        resp = CF::Line.destroy("Digitizerd-2")
+        resp.code.should eql(200)
+        deleted_resp = CF::Line.info(line)
+        deleted_resp.error.message.should eql("Line document not found using selector: {:public=>true, :title=>\"digitizerd-2\"}")
       end
     end
   end
@@ -280,9 +287,9 @@ describe CF::Line do
         line.input_formats input_format
         station = CF::Station.new({:type => "work"})
         line.stations station
-        line.stations.first.input_formats.first.name.should eq("image_url")
-        line.stations.first.input_formats.first.required.should eq(true)
-        line.stations.first.input_formats.first.valid_type.should eq("url")
+        line.stations.first.input_formats.first['name'].should eq("image_url")
+        line.stations.first.input_formats.first['required'].should eq(true)
+        line.stations.first.input_formats.first['valid_type'].should eq("url")
       end
     end
 
@@ -321,10 +328,10 @@ describe CF::Line do
   context "create a line" do
     it "the plain ruby way" do
       # WebMock.allow_net_connect!
-      VCR.use_cassette "line/plain-ruby/create-line-with-used-title", :record => :new_episodes do
+      VCR.use_cassette "lines/plain-ruby/create-line-with-used-title", :record => :new_episodes do
         line = CF::Line.new("new_line", "Digitization")
         line_1 = CF::Line.new("new_line", "Digitization")
-        line_1.errors.should eql("Line not valid")
+        line_1.errors.message.should eql("[\"Title is already taken for this account\"]")
       end
     end
   end
