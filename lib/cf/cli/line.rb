@@ -49,6 +49,28 @@ module Cf
       end
     end
 
+    desc "line delete", "delete the line at http://cloudfactory.com"
+    def delete
+      line_source = Dir.pwd
+      yaml_source = "#{line_source}/line.yml"
+
+      unless File.exist?(yaml_source)
+        say("The line.yml file does not exist in this directory", :red) and return
+      end
+
+      set_target_uri(false)
+      if set_api_key(yaml_source)
+        CF.account_name = CF::Account.info.name
+        line_dump = YAML::load(File.open(yaml_source))
+        line_title = line_dump['title']
+        
+        CF::Line.destroy(line_title)
+        say("The line #{line_title} is deleted successfully!", :yellow)
+      else
+        say("The api_key is missing in the line.yml file", :red)
+      end
+    end
+    
     desc "line create", "takes the yaml file at line.yml and creates a new line at http://cloudfactory.com"
     def create
       line_source = Dir.pwd
