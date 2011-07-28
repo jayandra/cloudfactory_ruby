@@ -17,7 +17,7 @@ module CF
 
     # station id attribute required for API Calls
     attr_accessor :station_id
-    attr_accessor :form_field_params
+    attr_accessor :form_field_params, :errors
 
     # ==Initializes a new "form_field" object
     # ==Usage of form_field.new(hash):
@@ -47,6 +47,9 @@ module CF
         resp =  HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@form.station.line['title'].downcase}/stations/#{@form.station.index}/form_fields.json",party_param)
         resp.parsed_response.each_pair do |k,v|
           self.send("#{k}=",v) if self.respond_to?(k)
+        end
+        if resp.code != 200
+          self.errors = resp.parsed_response['error']
         end
         self.form_field_params = options
         @form.station.form.form_fields = self

@@ -80,5 +80,47 @@ describe CF::FormField do
         line.stations.first.form.form_fields[3].form_field_params.should eql({:label => "Gender", :field_type => "RB", :required => "true", :option_values => ["male","female"]})
       end
     end
+  
+    it "in block DSL way with invalid form_field data" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "form-fields/block/create-without-label", :record => :new_episodes do
+        line = CF::Line.create("Digitize-0101111-final", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => self, :type => "work"}) do |station|
+            CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
+            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :field_type => "SA", :required => "true"})
+            end
+          end
+        end
+        line.stations.first.type.should eql("WorkStation")
+        line.stations.first.form.form_fields.first.errors['message'].should eql(["Label can't be blank"])
+      end
+    end
+    
+    it "in plain Ruby way with invalid form_field data" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "form-fields/plain-ruby/create-without-label", :record => :new_episodes do
+        line = CF::Line.new("Digitize-0", "Digitization")
+        input_format = CF::InputFormat.new({:name => "image_url", :required => true, :valid_type => "url"})
+        line.input_formats input_format
+        
+        station = CF::Station.new({:type => "work"})
+        line.stations station
+
+        worker = CF::HumanWorker.new({:number => 2, :reward => 20})
+        line.stations.first.worker = worker
+
+        form = CF::TaskForm.new({:title => "Enter text from a business card image", :instruction => "Describe"})
+        line.stations.first.form = form
+
+        form_fields_1 = CF::FormField.new({:field_type => "SA", :required => "true"})
+        line.stations.first.form.form_fields form_fields_1
+        
+        line.stations.first.type.should eql("WorkStation")
+        line.stations.first.form.form_fields.first.errors['message'].should eql(["Label can't be blank"])
+      end
+    end
+    
   end
 end

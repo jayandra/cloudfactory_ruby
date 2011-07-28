@@ -110,6 +110,9 @@ module CF
         resp.parsed_response.to_hash.each_pair do |k,v|
           form_field.send("#{k}=",v) if form_field.respond_to?(k)
         end
+        if resp.code != 200
+          form_field.errors = resp.parsed_response['error']
+        end
         form_field.form_field_params = form_field_params
         @form_fields << form_field
       else
