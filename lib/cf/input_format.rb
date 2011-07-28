@@ -39,7 +39,7 @@ module CF
         line_title = @station.nil? ? @line.title : @station.line_title
         resp = self.class.post("/lines/#{CF.account_name}/#{@line.title.downcase}/input_formats.json", :input_format => {:name => @name, :required => @required, :valid_type => @valid_type})
         if resp.code != 200
-          self.errors = resp.error.message.first
+          self.errors = resp.error.message
         end
         @line_title = line_title
         if !@station.nil? && @station.except.nil? && @station.extra.nil?

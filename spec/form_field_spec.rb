@@ -94,7 +94,7 @@ describe CF::FormField do
           end
         end
         line.stations.first.type.should eql("WorkStation")
-        line.stations.first.form.form_fields.first.errors['message'].should eql(["Label can't be blank"])
+        line.stations.first.form.form_fields.first.errors.should eql(["Label can't be blank"])
       end
     end
     
@@ -118,7 +118,7 @@ describe CF::FormField do
         line.stations.first.form.form_fields form_fields_1
         
         line.stations.first.type.should eql("WorkStation")
-        line.stations.first.form.form_fields.first.errors['message'].should eql(["Label can't be blank"])
+        line.stations.first.form.form_fields.first.errors.should eql(["Label can't be blank"])
       end
     end
     

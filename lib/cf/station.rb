@@ -58,7 +58,7 @@ module CF
         end
         @line_instance.stations = self
         if resp.response.code != "200"
-          self.errors = resp.parsed_response['error']
+          self.errors = resp.parsed_response['error']['message']
         end
       end
     end
@@ -131,6 +131,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           @worker_instance = worker
         end
 
@@ -145,6 +148,9 @@ module CF
           worker = CF::GoogleTranslateRobot.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          if resp.code != 200
+            worker.errors = resp.error.message
           end
           worker.from = @from 
           worker.to = @to
@@ -165,6 +171,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           worker.url = @url
           worker.to = @to
           worker.audio_quality = @audio_quality
@@ -183,6 +192,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           worker.document = @document
           worker.query = @query
           @worker_instance = worker
@@ -198,6 +210,9 @@ module CF
           worker = CF::SentimentRobot.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          if resp.code != 200
+            worker.errors = resp.error.message
           end
           worker.document = @document
           worker.sanitize = @sanitize
@@ -215,6 +230,9 @@ module CF
           worker = CF::TermExtractionRobot.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          if resp.code != 200
+            worker.errors = resp.error.message
           end
           worker.url = @url
           worker.max_retrieve = @max_retrieve
@@ -234,6 +252,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           worker.to = @to
           worker.template = @template
           worker.template_variables = @template_variables
@@ -250,6 +271,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           worker.document = @document
           @worker_instance = worker
         end
@@ -265,6 +289,9 @@ module CF
           worker = CF::MediaSplittingRobot.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          if resp.code != 200
+            worker.errors = resp.error.message
           end
           worker.url = @url
           worker.split_duration = @split_duration
@@ -283,6 +310,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           worker.append = @append
           worker.separator = @separator
           @worker_instance = worker
@@ -298,6 +328,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           worker.settings = @settings
           @worker_instance = worker
         end
@@ -311,6 +344,9 @@ module CF
           worker = CF::ConceptTaggingRobot.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          if resp.code != 200
+            worker.errors = resp.error.message
           end
           worker.url = @url
           @worker_instance = worker
@@ -327,6 +363,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           worker.content = @content
           worker.keywords = @keywords
           @worker_instance = worker
@@ -342,6 +381,9 @@ module CF
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
           end
+          if resp.code != 200
+            worker.errors = resp.error.message
+          end
           worker.url = @url
           @worker_instance = worker
         end
@@ -355,6 +397,9 @@ module CF
           worker = worker_instance.class.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)
+          end
+          if resp.code != 200
+            worker.errors = resp.error.message
           end
           @worker_instance = worker
         end

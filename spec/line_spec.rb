@@ -331,7 +331,7 @@ describe CF::Line do
       VCR.use_cassette "lines/plain-ruby/create-line-with-used-title", :record => :new_episodes do
         line = CF::Line.new("new_line", "Digitization")
         line_1 = CF::Line.new("new_line", "Digitization")
-        line_1.errors.message.should eql("[\"Title is already taken for this account\"]")
+        line_1.errors.should eql("[\"Title is already taken for this account\"]")
       end
     end
   end

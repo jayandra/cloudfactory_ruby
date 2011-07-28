@@ -246,7 +246,7 @@ describe CF::Station do
         line = CF::Line.new("Digitize--ard", "Digitization")
         station = CF::Station.new()
         line.stations station
-        line.stations.first.errors['message'].should eql("The Station type  is invalid.")
+        line.stations.first.errors.should eql("The Station type  is invalid.")
       end
     end
     
@@ -256,17 +256,17 @@ describe CF::Station do
         line = CF::Line.create("Digitize--ard1", "Digitization") do |l|
           CF::Station.new({:line => l})
         end
-        line.stations.first.errors['message'].should eql("The Station type  is invalid.")
+        line.stations.first.errors.should eql("The Station type  is invalid.")
       end
     end
     
     it "in block DSL way without creating input_format it should display an error message" do
       # WebMock.allow_net_connect!
       VCR.use_cassette "stations/block/create-without-input_type_error", :record => :new_episodes do
-        line = CF::Line.create("Digitize--ard1", "Digitization") do |l|
+        line = CF::Line.create("Digitize--ard2", "Digitization") do |l|
           CF::Station.new({:line => l, :type => "work"})
         end
-        line.stations.first.errors['message'].should eql("Input formats not assigned for the line #{line.title.downcase}")
+        line.stations.first.errors.should eql("Input formats not assigned for the line #{line.title.downcase}")
       end
     end
   end
