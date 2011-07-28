@@ -58,7 +58,7 @@ module CF
         end
         @line_instance.stations = self
         if resp.response.code != "200"
-          self.errors = resp.parsed_response['error']['message']
+          self.errors = resp.parsed_response['error']
         end
       end
     end
