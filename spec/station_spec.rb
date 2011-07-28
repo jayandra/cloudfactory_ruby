@@ -246,7 +246,7 @@ describe CF::Station do
         line = CF::Line.new("Digitize--ard", "Digitization")
         station = CF::Station.new()
         line.stations station
-        line.stations.first.error.should eql("The Station type  is invalid.")
+        line.stations.first.errors.should eql("The Station type  is invalid.")
       end
     end
     
@@ -256,7 +256,7 @@ describe CF::Station do
         line = CF::Line.create("Digitize--ard1", "Digitization") do |l|
           CF::Station.new({:line => l})
         end
-        line.stations.first.error.should eql("The Station type  is invalid.")
+        line.stations.first.errors.should eql("The Station type  is invalid.")
       end
     end
   end

@@ -27,7 +27,7 @@ module CF
 
     # input_formats contained within line object
     attr_accessor :input_formats
-    attr_accessor :error
+    attr_accessor :errors
     #attr_accessor :input_format_instance
     #attr_accessor :station_instance
 
@@ -44,7 +44,7 @@ module CF
       @description = options[:description]
       resp = self.class.post("/lines/#{CF.account_name}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       if resp.code != 200
-        self.error = resp.error['message']
+        self.errors = resp.error['message']
       end
     end
 
@@ -58,6 +58,7 @@ module CF
     def stations stations = nil
       if stations
         type = stations.type
+        multiple = stations.multiple
         @station_input_formats = stations.station_input_formats
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
@@ -67,7 +68,7 @@ module CF
             :body => 
             {
               :api_key => CF.api_key,
-              :station => {:type => type, :input_formats => @station_input_formats}
+              :station => {:type => type, :input_formats => @station_input_formats, :multiple => multiple}
             }
           }
           if type == "Tournament"
@@ -78,7 +79,7 @@ module CF
               :body => 
               {
                 :api_key => CF.api_key,
-                :station => {:type => type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
+                :station => {:type => type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats, :multiple => multiple}
               }
             }
             resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_tournament)
@@ -92,7 +93,7 @@ module CF
           station.line = self
           station.line_title = self.title
           if resp.response.code != "200"
-            station.error = resp.parsed_response['error']['message']
+            station.errors = resp.parsed_response['error']['message']
           end
           @stations << station
         end
@@ -155,6 +156,9 @@ module CF
         input_format = CF::InputFormat.new()
         resp.each_pair do |k,v|
           input_format.send("#{k}=",v) if input_format.respond_to?(k)
+        end
+        if resp.code != 200
+          input_format.error = resp.error.message.first
         end
         @input_formats << input_format
       else
