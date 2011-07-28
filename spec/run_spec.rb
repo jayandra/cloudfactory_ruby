@@ -23,8 +23,8 @@ module CF
 
           line.title.should eq("Digarde-007")
 
-          line.stations.first.input_formats.first.name.should eq("Company")
-          line.stations.first.input_formats.first.required.should eq(true)
+          line.stations.first.input_formats.first['name'].should eq("Company")
+          line.stations.first.input_formats.first['required'].should eq(true)
 
           line.stations[0].type.should eq("WorkStation")
 
