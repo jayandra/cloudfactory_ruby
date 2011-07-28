@@ -15,7 +15,7 @@ module CF
     attr_accessor :id
     
     # ID of Line with which input_format is associated
-    attr_accessor :line_title
+    attr_accessor :line_title, :errors
     
     # ==Initializes a new input_format
     # * Syntax for creating new input_format: <b>InputFormat.new(</b> Hash <b>)</b>
@@ -38,6 +38,9 @@ module CF
       if !@station.nil? or !@line.nil?
         line_title = @station.nil? ? @line.title : @station.line_title
         resp = self.class.post("/lines/#{CF.account_name}/#{@line.title.downcase}/input_formats.json", :input_format => {:name => @name, :required => @required, :valid_type => @valid_type})
+        if resp.code != 200
+          self.errors = resp.error.message.first
+        end
         @line_title = line_title
         if !@station.nil? && @station.except.nil? && @station.extra.nil?
           @station.input_formats = self
