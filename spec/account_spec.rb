@@ -5,7 +5,7 @@ describe CF::Account do
     # WebMock.allow_net_connect!
     VCR.use_cassette "account/info", :record => :new_episodes do
       account_info = CF::Account.info
-      account_info.name.should eql("taken")
+      account_info.name.should eql("manish")
     end
   end
 end

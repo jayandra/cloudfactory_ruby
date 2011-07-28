@@ -92,7 +92,7 @@ module CF
           station.line = self
           station.line_title = self.title
           if resp.response.code != "200"
-            station.errors = resp.parsed_response['error']
+            station.errors = resp.parsed_response['error']['message']
           end
           @stations << station
         end
