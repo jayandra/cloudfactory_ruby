@@ -1,101 +1,264 @@
 require 'spec_helper'
 
-module CloudFactory
-  describe CloudFactory::Run do
+module CF
+  describe CF::Run do
     context "create a new run" do
-      it "the plain ruby way" do
-        VCR.use_cassette "run/create-run", :record => :new_episodes do
-
-          attrs_1 = {:label => "Company",
-            :field_type => "text_data",
-            :value => "Apple", 
-            :required => true, 
-            :validation_format => "general"
-          }
-
-          attrs_2 = {:label => "Website",
-            :field_type => "text_data",
-            :value => "apple.com", 
-            :required => true, 
-            :validation_format => "url"
-          }
-
-          line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-            CloudFactory::InputHeader.new(l, attrs_1)
-            CloudFactory::InputHeader.new(l, attrs_2) 
-            CloudFactory::Station.create(l, :type => "work") do |s|
-              CloudFactory::HumanWorker.new(s, 2, 20)
-              CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-                CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
-                CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
-                CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})            
+      it "for a line in block dsl way" do
+        VCR.use_cassette "run/block/create-run", :record => :new_episodes do
+          # WebMock.allow_net_connect!
+          line = CF::Line.create("Digarde-007","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+                CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
               end
             end
           end
 
-          run = CloudFactory::Run.create(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          run = CF::Run.create(line, "runnamee1", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
 
-          line.title.should eq("Digitize Card")
+          line.title.should eq("Digarde-007")
 
-          line.input_headers.first.label.should eq("Company")
-          line.input_headers.first.field_type.should eq("text_data")
-          line.input_headers.first.required.should eq(true)
+          line.stations.first.input_formats.first['name'].should eq("Company")
+          line.stations.first.input_formats.first['required'].should eq(true)
 
-          line.stations[0].type.should eq("Work") 
+          line.stations[0].type.should eq("WorkStation")
 
-          line.stations[0].worker.number.should eq(2)
+          line.stations[0].worker.number.should eq(1)
           line.stations[0].worker.reward.should eq(20)
 
-          line.stations[0].instruction.title.should eq("Enter text from a business card image")
-          line.stations[0].instruction.description.should eq("Describe")
+          line.stations[0].form.title.should eq("Enter text from a business card image")
+          line.stations[0].form.instruction.should eq("Describe")
 
-          line.stations[0].instruction.form_fields[0].label.should eq("First Name")
-          line.stations[0].instruction.form_fields[0].field_type.should eq("SA")
-          line.stations[0].instruction.form_fields[0].required.should eq("true")
+          line.stations[0].form.form_fields[0].label.should eq("First Name")
+          line.stations[0].form.form_fields[0].field_type.should eq("SA")
+          line.stations[0].form.form_fields[0].required.should eq(true)
 
-          run.title.should eq("run name")
+          run.title.should eq("runnamee1")
           runfile = File.read(run.file)
           runfile.should == File.read(File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
         end
       end
 
-      it "should create a run for an existing line" do
-        WebMock.allow_net_connect!
-        # VCR.use_cassette "run/create-run-of-an-existing-line", :record => :new_episodes do
-          attrs_1 = {:label => "Company",
-            :field_type => "text_data",
-            :value => "Apple", 
-            :required => true, 
-            :validation_format => "general"
-          }
-
-          attrs_2 = {:label => "Website",
-            :field_type => "text_data",
-            :value => "apple.com", 
-            :required => true, 
-            :validation_format => "url"
-          }
-
-          line = CloudFactory::Line.create("Digitize Card","Digitization") do |l|
-            CloudFactory::InputHeader.new(l, attrs_1)
-            CloudFactory::InputHeader.new(l, attrs_2) 
-            CloudFactory::Station.create(l, :type => "work") do |s|
-              CloudFactory::HumanWorker.new(s, 2, 20)
-              CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-                CloudFactory::FormField.new(i, {:label => "Company Name", :field_type => "SA", :required => "true"})
-                CloudFactory::FormField.new(i, {:label => "Website URL", :field_type => "SA", :required => "true"})
+      it "should create a production run for input data as plain data" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-without-file", :record => :new_episodes do
+          line = CF::Line.create("Digitizard--11111000","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+                CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
               end
             end
           end
-
-          old_line = CloudFactory::Line.find(line.id)
-          run = CloudFactory::Run.create(old_line,"Run Using Line", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
-          run.title.should eq("Run Using Line")
+          run = CF::Run.create(line, "run-name--11111000", [{"Company"=>"Apple,Inc","Website"=>"Apple.com"},{"Company"=>"Google","Website"=>"google.com"}])
+          run.input.should eql( [{"Company"=>"Apple,Inc","Website"=>"Apple.com"},{"Company"=>"Google","Website"=>"google.com"}])
         end
-      # end
-    
-      xit "should create a run for google_translator robot" do
-        
+      end
+
+      it "for an existing line" do
+        VCR.use_cassette "run/block/create-run-of-an-existing-line", :record => :new_episodes do
+          line = CF::Line.create("Digitizeard123","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+                CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+              end
+            end
+          end
+          old_line = CF::Line.info(line.title)
+          run = CF::Run.create(old_line,"Runusingline", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          run.title.should eq("Runusingline")
+
+        end
+      end
+
+      it "for a line in a plain ruby way" do
+        VCR.use_cassette "run/plain-ruby/create-run", :record => :new_episodes do
+          line = CF::Line.new("Digitize--ard1", "Digitization")
+          station = CF::Station.new({:type => "work"})
+          line.stations station
+          input_format_1 = CF::InputFormat.new({:name => "Company", :required => true, :valid_type => "general"})
+          input_format_2 = CF::InputFormat.new({:name => "Website", :required => true, :valid_type => "url"})
+          line.input_formats input_format_1
+          line.input_formats input_format_2
+          worker = CF::HumanWorker.new({:number => 1, :reward => 20})
+          line.stations.first.worker = worker
+
+          form = CF::TaskForm.new({:title => "Enter text from a business card image", :instruction => "Describe"})
+          line.stations.first.form = form
+
+          form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
+          line.stations.first.form.form_fields form_fields_1
+          form_fields_2 = CF::FormField.new({:label => "Middle Name", :field_type => "SA"})
+          line.stations.first.form.form_fields form_fields_2
+          form_fields_3 = CF::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
+          line.stations.first.form.form_fields form_fields_3
+
+          run = CF::Run.create(line,"Run-in-plain-ruby-way", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+
+          line.title.should eq("Digitize--ard1")
+          line.stations.first.type.should eq("WorkStation")
+
+          line.input_formats[0].name.should eq("Company")
+          line.input_formats[0].required.should eq(true)
+          line.input_formats[1].name.should eq("Website")
+          line.input_formats[1].required.should eq(true)
+
+          line.stations.first.worker.number.should eql(1)
+          line.stations.first.worker.reward.should eql(20)
+
+          line.stations.first.form.title.should eql("Enter text from a business card image")
+          line.stations.first.form.instruction.should eql("Describe")
+
+          line.stations.first.form.form_fields[0].label.should eql("First Name")
+          line.stations.first.form.form_fields[0].field_type.should eql("SA")
+          line.stations.first.form.form_fields[0].required.should eql(true)
+          line.stations.first.form.form_fields[1].label.should eql("Middle Name")
+          line.stations.first.form.form_fields[1].field_type.should eql("SA")
+          line.stations.first.form.form_fields[2].label.should eql("Last Name")
+          line.stations.first.form.form_fields[2].field_type.should eql("SA")
+          line.stations.first.form.form_fields[2].required.should eql(true)
+        end
+      end
+
+      it "should fetch result" do
+        VCR.use_cassette "run/block/create-run-fetch-result", :record => :new_episodes do
+          line = CF::Line.create("Digarde-00111111111","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::TaskForm.create({:station => s, :title => "Enter blah from card image", :instruction => "Describe"}) do |i|
+                CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+              end
+            end
+          end
+          run = CF::Run.create(line, "run-name-result-0111111111", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          @final_output = run.final_output
+          @final_output.first.meta_data['company'].should eql("Apple")
+          @final_output.first.final_outputs.last['first-name'].should eql("Bob")
+          @final_output.first.final_outputs.last['last-name'].should eql("Marley")
+        end
+      end
+
+      xit "should fetch result of the specified station" do
+        VCR.use_cassette "run/block/fetch-result-of-specified-station", :record => :new_episodes do
+          line = CF::Line.create("Digitizeard-run-111","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::TaskForm.create({:station => s, :title => "Enter name of CEO :station", :instruction => "Describe"}) do |i|
+                CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+              end
+            end
+          end
+          run = CF::Run.create(line, "run-name-run", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          # debugger
+          @final_output = run.final_output
+          @final_output.first.meta_data['company'].should eql("Apple")
+          @final_output.first.final_outputs.last['first-name'].should eql("Bob")
+          @final_output.first.final_outputs.last['last-name'].should eql("Marley")
+
+          result_of_station_1 = run.output(:station => 1)
+          result_of_station_1.first.meta_data['company'].should eql("Apple")
+        end
+      end
+
+      it "should create production run with invalid input_format for input" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-invalid-data", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_3","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_3", [{"url_1"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        run.errors.should eql(["Extra Headers in file: [url_1]", "Insufficient Headers in file: [url]"])
+        end
+      end
+
+      it "should create production run with invalid data" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-invalid-file", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_4","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_4", File.expand_path("../../fixtures/input_data/media_converter_robot.csv", __FILE__))
+        run.errors.should eql(["Extra Headers in file: [url_1]", "Insufficient Headers in file: [url]"])
+
+        end
+      end
+
+      it "should create production run with used title data" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-used-title", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_5","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_5", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        run_1 = CF::Run.create(line, "media_splitting_robot_run_5", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        run_1.errors.should eql("[\"Title is already taken for this account\"]")
+        end
+      end
+
+      it "should create production run and find created run" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-and-find", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_6","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_6", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        found_run = CF::Run.find("media_splitting_robot_run_6")
+        found_run.code.should eql(200)
+        found_run.title.should eql("media_splitting_robot_run_6")
+        found_run.line.title.should eql("media_splitting_robot_6")
+        found_run.line.department.should eql("Digitization")
+        found_run.status.should eql("active")
+        end
+      end
+
+      it "should create production run and try to find run with unused title" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/find-run-with-unused-title", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_7","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_7", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        found_run = CF::Run.find("unused_title")
+        found_run.code.should eql(404)
+        found_run.errors.should eql("Run document not found using selector: {:tenant_id=>BSON::ObjectId('4def16fa5511274d98000014'), \"account_id\"=>BSON::ObjectId('4def122255112748d7000003'), :title=>\"unused_title\"}")
+        end
       end
     end
   end

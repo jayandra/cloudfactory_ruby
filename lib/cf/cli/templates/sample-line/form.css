@@ -1,0 +1,27 @@
+body {background: grey;}
+
+#instructions{
+  text-align:center;
+}
+
+#image-field-wrapper{
+  min-width:1050px;
+  overflow:hidden;
+}
+
+#field-panel{
+  float:left;
+  padding: 10px 10px 0 10px;
+  min-width:512px;
+  overflow:hidden;
+}
+
+.input-field{
+  width:150px;
+  margin:4px;
+}
+
+.appended_para {
+  font-size: 1.5em;
+  font-family: Verdana, Arial;
+}

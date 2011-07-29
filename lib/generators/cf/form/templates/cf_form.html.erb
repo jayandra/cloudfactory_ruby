@@ -1,0 +1,11 @@
+<!-- CloudFactory Custom Task Form -->
+<%- @labels.split(",").each do |label| -%>
+<label>{{<%= label %>}}</label>
+<%- end unless @labels.nil? -%>
+
+<%-
+  attributes.each do |item| 
+  field_name, data_input_type = item.split(":")
+-%>
+<p><label><%= field_name %></label><input id="<%= field_name.downcase %>" type="text" name="output[<%= field_name.downcase %>]" data-valid-type="<%= data_input_type.downcase %>" /></p>
+<%- end unless attributes.blank? -%>

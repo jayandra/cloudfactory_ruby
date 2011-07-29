@@ -1,132 +1,273 @@
 require 'spec_helper'
 
-describe CloudFactory::Station do
+describe CF::Station do
   context "create a station" do
     it "the plain ruby way" do
-      VCR.use_cassette "stations/create", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(line, :type => "Work")
-        station.type.should eq("Work")
-        line.stations.first.type.should eq("Work")
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/plain-ruby/create", :record => :new_episodes do
+        line = CF::Line.new("Digitize--ard", "Digitization")
+        station = CF::Station.new({:type => "work"})
+        line.stations station
+        line.stations.first.type.should eql("WorkStation")
       end
     end
 
     it "using the block variable" do
-      VCR.use_cassette "stations/create-with-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
-
-        station = CloudFactory::Station.create(line, :type => "work") do |s|
-          CloudFactory::HumanWorker.new(s, 2, 20)
-          CloudFactory::StandardInstruction.create(s,{:title => "Enter text from a business card image", :description => "Describe"}) do |i|
-            CloudFactory::FormField.new(i, {:label => "First Name", :field_type => "SA", :required => "true"})
-            CloudFactory::FormField.new(i, {:label => "Middle Name", :field_type => "SA"})
-            CloudFactory::FormField.new(i, {:label => "Last Name", :field_type => "SA", :required => "true"})
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/create-with-block-var", :record => :new_episodes do
+        line = CF::Line.create("igitizeard", "Digitization") do
+          CF::Station.create({:line => self, :type => "work"}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 2, :reward => 20})
+            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+            end
           end
         end
-        line.stations.first.type.should eq("Work")
-        line.stations.first.worker.number.should == 2
-        line.stations.first.worker.reward.should == 20
-        line.stations.first.instruction.title.should eq("Enter text from a business card image")
-        line.stations.first.instruction.description.should eq("Describe")
-        line.stations.first.instruction.form_fields[0].label.should eq("First Name")
-        line.stations.first.instruction.form_fields[1].label.should eq("Middle Name")
-        line.stations.first.instruction.form_fields[2].label.should eq("Last Name")
+        line.stations.first.type.should eq("WorkStation")
+        line.stations.first.worker.number.should eql(2)
+        line.stations.first.worker.reward.should eql(20)
+        line.stations.first.form.title.should eq("Enter text from a business card image")
+        line.stations.first.form.instruction.should eq("Describe")
+        line.stations.first.form.form_fields[0].label.should eq("First Name")
+        line.stations.first.form.form_fields[1].label.should eq("Middle Name")
+        line.stations.first.form.form_fields[2].label.should eq("Last Name")
       end
     end
 
     it "using without the block variable also creating instruction without block variable" do
-      VCR.use_cassette "stations/create-without-block-var", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
-
-        station_1 = CloudFactory::Station.create(line, :type => "Work") do 
-          human_worker = CloudFactory::HumanWorker.new(self, 2, 20)
-          CloudFactory::StandardInstruction.create(self,{:title => "Enter text from a business card image", :description => "Describe"}) do 
-            CloudFactory::FormField.new(self, {:label => "First Name", :field_type => "SA", :required => "true"})
-            CloudFactory::FormField.new(self, {:label => "Middle Name", :field_type => "SA"})
-            CloudFactory::FormField.new(self, {:label => "Last Name", :field_type => "SA", :required => "true"})
-          end 
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/create-without-block-var", :record => :new_episodes do
+        line = CF::Line.create("Digitizrd", "Digitization") do
+          CF::Station.create({:line => self, :type => "work"}) do
+            CF::HumanWorker.new({:station => self, :number => 2, :reward => 20})
+            CF::TaskForm.create({:station => self, :title => "Enter text from a business card image", :instruction => "Describe"}) do
+              CF::FormField.new({:form => self, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:form => self, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:form => self, :label => "Last Name", :field_type => "SA", :required => "true"})
+            end
+          end
         end
-        line.stations.first.type.should eq("Work")
+        line.stations.first.type.should eq("WorkStation")
         line.stations.first.worker.number.should == 2
         line.stations.first.worker.reward.should == 20
-        line.stations.first.instruction.title.should eq("Enter text from a business card image")
-        line.stations.first.instruction.description.should eq("Describe")
-        line.stations.first.instruction.form_fields[0].label.should eq("First Name")
-        line.stations.first.instruction.form_fields[1].label.should eq("Middle Name")
-        line.stations.first.instruction.form_fields[2].label.should eq("Last Name")
+        line.stations.first.form.title.should eq("Enter text from a business card image")
+        line.stations.first.form.instruction.should eq("Describe")
+        line.stations.first.form.form_fields[0].label.should eq("First Name")
+        line.stations.first.form.form_fields[1].label.should eq("Middle Name")
+        line.stations.first.form.form_fields[2].label.should eq("Last Name")
       end
     end
 
-    it "should create a custom instruction" do
-      VCR.use_cassette "stations/create-custom-instruction", :record => :new_episodes do
-        attrs = {:title => "Enter text from a business card image",
-          :description => "Describe"
-        }
-        html ='<div id="form-content"><div id="instructions"><ul><li>Look at the business card properly and fill in asked data.</li><li>Make sure you enter everything found on business card.</li><li>Work may be rejected if it is incomplete or mistakes are found.</li></ul></div><div id="image-field-wrapper"><div id = "image-panel" ><img class="card-mage" src="{{image_url}}"></div><div id = "field-panel">Name<br /><input class="input-field first_name" type="text" name="result[first_name]" /><input class="input-field middle_name" type="text" name="result[middle_name]" /><input class="input-field last_name" type="text" name="result[last_name]" /><br /><br />Contact<br /><input class="input-field email" type="text" name="result[email]" placeholder="Email"/><input class="input-field phone" type="text" name="result[phone]" placeholder="Phone"/><input class="input-field mobile" type="text" name="result[mobile]" placeholder="Mobile"/><br /></div></div></div>'
-
-        css = 'body {background:#fbfbfb;}#instructions{text-align:center;}#image-field-wrapper{float-left;min-width:1050px;overflow:hidden;}#field-panel{float:left;padding: 10px 10px 0 10px;min-width:512px;overflow:hidden;}.input-field{width:150px;margin:4px;}'
-
-        javascript = '<script src="http://code.jquery.com/jquery-latest.js"></script><script type="text/javascript" src="http://www.bizcardarmy.com/javascripts/jquery.autocomplete-min.js"></script><script type="text/javascript">$(document).ready(function(){autocomplete_fields = ["first_name", "middle_name", "last_name", "company", "job_title", "city", "state", "zip"];$.each(autocomplete_fields, function(index, value){var inputField = "input." + value;$(inputField).autocomplete({serviceUrl: "http://www.bizcardarmy.com/cards/return_data_for_autocompletion.json",maxHeight: 400,width: 300,zIndex: 9999,params: { field: value }});});});</script>'
-
-        instruction = CloudFactory::CustomInstruction.create(attrs) do |i|
-          i.html = html 
-          i.css = css
-          i.javascript = javascript
+    it "should create a station of Tournament station" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/tournament-station", :record => :new_episodes do
+        line = CF::Line.create("Digitized-9", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => self, :type => "tournament", :jury_worker=> {:max_judges => 10}, :auto_judge => {:enabled => true}}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 3, :reward => 20})
+            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+            end
+          end
         end
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
+        line.stations.first.type.should eq("TournamentStation")
+        line.stations.first.jury_worker.should eql({:max_judges => 10})
+        line.stations.first.auto_judge.should eql({:enabled => true})
+        line.stations.first.worker.number.should eql(3)
+        line.stations.first.worker.reward.should eql(20)
+        line.stations.first.form.title.should eq("Enter text from a business card image")
+        line.stations.first.form.instruction.should eq("Describe")
+        line.stations.first.form.form_fields[0].label.should eq("First Name")
+        line.stations.first.form.form_fields[1].label.should eq("Middle Name")
+        line.stations.first.form.form_fields[2].label.should eq("Last Name")
+      end
+    end
 
-        station = CloudFactory::Station.create(line, :type => "work") do |s|
-          s.instruction = instruction
-        end
-        station.type.should eq("Work")
-        station.instruction.html.should == html
-        station.instruction.css.should == css
-        station.instruction.javascript.should == javascript
+    it "should create a station of Improve station as first station of line" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/improve-as-first-station", :record => :new_episodes do
+        line = CF::Line.new("Digitd", "Digitization")
+        station = CF::Station.new({:type => "improve"}) 
+        expect { line.stations station }.to raise_error(CF::ImproveStationNotAllowed)
       end
     end
   end
- 
+
   context "get station" do
     it "should get information about a single station" do
-      VCR.use_cassette "stations/get-station", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(line, :type => "Work")
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/plain-ruby/get-station", :record => :new_episodes do
+        line = CF::Line.new("Digitizerd1","Digitization")
+        line.title.should eq("Digitizerd1")
+        station = CF::Station.new(:type => "Work")
+        line.stations station
         station.type.should eq("Work")
-        line.stations.first.get._type.should eq("WorkStation")
+        line.stations.first.get.type.should eq("WorkStation")
       end
     end
 
     it "should get all existing stations of a line" do
-      VCR.use_cassette "stations/get-all-stations", :record => :new_episodes do
-        line = CloudFactory::Line.create("Digitize Card", "Digitization") do |l|
-          CloudFactory::Station.new(l, :type => "work")
-        end
-        stations = CloudFactory::Station.all(line)
-        stations[0]._type.should eq("WorkStation")
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/plain-ruby/get-all-stations", :record => :new_episodes do
+        line = CF::Line.new("Digitizrd11","Digitization")
+        line.title.should eq("Digitizrd11")
+        station = CF::Station.new(:type => "Work")
+        line.stations station
+        stations = CF::Station.all(line)
+        stations[0].type.should eq("WorkStation")
       end
     end
   end
 
   context "deleting a station" do
-    it "should delete a station" do
-      VCR.use_cassette "stations/delete", :record => :new_episodes do
-        line = CloudFactory::Line.new("Digitize Card","Digitization")
-        line.title.should eq("Digitize Card")
-        station = CloudFactory::Station.new(line, :type => "Work")
-        station.type.should eq("Work")
-        station.delete
-        begin
-          station.get
-        rescue Exception => exec
-          exec.class.should eql(Crack::ParseError)
+    xit "should delete a station" do
+      WebMock.allow_net_connect!
+      # VCR.use_cassette "stations/plain-ruby/delete", :record => :new_episodes do
+      line = CF::Line.new("Digitize-ard","Digitization")
+      line.title.should eq("Digitize-ard")
+      station = CF::Station.new(:type => "Work")
+      line.stations station
+      line.stations.first.delete
+      deleted_station = line.stations.first.get
+      # not throwing any message
+      # deleted_station.message.should eql("Resource not found.")
+      deleted_station.code.should eql(404)
+      # end
+    end
+  end
+
+  context "create multiple station" do
+    xit "should create two stations with improve station" do
+      WebMock.allow_net_connect!
+      # VCR.use_cassette "stations/block/multiple-station", :record => :new_episodes do
+      line = CF::Line.create("Company Info -1","Digitization") do |l|
+        CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+        CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+        CF::Station.create({:line => l, :type => "work"}) do |s|
+          CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+          CF::TaskForm.create({:station => s, :title => "Enter the name of CEO", :instruction => "Describe"}) do |i|
+            CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+            CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+            CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+          end
         end
+      end
+
+      station = CF::Station.new({:type => "Improve"})
+      line.stations station
+
+      worker = CF::HumanWorker.new({:number => 1, :reward => 10})
+      line.stations.last.worker = worker
+
+      form = CF::TaskForm.new({:title => "Enter the address of the given Person", :instruction => "Description"})
+      line.stations.last.form = form
+
+      form_fields_1 = CF::FormField.new({:label => "Street", :field_type => "SA", :required => "true"})
+      line.stations.last.form.form_fields form_fields_1
+      form_fields_2 = CF::FormField.new({:label => "City", :field_type => "SA", :required => "true"})
+      line.stations.last.form.form_fields form_fields_2
+      form_fields_3 = CF::FormField.new({:label => "Country", :field_type => "SA", :required => "true"})
+      line.stations.last.form.form_fields form_fields_3
+
+      run = CF::Run.create(line,"Creation of Multiple Station", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+      # debugger
+      result_of_station_1 = run.output(:station => 1)
+      result_of_station_2 = run.output(:station => 2)
+      @final_output = run.final_output
+      @final_output.first.meta_data['company'].should eql("Apple")
+      @final_output.first.final_outputs.last['street'].should eql("Kupondole")
+      @final_output.first.final_outputs.last['city'].should eql("Kathmandu")
+      @final_output.first.final_outputs.last['country'].should eql("Nepal")
+      # end
+    end
+  end
+
+  context "create multiple station" do
+    it "should create two stations using different input format" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/multiple-station-adding-input-format", :record => :new_episodes do
+        line = CF::Line.create("Company-info-214","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+          CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => l, :type => "work", :input_formats=> {:station_0 => [{:name => "Company"},{:name => "Website", :except => true}]}}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+            CF::TaskForm.create({:station => s, :title => "Enter the name of CEO", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+            end
+          end
+        end
+
+        station = CF::Station.new(
+        {:type => "work", :input_formats => {:station_0 => [{:name => "Website"}], :station_1 => [{:name => "Last Name", :except => true}]}})
+        line.stations station
+
+        worker = CF::HumanWorker.new({:number => 1, :reward => 10})
+        line.stations.last.worker = worker
+
+        form = CF::TaskForm.new({:title => "Enter the address of the given Person", :instruction => "Description"})
+        line.stations.last.form = form
+
+        form_fields_1 = CF::FormField.new({:label => "Street", :field_type => "SA", :required => "true"})
+        line.stations.last.form.form_fields form_fields_1
+        form_fields_2 = CF::FormField.new({:label => "City", :field_type => "SA", :required => "true"})
+        line.stations.last.form.form_fields form_fields_2
+        form_fields_3 = CF::FormField.new({:label => "Country", :field_type => "SA", :required => "true"})
+        line.stations.last.form.form_fields form_fields_3
+        station_1 = line.stations.first.get
+        station_1.input_formats.count.should eql(1)
+        station_1.input_formats.first.name.should eql("Company")
+        station_1.input_formats.first.required.should eql(true)
+        station_1.input_formats.first.valid_type.should eql("general")
+        station_2 = line.stations.last.get
+        station_2.input_formats.count.should eql(3)
+        station_2.input_formats.map(&:name).should include("Website")
+        station_2.input_formats.map(&:name).should include("First Name")
+        station_2.input_formats.map(&:name).should include("Middle Name")
+        station_2.input_formats.map(&:required).should include(true)
+        station_2.input_formats.map(&:required).should include(false) #how to make it true
+        station_2.input_formats.map(&:required).should include(false)
+        station_2.input_formats.map(&:valid_type).should include("url")
+        station_2.input_formats.map(&:valid_type).should include("general")
+        station_2.input_formats.map(&:valid_type).should include("general")
       end
     end
   end
 
+  context "create a station without passing station type" do
+    it "in plain ruby way and it should display an error message" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/plain-ruby/create-without-type", :record => :new_episodes do
+        line = CF::Line.new("Digitize--ard", "Digitization")
+        station = CF::Station.new()
+        line.stations station
+        line.stations.first.errors.should eql("The Station type  is invalid.")
+      end
+    end
+    
+    it "in block DSL way and it should display an error message" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/create-without-type", :record => :new_episodes do
+        line = CF::Line.create("Digitize--ard1", "Digitization") do |l|
+          CF::Station.new({:line => l})
+        end
+        line.stations.first.errors.should eql("The Station type  is invalid.")
+      end
+    end
+    
+    it "in block DSL way without creating input_format it should display an error message" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/create-without-input_type_error", :record => :new_episodes do
+        line = CF::Line.create("Digitize--ard2", "Digitization") do |l|
+          CF::Station.new({:line => l, :type => "work"})
+        end
+        line.stations.first.errors.should eql("Input formats not assigned for the line #{line.title.downcase}")
+      end
+    end
+  end
 end
