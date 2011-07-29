@@ -12,7 +12,7 @@ module CF
     # line attribute with which run is associated
     attr_accessor :line
 
-    attr_accessor :id
+    attr_accessor :id, :errors
 
     # ==Initializes a new Run
     # ==Usage Example:
@@ -39,6 +39,9 @@ module CF
         @param_data = File.new(input, 'rb')
         @param_for_input = :file
         resp = self.class.post("/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json", {:data => {:run => {:title => @title}}, @param_for_input => @param_data})
+        if resp.code != 200
+          self.errors = resp.error.message
+        end
       else
         @input = input
         @param_data = input
@@ -52,6 +55,9 @@ module CF
           }
         }
         run =  HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json",options)
+        if run.code != 200
+          self.errors = run.parsed_response['error']['message']
+        end
       end
     end
 
@@ -125,6 +131,7 @@ module CF
       end
       return @final_output
     end
+    
     def output(options={})
       station_no = options[:station]
       line = self.line
@@ -132,6 +139,15 @@ module CF
       resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output/#{station.index}.json")
       return resp['output'].first.to_hash
     end
-
+    
+    def self.find(title)
+      resp = get("/runs/#{CF.account_name}/#{title.downcase}.json")
+      if resp.code != 200
+        resp.error = resp.error.message
+        resp.merge!(:errors => "#{resp.error}")
+        resp.delete(:error)
+      end
+      return resp
+    end
   end
 end

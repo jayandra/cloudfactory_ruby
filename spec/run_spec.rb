@@ -5,7 +5,7 @@ module CF
     context "create a new run" do
       it "for a line in block dsl way" do
         VCR.use_cassette "run/block/create-run", :record => :new_episodes do
-        # WebMock.allow_net_connect!
+          # WebMock.allow_net_connect!
           line = CF::Line.create("Digarde-007","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
             CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
@@ -81,6 +81,7 @@ module CF
           old_line = CF::Line.info(line.title)
           run = CF::Run.create(old_line,"Runusingline", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
           run.title.should eq("Runusingline")
+
         end
       end
 
@@ -132,7 +133,7 @@ module CF
           line.stations.first.form.form_fields[2].required.should eql(true)
         end
       end
-   
+
       it "should fetch result" do
         VCR.use_cassette "run/block/create-run-fetch-result", :record => :new_episodes do
           line = CF::Line.create("Digarde-00111111111","Digitization") do |l|
@@ -154,7 +155,7 @@ module CF
           @final_output.first.final_outputs.last['last-name'].should eql("Marley")
         end
       end
-      
+
       xit "should fetch result of the specified station" do
         VCR.use_cassette "run/block/fetch-result-of-specified-station", :record => :new_episodes do
           line = CF::Line.create("Digitizeard-run-111","Digitization") do |l|
@@ -175,9 +176,88 @@ module CF
           @final_output.first.meta_data['company'].should eql("Apple")
           @final_output.first.final_outputs.last['first-name'].should eql("Bob")
           @final_output.first.final_outputs.last['last-name'].should eql("Marley")
-          
+
           result_of_station_1 = run.output(:station => 1)
           result_of_station_1.first.meta_data['company'].should eql("Apple")
+        end
+      end
+
+      it "should create production run with invalid input_format for input" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-invalid-data", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_3","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_3", [{"url_1"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        run.errors.should eql(["Extra Headers in file: [url_1]", "Insufficient Headers in file: [url]"])
+        end
+      end
+
+      it "should create production run with invalid data" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-invalid-file", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_4","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_4", File.expand_path("../../fixtures/input_data/media_converter_robot.csv", __FILE__))
+        run.errors.should eql(["Extra Headers in file: [url_1]", "Insufficient Headers in file: [url]"])
+
+        end
+      end
+
+      it "should create production run with used title data" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-used-title", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_5","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_5", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        run_1 = CF::Run.create(line, "media_splitting_robot_run_5", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        run_1.errors.should eql("[\"Title is already taken for this account\"]")
+        end
+      end
+
+      it "should create production run and find created run" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/create-run-and-find", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_6","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_6", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        found_run = CF::Run.find("media_splitting_robot_run_6")
+        found_run.code.should eql(200)
+        found_run.title.should eql("media_splitting_robot_run_6")
+        found_run.line.title.should eql("media_splitting_robot_6")
+        found_run.line.department.should eql("Digitization")
+        found_run.status.should eql("active")
+        end
+      end
+
+      it "should create production run and try to find run with unused title" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "run/block/find-run-with-unused-title", :record => :new_episodes do
+        line = CF::Line.create("media_splitting_robot_7","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+          end
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_7", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
+        found_run = CF::Run.find("unused_title")
+        found_run.code.should eql(404)
+        found_run.errors.should eql("Run document not found using selector: {:tenant_id=>BSON::ObjectId('4def16fa5511274d98000014'), \"account_id\"=>BSON::ObjectId('4def122255112748d7000003'), :title=>\"unused_title\"}")
         end
       end
     end
