@@ -166,7 +166,7 @@ module CF
           @to = worker_instance.to
           @audio_quality = worker_instance.audio_quality
           @video_quality = worker_instance.video_quality
-          resp = CF::MediaConverterRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => [@url], :to => @to, :audio_quality => @audio_quality, :video_quality => @video_quality})
+          resp = CF::MediaConverterRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => @url, :to => @to, :audio_quality => @audio_quality, :video_quality => @video_quality})
           worker = CF::MediaConverterRobot.new({})
           resp.to_hash.each_pair do |k,v|
             worker.send("#{k}=",v) if worker.respond_to?(k)

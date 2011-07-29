@@ -107,7 +107,7 @@ module CF
               worker.station = @station
               @station.worker = worker
             elsif type == "media_converter_robot"
-              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => ["#{options[:url]}"], :to => options[:to], :audio_quality => options[:audio_quality], :video_quality => options[:video_quality]})
+              resp = self.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => options[:url], :to => options[:to], :audio_quality => options[:audio_quality], :video_quality => options[:video_quality]})
               resp.to_hash.each_pair do |k,v|
                 worker.send("#{k}=",v) if worker.respond_to?(k)
               end
