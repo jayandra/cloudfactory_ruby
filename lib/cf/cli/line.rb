@@ -178,5 +178,35 @@ module Cf
         say "The api_key is missing in the line.yml file", :red
       end
     end
+
+    desc "line list", "List your lines"
+    def list
+      line_source = Dir.pwd
+      yaml_source = "#{line_source}/line.yml"
+
+      unless File.exist?(yaml_source)
+        say("The line.yml file does not exist in this directory", :red) and return
+      end
+
+      set_target_uri(false)
+      if set_api_key(yaml_source)
+        CF.account_name = CF::Account.info.name
+        lines = CF::Line.all
+        lines.sort! {|a, b| a[:name] <=> b[:name] }
+        say "\n"
+        say("No Lines", :yellow) if lines.blank?
+
+        lines_table = table do |t|
+          t.headings = ["Line Title", 'URL']
+          lines.each do |line|
+            t << [line.title, "http://#{CF.account_name}.cloudfactory.com/lines/#{CF.account_name}/#{line.title.parameterize}"]
+          end
+        end
+        say(lines_table)
+      else
+        say("The api_key is missing in the line.yml file", :red)
+      end
+    end
+
   end
 end

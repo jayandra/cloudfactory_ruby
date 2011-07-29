@@ -62,7 +62,8 @@ eos
   s.add_dependency  "json"
   s.add_dependency  "thor", "0.14.6"
   s.add_dependency  "httparty", "~> 0.7.8"
-
+  s.add_dependency  "terminal-table", "~> 1.4.2"
+  
   s.add_development_dependency "rails", "~> 3.0.3"
   s.add_development_dependency "bundler", "~> 1.0.0"
   s.add_development_dependency "generator_spec", "~> 0.8.3"
