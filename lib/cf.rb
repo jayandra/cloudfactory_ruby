@@ -7,6 +7,7 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
 require "rest_client"
 require 'json'
+require 'terminal-table/import'
 
 directory = File.expand_path(File.dirname(__FILE__))
 

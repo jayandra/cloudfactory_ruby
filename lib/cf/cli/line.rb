@@ -49,6 +49,28 @@ module Cf
       end
     end
 
+    desc "line delete", "delete the line at http://cloudfactory.com"
+    def delete
+      line_source = Dir.pwd
+      yaml_source = "#{line_source}/line.yml"
+
+      unless File.exist?(yaml_source)
+        say("The line.yml file does not exist in this directory", :red) and return
+      end
+
+      set_target_uri(false)
+      if set_api_key(yaml_source)
+        CF.account_name = CF::Account.info.name
+        line_dump = YAML::load(File.open(yaml_source))
+        line_title = line_dump['title']
+        
+        CF::Line.destroy(line_title)
+        say("The line #{line_title} is deleted successfully!", :yellow)
+      else
+        say("The api_key is missing in the line.yml file", :red)
+      end
+    end
+    
     desc "line create", "takes the yaml file at line.yml and creates a new line at http://cloudfactory.com"
     def create
       line_source = Dir.pwd
@@ -98,6 +120,24 @@ module Cf
           end
           station = CF::Station.create(station_params) do |s|
             say "New Station has been created of type => #{s.type}", :green
+            
+            # For Worker
+            worker = station_file['station']['worker']
+            number = worker['num_workers']
+            reward = worker['reward']
+            worker_type = worker['worker_type']
+            if worker_type == "human"
+              human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
+              say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
+            else
+              robot_type = ("CF::"+worker_type.camelize).constantize
+              settings = worker['settings']
+              robot_params = settings.merge(:station => s)
+              robot_worker = robot_type.create(robot_params.symbolize_keys)
+
+              say "New Worker has been created of type => #{worker['settings']}", :green
+            end
+            
             # Creation of Form
             # Creation of TaskForm
             if station_file['station']['task_form'].present?
@@ -157,5 +197,35 @@ module Cf
         say "The api_key is missing in the line.yml file", :red
       end
     end
+
+    desc "line list", "List your lines"
+    def list
+      line_source = Dir.pwd
+      yaml_source = "#{line_source}/line.yml"
+
+      unless File.exist?(yaml_source)
+        say("The line.yml file does not exist in this directory", :red) and return
+      end
+
+      set_target_uri(false)
+      if set_api_key(yaml_source)
+        CF.account_name = CF::Account.info.name
+        lines = CF::Line.all
+        lines.sort! {|a, b| a[:name] <=> b[:name] }
+        say "\n"
+        say("No Lines", :yellow) if lines.blank?
+
+        lines_table = table do |t|
+          t.headings = ["Line Title", 'URL']
+          lines.each do |line|
+            t << [line.title, "http://#{CF.account_name}.cloudfactory.com/lines/#{CF.account_name}/#{line.title.parameterize}"]
+          end
+        end
+        say(lines_table)
+      else
+        say("The api_key is missing in the line.yml file", :red)
+      end
+    end
+
   end
 end
