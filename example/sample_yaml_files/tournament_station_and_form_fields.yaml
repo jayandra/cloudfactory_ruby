@@ -1,0 +1,40 @@
+api_key: f488a62d0307e79ec4f1e6131fa220be47e83d44
+title: manish
+description: Describe the line what its purpose is and what it does. You got the idea, right?
+department: Survey
+
+input_formats:
+  - name: text
+    required: true
+    valid_type: general
+      
+stations:
+  - station:
+      station_index: 1
+      station_type: tournament
+      jury_worker:
+        max_judges: 10
+      auto_judge: 
+        enabled: true
+      worker:
+        worker_type: human
+        num_workers: 1
+        reward: 10
+      task_form:
+        form_title: Enter text from a business card image
+        instruction: Description should be written here
+        form_fields:
+          - label: First Name
+            required: true
+            field_type: SA
+          - label: Middle Name
+            field_type: SA
+          - label: Last Name
+            required: true
+            field_type: SA
+          - label: Gender
+            required: true
+            field_type: RB
+            option_values: 
+              - male
+              - female
