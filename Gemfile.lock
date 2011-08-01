@@ -19,6 +19,7 @@ PATH
       i18n
       json
       rest-client
+      terminal-table (~> 1.4.2)
       thor (= 0.14.6)
 
 GEM
@@ -145,6 +146,7 @@ GEM
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
     term-ansicolor (1.0.5)
+    terminal-table (1.4.2)
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
