@@ -120,6 +120,24 @@ module Cf
           end
           station = CF::Station.create(station_params) do |s|
             say "New Station has been created of type => #{s.type}", :green
+            
+            # For Worker
+            worker = station_file['station']['worker']
+            number = worker['num_workers']
+            reward = worker['reward']
+            worker_type = worker['worker_type']
+            if worker_type == "human"
+              human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
+              say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
+            else
+              robot_type = ("CF::"+worker_type.camelize).constantize
+              settings = worker['settings']
+              robot_params = settings.merge(:station => s)
+              robot_worker = robot_type.create(robot_params.symbolize_keys)
+
+              say "New Worker has been created of type => #{worker['settings']}", :green
+            end
+            
             # Creation of Form
             # Creation of TaskForm
             if station_file['station']['task_form'].present?
@@ -151,22 +169,6 @@ module Cf
               say "New CustomTaskForm has been created of line => #{form.title} and Description => #{form.instruction}.\nThe source file for html => #{html_file}, css => #{css_file} and js => #{js_file} ", :green
             end
 
-            # For Worker
-            worker = station_file['station']['worker']
-            number = worker['num_workers']
-            reward = worker['reward']
-            worker_type = worker['worker_type']
-            if worker_type == "human"
-              human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
-              say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
-            else
-              robot_type = ("CF::"+worker_type.camelize).constantize
-              settings = worker['settings']
-              robot_params = settings.merge(:station => s)
-              robot_worker = robot_type.create(robot_params.symbolize_keys)
-
-              say "New Worker has been created of type => #{worker['settings']}", :green
-            end
           end
         end
         say " ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁", :white
