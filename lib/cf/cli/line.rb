@@ -87,10 +87,15 @@ module Cf
         CF.account_name = CF::Account.info.name
 
         line_dump = YAML::load(File.open(yaml_source))
-        line_title = line_dump['title']
+        line_title = line_dump['title'].parameterize
         line_description = line_dump['description']
         line_department = line_dump['department']
         line = CF::Line.new(line_title, line_department, :description => line_description)
+
+        unless line.errors.blank?
+          say("#{line.errors.message}", :red) and return
+        end
+
         say "New Line has been created with title => #{line.title} and Department => #{line.department_name}", :green
 
         # Creation of InputFormat from yaml file

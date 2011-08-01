@@ -13,7 +13,7 @@ module Cf
         say("The run title is required to start the production.", :red) and return
       end
       
-      run_title         = title.underscore.dasherize
+      run_title         = title.parameterize
       line_destination  = Dir.pwd
       yaml_source       = "#{line_destination}/line.yml"
       
@@ -22,7 +22,7 @@ module Cf
       end
 
       line_yaml_dump = YAML::load(File.open(yaml_source))
-      line_title = line_yaml_dump['title']
+      line_title = line_yaml_dump['title'].parameterize
 
       if !options[:input_data].nil? 
         input_data = "input/#{options[:input_data]}"
