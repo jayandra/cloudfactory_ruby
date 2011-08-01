@@ -1,5 +1,6 @@
 module CF
   module Worker
+    require 'httparty'
     extend ActiveSupport::Concern
     include Client
 
@@ -9,6 +10,7 @@ module CF
       attr_accessor :number
       # Amount of money assigned for worker
       attr_accessor :reward
+      attr_accessor :stat_badge, :skill_badges, :badge
       attr_accessor :station
       attr_accessor :id, :data, :from, :to 
       attr_accessor :url, :audio_quality, :video_quality
@@ -29,14 +31,35 @@ module CF
           @station = options[:station]
           @number  = options[:number].nil? ? 1 : options[:number]
           @reward  = options[:reward]
+          @badge = options[:badge].nil? ? nil : options[:badge]
           if @station
-            resp = CF::HumanWorker.post("/lines/#{CF.account_name}/#{@station.line['title'].downcase}/stations/#{@station.index}/workers.json", :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"})
+            if @badge.nil?
+              request = 
+              {
+                :body => 
+                {
+                  :api_key => CF.api_key,
+                  :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"}
+                }
+              }
+            else
+              request = 
+              {
+                :body => 
+                {
+                  :api_key => CF.api_key,
+                  :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"},
+                  :badge => @badge
+                }
+              }
+            end
+            resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@station.line['title'].downcase}/stations/#{@station.index}/workers.json",request)
             worker = CF::HumanWorker.new({})
-            resp.to_hash.each_pair do |k,v|
+            resp.parsed_response.to_hash.each_pair do |k,v|
               worker.send("#{k}=",v) if worker.respond_to?(k)
             end
             if resp.code != 200
-              worker.errors = resp.error.message
+              worker.errors = resp.parsed_response['error']['message']
             end
             worker.station = @station
             @station.worker = worker
