@@ -3,7 +3,7 @@ require 'spec_helper'
 module CF
   describe CF::RobotWorker do
     context "create a media converter robot worker" do
-      it "should create media_converter_robot worker for first station in a plain ruby way" do
+      xit "should create media_converter_robot worker for first station in a plain ruby way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "robot_worker/media_converter_robot/plain-ruby/create-worker-in-first-station", :record => :new_episodes do
           line = CF::Line.new("media_converter_robot","Digitization")
@@ -43,7 +43,7 @@ module CF
         end
       end
       
-      it "should create media_converter_robot in block DSL way" do
+      xit "should create media_converter_robot in block DSL way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "robot_worker/media_converter_robot/block/create-worker-block-dsl-way", :record => :new_episodes do
           line = CF::Line.create("media_converter_robot_1","Digitization") do |l|

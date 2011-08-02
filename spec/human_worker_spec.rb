@@ -70,7 +70,7 @@ module CF
           line = CF::Line.create("human_worker3", "Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "image_url", :required => true, :valid_type => "url"})
             CF::Station.create({:line =>l, :type => "work"}) do |s|
-              @worker = CF::HumanWorker.new({:station => s, :number => 2, :reward => 20, :badge => badge})
+              @worker = CF::HumanWorker.new({:station => s, :number => 2, :reward => 20, :skill_badge => badge})
             end
           end
           line.stations.first.type.should eql("WorkStation")
@@ -84,7 +84,7 @@ module CF
       it "in plain ruby way" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "human_worker/plain-ruby/create-with-badge", :record => :new_episodes do
-          badge = 
+          skill_badge = 
           {
             :title => 'Football Fanatic', 
             :description => "This qualification allows you to perform work at stations which have this badge.", 
@@ -103,7 +103,7 @@ module CF
           station = CF::Station.new({:type => "work"})
           line.stations station
 
-          worker = CF::HumanWorker.new({:number => 2, :reward => 20, :badge => badge})
+          worker = CF::HumanWorker.new({:number => 2, :reward => 20, :skill_badge => skill_badge})
           line.stations.first.worker = worker
 
           line.stations.first.type.should eql("WorkStation")
