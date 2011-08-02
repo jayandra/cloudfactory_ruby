@@ -11,7 +11,7 @@ module CF
 
     # ID of the station
     attr_accessor :id, :extra, :except, :index, :line, :station_input_formats, :jury_worker, :auto_judge, :errors
-    
+
     # ==Initializes a new station
     # ===Usage Example
     #   line = CF::Line.new("Digitize", "Survey")
@@ -119,8 +119,7 @@ module CF
 
     def worker=(worker_instance) # :nodoc:
       worker_type = worker_instance.class.to_s.split("::").last
-      case worker_type
-      when "HumanWorker"
+      if worker_type == "HumanWorker"
         if worker_instance.station
           @worker_instance = worker_instance
         else
@@ -158,267 +157,19 @@ module CF
           @worker_instance = worker
         end
 
-      when "GoogleTranslateRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @data = worker_instance.data
-          @from = worker_instance.from
-          @to = worker_instance.to
-          resp = CF::GoogleTranslateRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:number => 1, :reward => 0, :type => "google_translate_robot", :data => @data, :from => @from, :to => @to})
-          worker = CF::GoogleTranslateRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.from = @from 
-          worker.to = @to
-          worker.data = @data
-          @worker_instance = worker
-        end
-      
-      when "MediaConverterRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @url = worker_instance.url
-          @to = worker_instance.to
-          @audio_quality = worker_instance.audio_quality
-          @video_quality = worker_instance.video_quality
-          resp = CF::MediaConverterRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "MediaConverterRobot", :url => @url, :to => @to, :audio_quality => @audio_quality, :video_quality => @video_quality})
-          worker = CF::MediaConverterRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.url = @url
-          worker.to = @to
-          worker.audio_quality = @audio_quality
-          worker.video_quality = @video_quality
-          @worker_instance = worker
-        end
-      
-      when "ContentScrapingRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @document = worker_instance.document
-          @query = worker_instance.query
-          resp = CF::ContentScrapingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "ContentScrapingRobot", :document => @document, :query => @query})
-          worker = CF::ContentScrapingRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.document = @document
-          worker.query = @query
-          @worker_instance = worker
-        end
-      
-      when "SentimentRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @document = worker_instance.document
-          @sanitize = worker_instance.sanitize
-          resp = CF::SentimentRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "SentimentRobot", :document => @document, :sanitize => @sanitize})
-          worker = CF::SentimentRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.document = @document
-          worker.sanitize = @sanitize
-          @worker_instance = worker
-        end
-        
-      when "TermExtractionRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @url = worker_instance.url
-          @max_retrieve = worker_instance.max_retrieve
-          @show_source_text = worker_instance.show_source_text
-          resp = CF::TermExtractionRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "TermExtractionRobot", :url => @url, :max_retrieve => @max_retrieve, :show_source_text => @show_source_text})
-          worker = CF::TermExtractionRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.url = @url
-          worker.max_retrieve = @max_retrieve
-          worker.show_source_text = @show_source_text
-          @worker_instance = worker
-        end
-        
-      when "MailerRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @to = worker_instance.to
-          @template = worker_instance.template
-          @template_variables = worker_instance.template_variables
-          resp = CF::MailerRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "MailerRobot", :to => @to, :template => @template, :template_variables => @template_variables})
-          worker = CF::MailerRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.to = @to
-          worker.template = @template
-          worker.template_variables = @template_variables
-          @worker_instance = worker
-        end
-        
-      when "EntityExtractionRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @document = worker_instance.document
-          resp = CF::EntityExtractionRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "EntityExtractionRobot", :document => @document})
-          worker = CF::EntityExtractionRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.document = @document
-          @worker_instance = worker
-        end
-        
-      when "MediaSplittingRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @url = worker_instance.url
-          @split_duration = worker_instance.split_duration
-          @overlapping_time = worker_instance.overlapping_time
-          resp = CF::MediaSplittingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "MediaSplittingRobot", :url => @url, :split_duration => @split_duration, :overlapping_time => @overlapping_time})
-          worker = CF::MediaSplittingRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.url = @url
-          worker.split_duration = @split_duration
-          worker.overlapping_time = @overlapping_time
-          @worker_instance = worker
-        end
-      
-      when "TextAppendingRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @append = worker_instance.append
-          @separator = worker_instance.separator
-          resp = CF::TextAppendingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => {:type => "TextAppendingRobot", :append => @append, :separator => @separator})
-          worker = CF::TextAppendingRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.append = @append
-          worker.separator = @separator
-          @worker_instance = worker
-        end
-        
-      when "ImageProcessingRobot"
+      elsif worker_type == "RobotWorker"
         if worker_instance.station
           @worker_instance = worker_instance
         else
           @settings = worker_instance.settings
-          resp = CF::ImageProcessingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => @settings.merge(:type => "ImageProcessingRobot"))
-          worker = CF::ImageProcessingRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
+          @type = worker_instance.type
+          request = @settings.merge(:type => @type)
+          resp = CF::RobotWorker.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker => request)
+          worker = CF::RobotWorker.new({})
           worker.settings = @settings
-          @worker_instance = worker
-        end
-        
-      when "ConceptTaggingRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @url = worker_instance.url
-          resp = CF::ConceptTaggingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker =>{:type => "ConceptTaggingRobot", :url => @url})
-          worker = CF::ConceptTaggingRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.url = @url
-          @worker_instance = worker
-        end
-        
-      when "KeywordMatchingRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @content = worker_instance.content
-          @keywords = worker_instance.keywords
-          resp = CF::KeywordMatchingRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker =>{:type => "KeywordMatchingRobot", :content => @content, :keywords => @keywords})
-          worker = CF::KeywordMatchingRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.content = @content
-          worker.keywords = @keywords
-          @worker_instance = worker
-        end
-      
-      when "TextExtractionRobot"
-        if worker_instance.station
-          @worker_instance = worker_instance
-        else
-          @url = worker_instance.url
-          resp = CF::TextExtractionRobot.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :worker =>{:type => "TextExtractionRobot", :url => @url})
-          worker = CF::TextExtractionRobot.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
-          if resp.code != 200
-            worker.errors = resp.error.message
-          end
-          worker.url = @url
-          @worker_instance = worker
-        end
-      else
-        if worker_instance.station
-          @worker_instance = worker_instance 
-        else
-          @number = worker_instance.number.nil? ? 1 : worker_instance.number
-          @reward = worker_instance.reward.nil? ? 0 : worker_instance.reward
-          resp = worker_instance.class.post("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json", :body => {:worker => {:number => @number, :reward => @reward, :type => type}})
-          worker = worker_instance.class.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
+          worker.type = @type
+          worker.number = resp.number
+          worker.reward = resp.reward
           if resp.code != 200
             worker.errors = resp.error.message
           end
@@ -441,7 +192,7 @@ module CF
         @form_instance
       end
     end
-    
+
     def form=(form_instance) # :nodoc:
       if form_instance.class == Hash
         form_type = form_instance['_type']
@@ -452,7 +203,7 @@ module CF
       else
         @form = form_instance
       end
-      
+
       if @form.station
         @form_instance = @form
       else
