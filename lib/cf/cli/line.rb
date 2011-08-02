@@ -136,12 +136,10 @@ module Cf
               human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward, :badge => badge})
               say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
             else
-              robot_type = ("CF::"+worker_type.camelize).constantize
               settings = worker['settings']
-              robot_params = settings.merge(:station => s)
-              robot_worker = robot_type.create(robot_params.symbolize_keys)
+              robot_worker = CF::RobotWorker.create({:station => s, :type => worker_type, :settings => settings})
 
-              say "New Worker has been created of type => #{worker['settings']}", :green
+              say "New Worker has been created of type => #{worker_type} and settings => #{worker['settings']}", :green
             end
             
             # Creation of Form

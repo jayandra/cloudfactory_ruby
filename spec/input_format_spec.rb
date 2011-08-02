@@ -81,56 +81,6 @@ describe CF::InputFormat do
         input_formats_of_line.map(&:valid_type).should include("url")
       end
     end
-
-    xit "should return info of an input header" do
-      # WebMock.allow_net_connect!
-      VCR.use_cassette "input_formats/block/get-input-header", :record => :new_episodes do
-        line = CF::Line.create("Digitize-5","Digitization") do |l|
-          CF::InputFormat.new({:line => l, :name => "image_url", :required => true, :valid_type => "url"})
-          CF::InputFormat.new({:line => l, :name => "image", :required => true, :valid_type => "url"})
-          CF::Station.new({:line => l, :type => "work"})
-        end
-        # => input_format comes without an id 
-
-        got_input_format_1 = line.stations.first.input_formats[0].get 
-        # debugger
-        got_input_format_1.name.should eq("image_url")
-
-        got_input_format_2 = line.stations.first.input_formats[1].get 
-        got_input_format_2.name.should eq("image")
-      end
-    end
-  end
-
-  context "update input_format" do
-    xit "should update input_format" do
-      # WebMock.allow_net_connect!
-      VCR.use_cassette "input_formats/block/update-input-header", :record => :new_episodes do
-        line = CF::Line.create("Digitize-6","Digitization") do |l|
-          CF::InputFormat.new({:line => l, :name => "image_url", :required => true, :valid_type => "url"})
-          CF::InputFormat.new({:line => l, :name => "image", :required => true, :valid_type => "url"})
-          CF::Station.new({:line => l, :type => "work"})
-        end
-        line.input_formats.last.update({:name => "jackpot"})
-        updated_input_format = line.stations.first.input_formats.last.get
-        updated_input_format.name.should eq("jackpot")
-      end
-    end
-  end
-
-  context "delete an input_format" do
-    xit "should delete an input_format of a specific line" do
-      # WebMock.allow_net_connect!
-      VCR.use_cassette "input_formats/block/delete-input-header", :record => :new_episodes do
-        line = CF::Line.create("Digitize-7","Digitization") do |l|
-          CF::InputFormat.new({:line => l, :name => "image_url", :required => true, :valid_type => "url"})
-          CF::InputFormat.new({:line => l, :name => "image", :required => true, :valid_type => "url"})
-          CF::Station.new({:line => l, :type => "work"})
-        end
-        input_format = line.stations.first.input_formats[0].delete
-        input_format['message'].should eql ("succesfully deleted")
-      end
-    end
   end
   
   context "create an input_format" do
