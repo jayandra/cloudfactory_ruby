@@ -16,7 +16,7 @@ stations:
         worker_type: human
         num_workers: 1
         reward: 10
-        badge:
+        skill_badge:
           title: Football Fanatic
           description: This qualification allows you to perform work at stations which have this badge.
           max_badges: 3
