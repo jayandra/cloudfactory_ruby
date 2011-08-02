@@ -182,6 +182,39 @@ module CF
         end
       end
 
+      it "should fetch result of the specified station with run title" do
+         # WebMock.allow_net_connect!
+          VCR.use_cassette "run/block/fetch-result-with-title", :record => :new_episodes do
+            line = CF::Line.create("keyword_matching_robot_result","Digitization") do |l|
+              CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+              CF::Station.create({:line => l, :type => "work"}) do |s|
+                CF::RobotWorker.create({:station => s, :type => "text_extraction_robot", :settings => {:url => ["{url}"]}})
+              end
+              CF::Station.create({:line => l, :type => "work"}) do |s1|
+                CF::RobotWorker.create({:station => s1, :type => "keyword_matching_robot", :settings => {:content => ["{contents_of_url}"], :keywords => ["SaaS","see","additional","deepak","saroj"]}})
+              end
+            end
+            run = CF::Run.create(line, "keyword_matching_robot_run_result", [{"url"=> "http://techcrunch.com/2011/07/26/with-v2-0-assistly-brings-a-simple-pricing-model-rewards-and-a-bit-of-free-to-customer-service-software"}])
+            output = run.final_output
+            output.first.final_output.first.included_keywords_count_in_contents_of_url.should eql(["3", "2", "2"])
+            output.first.final_output.first.keyword_included_in_contents_of_url.should eql(["SaaS", "see", "additional"])
+            line.stations.first.worker.class.should eql(CF::RobotWorker)
+            line.stations.first.worker.reward.should eql(1)
+            line.stations.first.worker.number.should eql(1)
+            line.stations.first.worker.settings.should eql({:url => ["{url}"]})
+            line.stations.first.worker.type.should eql("TextExtractionRobot")
+            line.stations.last.worker.class.should eql(CF::RobotWorker)
+            line.stations.last.worker.reward.should eql(1)
+            line.stations.last.worker.number.should eql(1)
+            line.stations.last.worker.settings.should eql({:content => ["{contents_of_url}"], :keywords => ["SaaS","see","additional","deepak","saroj"]})
+            line.stations.last.worker.type.should eql("KeywordMatchingRobot")
+            output_of_station_1 = CF::Run.output(line, {:title => "keyword_matching_robot_run_result", :station => 1})
+            output_of_station_2 = CF::Run.output(line, {:title => "keyword_matching_robot_run_result", :station => 2})
+            output_of_station_2['keyword_included_in_contents_of_url'].should eql(["SaaS", "see", "additional"])
+            output_of_station_2['included_keywords_count_in_contents_of_url'].should eql(["3", "2", "2"])
+          end
+      end
+      
       it "should create production run with invalid input_format for input" do
         # WebMock.allow_net_connect!
         VCR.use_cassette "run/block/create-run-invalid-data", :record => :new_episodes do

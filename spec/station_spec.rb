@@ -122,24 +122,7 @@ describe CF::Station do
       end
     end
   end
-
-  context "deleting a station" do
-    xit "should delete a station" do
-      WebMock.allow_net_connect!
-      # VCR.use_cassette "stations/plain-ruby/delete", :record => :new_episodes do
-      line = CF::Line.new("Digitize-ard","Digitization")
-      line.title.should eq("Digitize-ard")
-      station = CF::Station.new(:type => "Work")
-      line.stations station
-      line.stations.first.delete
-      deleted_station = line.stations.first.get
-      # not throwing any message
-      # deleted_station.message.should eql("Resource not found.")
-      deleted_station.code.should eql(404)
-      # end
-    end
-  end
-
+  
   context "create multiple station" do
     xit "should create two stations with improve station" do
       WebMock.allow_net_connect!
