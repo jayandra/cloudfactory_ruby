@@ -4,15 +4,15 @@ module CF
     require 'httparty'
     extend ActiveSupport::Concern
     
-    attr_accessor :number, :reward, :station, :stat_badge, :skill_badges, :badge, :errors
+    attr_accessor :number, :reward, :station, :stat_badge, :skill_badges, :skill_badge, :errors
     
     def initialize(options={})
       @station = options[:station]
       @number  = options[:number].nil? ? 1 : options[:number]
       @reward  = options[:reward]
-      @badge = options[:badge].nil? ? nil : options[:badge]
+      @skill_badge = options[:skill_badge].nil? ? nil : options[:skill_badge]
       if @station
-        if @badge.nil?
+        if @skill_badge.nil?
           request = 
           {
             :body => 
@@ -28,7 +28,7 @@ module CF
             {
               :api_key => CF.api_key,
               :worker => {:number => @number, :reward => @reward, :type => "HumanWorker"},
-              :badge => @badge
+              :skill_badge => @skill_badge
             }
           }
         end
