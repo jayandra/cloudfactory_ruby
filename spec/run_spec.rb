@@ -188,7 +188,7 @@ module CF
         line = CF::Line.create("media_splitting_robot_3","Digitization") do |l|
           CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
           CF::Station.create({:line => l, :type => "work"}) do |s|
-            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+            CF::RobotWorker.create({:station => s, :type => "media_splitting_robot", :settings => {:url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"}})
           end
         end
         run = CF::Run.create(line, "media_splitting_robot_run_3", [{"url_1"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
@@ -202,7 +202,7 @@ module CF
         line = CF::Line.create("media_splitting_robot_4","Digitization") do |l|
           CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
           CF::Station.create({:line => l, :type => "work"}) do |s|
-            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+           CF::RobotWorker.create({:station => s, :type => "media_splitting_robot", :settings => {:url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"}})
           end
         end
         run = CF::Run.create(line, "media_splitting_robot_run_4", File.expand_path("../../fixtures/input_data/media_converter_robot.csv", __FILE__))
@@ -217,7 +217,7 @@ module CF
         line = CF::Line.create("media_splitting_robot_5","Digitization") do |l|
           CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
           CF::Station.create({:line => l, :type => "work"}) do |s|
-            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+            CF::RobotWorker.create({:station => s, :type => "media_splitting_robot", :settings => {:url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"}})
           end
         end
         run = CF::Run.create(line, "media_splitting_robot_run_5", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
@@ -232,7 +232,7 @@ module CF
         line = CF::Line.create("media_splitting_robot_6","Digitization") do |l|
           CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
           CF::Station.create({:line => l, :type => "work"}) do |s|
-            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+           CF::RobotWorker.create({:station => s, :type => "media_splitting_robot", :settings => {:url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"}})
           end
         end
         run = CF::Run.create(line, "media_splitting_robot_run_6", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
@@ -251,7 +251,7 @@ module CF
         line = CF::Line.create("media_splitting_robot_7","Digitization") do |l|
           CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
           CF::Station.create({:line => l, :type => "work"}) do |s|
-            CF::MediaSplittingRobot.create({:station => s, :url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"})
+            CF::RobotWorker.create({:station => s, :type => "media_splitting_robot", :settings => {:url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"}})
           end
         end
         run = CF::Run.create(line, "media_splitting_robot_run_7", [{"url"=> "http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"}])
