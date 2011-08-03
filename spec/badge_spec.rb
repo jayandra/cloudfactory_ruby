@@ -45,6 +45,44 @@ module CF
           line.stations.first.worker.stat_badge.should eql({"approval_rating"=>80, "assignment_duration"=>3600, "abandonment_rate"=>30, "country"=>nil})
         end
       end
+      
+      it "should create stat badge for worker in block DSL way" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "human_worker/block/create-stat-badge", :record => :new_episodes do
+          stat_badge = {:approval_rating => 40, :assignment_duration => 1800}
+          line = CF::Line.create("stat_badge_in_worker", "Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "image_url", :required => true, :valid_type => "url"})
+            CF::Station.create({:line =>l, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 2, :reward => 20, :stat_badge => stat_badge})
+            end
+          end
+          line.stations.first.type.should eql("WorkStation")
+          line.stations.first.worker.number.should eql(2)
+          line.stations.first.worker.reward.should eql(20)
+          line.stations.first.worker.stat_badge.should eql({"approval_rating"=>40, "assignment_duration"=>1800, "abandonment_rate"=>30, "country"=>nil})
+        end
+      end
+      
+      it "should create stat badge for worker in plain ruby way" do
+        # WebMock.allow_net_connect!
+        VCR.use_cassette "human_worker/plain-ruby/create-stat-badge", :record => :new_episodes do
+          stat_badge = {:approval_rating => 40, :assignment_duration => 1800}
+          line = CF::Line.new("stat_badge_in_worker_1", "Digitization")
+          input_format = CF::InputFormat.new({:name => "image_url", :required => true, :valid_type => "url"})
+          line.input_formats input_format
+
+          station = CF::Station.new({:type => "work"})
+          line.stations station
+
+          worker = CF::HumanWorker.new({:number => 2, :reward => 20, :stat_badge => stat_badge})
+          line.stations.first.worker = worker
+          
+          line.stations.first.type.should eql("WorkStation")
+          line.stations.first.worker.number.should eql(2)
+          line.stations.first.worker.reward.should eql(20)
+          line.stations.first.worker.stat_badge.should eql({"approval_rating"=>40, "assignment_duration"=>1800, "abandonment_rate"=>30, "country"=>nil})
+        end
+      end
     end
   end
 end
