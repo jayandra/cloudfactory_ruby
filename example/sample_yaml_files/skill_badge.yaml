@@ -16,26 +16,26 @@ stations:
         worker_type: human
         num_workers: 1
         reward: 10
-        skill_badge:
-          title: Football Fanatic
-          description: This qualification allows you to perform work at stations which have this badge.
-          max_badges: 3
-          test:
-            input:
-              name: Lionel Andres Messi
-              country: Argentina
-            expected_output: 
-              - birthplace: 'Rosario, Santa Fe, Argentina'
-                match_options:
-                  tolerance: 10 
-                  ignore_case: true
-              - position: CF
-                match_options:
-                  tolerance: 1 
-              - current_club: Barcelona
-                match_options: 
-                  tolerance: 1
-                  ignore_case: false
+        skill_badges:
+          - title: Football Fanatic
+            description: This qualification allows you to perform work at stations which have this badge.
+            max_badges: 3
+            test:
+              input:
+                name: Lionel Andres Messi
+                country: Argentina
+              expected_output: 
+                - birthplace: 'Rosario, Santa Fe, Argentina'
+                  match_options:
+                    tolerance: 10 
+                    ignore_case: true
+                - position: CF
+                  match_options:
+                    tolerance: 1 
+                - current_club: Barcelona
+                  match_options: 
+                    tolerance: 1
+                    ignore_case: false
       task_form:
         form_title: Enter text from a business card image
         instruction: Description should be written here
