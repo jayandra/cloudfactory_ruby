@@ -126,7 +126,8 @@ module CF
           number = worker_instance.number
           reward = worker_instance.reward
           badge = worker_instance.badge
-          if badge.nil?
+          stat_badge = worker_instance.stat_badge
+          if badge.nil? && stat_badge.nil?
             request = 
             {
               :body => 
@@ -142,7 +143,8 @@ module CF
               {
                 :api_key => CF.api_key,
                 :worker => {:number => number, :reward => reward, :type => "HumanWorker"},
-                :skill_badge => badge
+                :skill_badge => badge,
+                :stat_badge => stat_badge
               }
             }
           end
