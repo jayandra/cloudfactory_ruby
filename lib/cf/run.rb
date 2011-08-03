@@ -132,19 +132,16 @@ module CF
       return @final_output
     end
     
-    def self.output(line, options={})
+    def self.output(options={})
       station_no = options[:station]
       title = options[:title]
-      station = line.stations[station_no-1]
-      resp = get("/runs/#{CF.account_name}/#{title.downcase}/output/#{station.index}.json")
+      resp = get("/runs/#{CF.account_name}/#{title.downcase}/output/#{station_no}.json")
       return resp['output'].first.to_hash
     end
     
     def output(options={})
       station_no = options[:station]
-      line = self.line
-      station = line.stations[station_no-1]
-      resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output/#{station.index}.json")
+      resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output/#{station_no}.json")
       return resp['output'].first.to_hash
     end
     
