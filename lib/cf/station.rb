@@ -125,8 +125,8 @@ module CF
         else
           number = worker_instance.number
           reward = worker_instance.reward
-          skill_badge = worker_instance.skill_badge
-          if skill_badge.nil?
+          badge = worker_instance.badge
+          if badge.nil?
             request = 
             {
               :body => 
@@ -142,15 +142,17 @@ module CF
               {
                 :api_key => CF.api_key,
                 :worker => {:number => number, :reward => reward, :type => "HumanWorker"},
-                :skill_badge => skill_badge
+                :skill_badge => badge
               }
             }
           end
           resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}/workers.json",request)
           worker = CF::HumanWorker.new({})
-          resp.to_hash.each_pair do |k,v|
-            worker.send("#{k}=",v) if worker.respond_to?(k)
-          end
+          worker.id =  resp.parsed_response['id']
+          worker.number =  resp.parsed_response['number']
+          worker.reward =  resp.parsed_response['reward']
+          worker.stat_badge =  resp.parsed_response['stat_badge'] 
+          worker.skill_badges << resp.parsed_response['skill_badges']
           if resp.code != 200
             worker.errors = resp.parsed_response['error']['message']
           end

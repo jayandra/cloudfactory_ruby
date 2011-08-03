@@ -132,8 +132,11 @@ module Cf
             reward = worker['reward']
             worker_type = worker['worker_type']
             if worker_type == "human"
-              badge = worker['skill_badge']
-              human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward, :skill_badge => badge})
+              skill_badges = worker['skill_badges']
+              human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward})
+              skill_badges.each do |badge|
+                human_worker.badge = badge
+              end
               say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
             else
               settings = worker['settings']
