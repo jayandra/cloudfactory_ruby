@@ -7,6 +7,7 @@ require 'yaml'
 require 'fileutils'
 require 'thor'
 require "highline/import"
+require 'csv-hash'
 
 require File.expand_path('../../cf', __FILE__) #=> requiring the gem
 require 'active_support/core_ext/string/inflections'
@@ -70,5 +71,57 @@ module Cf
     # cannot use Run for the class name coz its a reserved word for Thor
     # later it can be replaced with hacked millisami-thor version of the thor library with run-time dependency via Bundler
     subcommand "production", Cf::Production
+
+    desc "output <run-title>", "Get the output of run. For more info, cf output help"
+    method_option :station_index, :type => :numeric, :aliases => "-s", :desc => "the index of the station"
+    def output(run_title=nil)
+      if run_title.present?
+        run_title = run_title.parameterize
+        line_source = Dir.pwd
+        yaml_source = "#{line_source}/line.yml"
+
+        unless File.exist?(yaml_source)
+          say "The line.yml file does not exist in this directory", :red
+          return
+        end
+        
+        set_target_uri(false)
+        if set_api_key(yaml_source)
+          CF.account_name = CF::Account.info.name if CF.account_name.blank?
+          run = CF::Run.find(run_title)
+          if run.errors.blank?
+            say("Fetching output for run: #{run_title}\n", :green)
+            
+            if options[:station_index].present?
+              # Output for specific station
+            else
+              # Ouput for the whole production run
+              output = CF::Run.final_output(run_title)
+              res_array = []
+              output.each do |o|
+                o.final_output.each do |fo|
+                  res_array << fo.to_hash
+                end
+              end
+              debugger
+              csv_str = CSVHash(res_array,["qualification","university","meta_data"])
+            end
+            
+            FileUtils.mkdir("#{line_source}/output") unless Dir.exist?("#{line_source}/output")
+            csv_file_name = "#{line_source}/output/#{run_title}-#{Time.now.strftime("%e %b %Y %H:%m-%S%p").parameterize}.csv"
+            File.open(csv_file_name, 'w') {|f| f.write(csv_str) }
+            say("\nOutput stored as #{csv_file_name}\n", :yellow)
+          else
+            say("Error: #{run.errors.inspect}")
+          end
+          
+        else
+          say("\nAPI key missing in line.yml file\n")
+        end
+      else
+        say("No run exist with title: #{run_title}")        
+      end
+    end
+    
   end
 end
