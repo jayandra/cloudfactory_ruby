@@ -61,6 +61,7 @@ EOF
   s.add_dependency  "rest-client"
   s.add_dependency  "json"
   s.add_dependency  "thor", "~> 0.14.6"
+  s.add_dependency  "highline"
   s.add_dependency  "httparty", "~> 0.7.8"
   s.add_dependency  "terminal-table", "~> 1.4.2"
   

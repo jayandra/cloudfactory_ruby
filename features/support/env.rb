@@ -8,6 +8,11 @@ Before('@slow_process') do
   @aruba_timeout_seconds = 4
 end
 
+Before('@moderate_slow_process') do
+  @aruba_io_wait_seconds = 2
+  @aruba_timeout_seconds = 2
+end
+
 Before('@too_slow_process') do
   @aruba_io_wait_seconds = 4
   @aruba_timeout_seconds = 50

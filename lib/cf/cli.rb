@@ -6,6 +6,7 @@ end
 require 'yaml'
 require 'fileutils'
 require 'thor'
+require "highline/import"
 
 require File.expand_path('../../cf', __FILE__) #=> requiring the gem
 require 'active_support/core_ext/string/inflections'
@@ -21,6 +22,27 @@ module Cf
   class CLI < Thor
     include Thor::Actions
     include Cf::Config
+    
+    desc "login", "Setup the cloudfactory credentials"
+    def login
+      email = ask("Enter your email:")
+      passwd = ask_password("Enter the password: ")
+      resp = CF::Account.login(email, passwd)
+      if resp.error.blank? and resp.api_key.present?
+        File.open(config_file, 'w') {|f| f.write({ :target_url => "http://sandbox.staging.cloudfactory.com/api/", :api_version => "v1", :api_key => resp.api_key }.to_yaml) }
+        say("\nNow you're logged in.\nTo get started, run cf help\n", :green)
+      else
+        say("\n#{resp.error.message}\nTry again with valid credentials.\n", :red)
+      end
+    end
+    
+    no_tasks do
+      def ask_password(message)
+        ::HighLine.new.ask(message) do |q| 
+          q.echo = false
+        end
+      end
+    end
     
     desc "target", "Setup the cloudfactory credentials. e.g. cf target staging #=> http://sandbox.staging.cloudfactory.com (options: staging/development/production)"
     def target(target_url=nil)
