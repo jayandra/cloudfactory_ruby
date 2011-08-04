@@ -228,10 +228,12 @@ module Cf
     end
 
     # helper function like in Rails
-    def pluralize(number, text)
-      return text.pluralize if number != 1
-      text
-    end
+    no_tasks {
+      def pluralize(number, text)
+        return text.pluralize if number != 1
+        text
+      end
+    }
 
   end
 end
