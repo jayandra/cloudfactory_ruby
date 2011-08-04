@@ -1,6 +1,11 @@
-require 'thor'
+begin
+  require 'psych'
+rescue LoadError
+  # do nothing
+end
 require 'yaml'
 require 'fileutils'
+require 'thor'
 
 require File.expand_path('../../cf', __FILE__) #=> requiring the gem
 require 'active_support/core_ext/string/inflections'

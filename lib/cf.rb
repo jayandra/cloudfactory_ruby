@@ -1,3 +1,9 @@
+begin
+  require 'psych'
+rescue LoadError
+  # do nothing
+end
+require 'yaml'
 require 'rails'
 require 'hashie'
 require 'active_support/concern'
@@ -20,23 +26,6 @@ module CF
     attr_accessor :api_key, :account_name, :api_version, :api_url
     def configure
       yield self
-    end    
-  end
-
-  # Configuring the defaults
-  # Set ENV['TEST'] is true for testing against the api
-  # TEST=true bundle exec rspec spec/.....
-  if ENV['TEST']
-    require 'ruby-debug'
-    ::Debugger.start
-    ::Debugger.settings[:autoeval] = true if ::Debugger.respond_to?(:settings)
-    
-    API_CONFIG = YAML.load_file(File.expand_path("../../fixtures/api_credentials.yml", __FILE__))
-    CF.configure do |config|
-      config.account_name = API_CONFIG['account_name']
-      config.api_version = API_CONFIG['api_version']
-      config.api_url = API_CONFIG['api_url']
-      config.api_key = API_CONFIG['api_key']
     end
   end
   
