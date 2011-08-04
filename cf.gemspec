@@ -67,7 +67,7 @@ eos
   s.add_development_dependency "rails", "~> 3.0.3"
   s.add_development_dependency "bundler", "~> 1.0.0"
   s.add_development_dependency "generator_spec", "~> 0.8.3"
-  s.add_development_dependency "rspec", "~> 2.0"
+  s.add_development_dependency "rspec-rails"
   s.add_development_dependency "cucumber"
   s.add_development_dependency "rdoc", "~> 3.5.3"
   s.add_development_dependency "vcr"
