@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# encoding: utf-8
 $:.push File.expand_path("../lib", __FILE__)
 require "cf/version"
 
@@ -66,6 +66,8 @@ EOF
   s.add_dependency  "terminal-table", "~> 1.4.2"
   s.add_dependency  "millisami-csv-hash"
   
+  
+  s.add_development_dependency "aruba"
   s.add_development_dependency "rails", "~> 3.0.3"
   s.add_development_dependency "bundler", "~> 1.0.0"
   s.add_development_dependency "generator_spec", "~> 0.8.3"
