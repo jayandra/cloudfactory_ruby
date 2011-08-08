@@ -42,17 +42,28 @@ module Cf
         CF.account_name = CF::Account.info.name
         line = CF::Line.info(line_title)
         input_data_path = "#{Dir.pwd}/#{input_data}"
+
         if line.error.blank?
           say "Creating a production run with title #{run_title}", :green
           run = CF::Run.create(line, run_title, input_data_path)
-          say "A run with title #{run.title} created successfully."
+          if run.errors.blank?
+            say("A run with title #{run.title} created successfully.", :green)
+            say("View your run at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}", :yellow)
+          else
+            say("Error: #{run.errors}", :red)
+          end
         else
           # first create line
-          say "Creating the line: #{line_title}", :green
+          say("Creating the line: #{line_title}", :green)
           Cf::Line.new.create
           # Now create a production run with the title run_title
           run = CF::Run.create(CF::Line.info(line_title), run_title, input_data_path)
-          say "A run with title #{run.title} using the line #{line_title} was successfully created."
+          if run.errors.blank?
+            say("A run with title #{run.title} using the line #{line_title} was successfully created.", :red)
+          else
+            say("Error: #{run.errors}", :red)
+          end
+          
         end
       else
         say "The api_key is missing in the line.yml file", :red

@@ -40,19 +40,32 @@ module Cf
       end
     end
     
-    def get_api_key(line_yaml_file)
-      line_yml = YAML::load(File.read(line_yaml_file))
-      line_yml['api_key'].presence
+    def get_api_key(yaml_file)
+      yml = YAML::load(File.read(yaml_file))
+      yml['api_key'].presence
     end
     
     def set_api_key(yaml_source)
       api_key = get_api_key(yaml_source)
       if api_key.blank?
+        
+        # api_key not found in line.yml file, so checking in the .cf_credentials
+        if File.exist?(config_file)
+          api_key = get_api_key(config_file)
+          if api_key.blank?
+            return false
+          else
+            CF.api_key = api_key if CF.api_key.blank?
+            raise "Error: Invalid api key => #{CF.api_key} for target #{CF.api_url}" unless CF::Account.valid?
+            return true
+          end
+        end
         return false
       else
         CF.api_key = api_key if CF.api_key.blank?
         # Do check whether the api_key is valid by calling the CF::Account#valid?
-         # Cf::CliError.new("Error: Invalid api key => #{CF.api_key}") unless CF::Account.valid?
+        # Cf::CliError.new("Error: Invalid api key => #{CF.api_key}") unless CF::Account.valid?
+        raise "Error: Invalid api key => #{CF.api_key} for target #{CF.api_url}" unless CF::Account.valid?
         
         # Check the file ~/.cf_credentials. If it exists, check for the api_key line. If not set, then append it.
         # This is needed for certain commands like cf line list, cf production list <line-title>

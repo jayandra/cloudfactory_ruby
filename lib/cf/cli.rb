@@ -32,12 +32,14 @@ module Cf
     def login
       email = ask("Enter your email:")
       passwd = ask_password("Enter the password: ")
+      
+      set_target_uri(false)
       resp = CF::Account.login(email, passwd)
       if resp.error.blank? and resp.api_key.present?
-        File.open(config_file, 'w') {|f| f.write({ :target_url => "http://sandbox.staging.cloudfactory.com/api/", :api_version => "v1", :api_key => resp.api_key }.to_yaml) }
+        File.open(config_file, 'w') {|f| f.write({ :target_url => CF.api_url, :api_version => CF.api_version, :api_key => resp.api_key }.to_yaml) }
         say("\nNow you're logged in.\nTo get started, run cf help\n", :green)
       else
-        say("\n#{resp.error.message}\nTry again with valid credentials.\n", :red)
+        say("\n#{resp.error.message}\nTry again with valid one.\n", :red)
       end
     end
     
@@ -54,13 +56,13 @@ module Cf
       if target_url.present?
         target_set_url = save_config(target_url)
         say("\nYour cloudfactory target url is saved as #{target_set_url}", :green)
-        say("All the best to run your factory on top of CloudFactory.com\n", :green)
+        say("Since the target is changed, do cf login to set the valid api key.\n", :green)
       else
         if load_config
           say("\n#{load_config[:target_url]}\n", :green)
         else
-          say("\nYou have not set the target url yet.", :yellow)
-          say("Set the target uri with: cf target --url=http://sandbox.staging.cloudfactory.com\n", :yellow)
+          say("\nYou have not set the target url yet.", :red)
+          say("Set it with: cf target staging or see the help.\n", :red)
         end
       end
     end
@@ -94,27 +96,25 @@ module Cf
           CF.account_name = CF::Account.info.name if CF.account_name.blank?
           run = CF::Run.find(run_title)
           if run.errors.blank?
-            say("Fetching output for run: #{run_title}\n", :green)
+            say("Fetching output for run: #{run_title}", :green)
             
             if options[:station_index].present?
               # Output for specific station
+              output = CF::Run.output(:title => run_title, :station => options[:station_index])
             else
               # Ouput for the whole production run
               output = CF::Run.final_output(run_title)
-              res_array = []
-              output.each do |o|
-                o.final_output.each do |fo|
-                  res_array << fo.to_hash
-                end
-              end
-              debugger
-              csv_str = CSVHash(res_array,["qualification","university","meta_data"])
             end
+            res_array = []
+            output.each do |o|
+              res_array << o.to_hash
+            end
+            csv_str = CSVHash(res_array,res_array.first.keys)
             
             FileUtils.mkdir("#{line_source}/output") unless Dir.exist?("#{line_source}/output")
             csv_file_name = "#{line_source}/output/#{run_title}-#{Time.now.strftime("%e %b %Y %H:%m-%S%p").parameterize}.csv"
             File.open(csv_file_name, 'w') {|f| f.write(csv_str) }
-            say("\nOutput stored as #{csv_file_name}\n", :yellow)
+            say("Output saved at #{csv_file_name}\n", :yellow)
           else
             say("Error: #{run.errors.inspect}")
           end
@@ -123,7 +123,8 @@ module Cf
           say("\nAPI key missing in line.yml file\n")
         end
       else
-        say("No run exist with title: #{run_title}")        
+        say("\nThe run title must be provided to get the output.", :red)
+        say("\te.g. cf output my-run-title\n", :yellow)
       end
     end
     
