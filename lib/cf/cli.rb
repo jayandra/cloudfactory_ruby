@@ -51,21 +51,21 @@ module Cf
       end
     end
     
-    desc "target", "Setup the cloudfactory credentials. e.g. cf target staging #=> http://sandbox.staging.cloudfactory.com (options: staging/development/production)"
-    def target(target_url=nil)
-      if target_url.present?
-        target_set_url = save_config(target_url)
-        say("\nYour cloudfactory target url is saved as #{target_set_url}", :green)
-        say("Since the target is changed, do cf login to set the valid api key.\n", :green)
-      else
-        if load_config
-          say("\n#{load_config[:target_url]}\n", :green)
-        else
-          say("\nYou have not set the target url yet.", :red)
-          say("Set it with: cf target staging or see the help.\n", :red)
-        end
-      end
-    end
+    # desc "target", "Setup the cloudfactory credentials. e.g. cf target staging #=> http://sandbox.staging.cloudfactory.com (options: staging/development/production)"
+    # def target(target_url=nil)
+    #   if target_url.present?
+    #     target_set_url = save_config(target_url)
+    #     say("\nYour cloudfactory target url is saved as #{target_set_url}", :green)
+    #     say("Since the target is changed, do cf login to set the valid api key.\n", :green)
+    #   else
+    #     if load_config
+    #       say("\n#{load_config[:target_url]}\n", :green)
+    #     else
+    #       say("\nYou have not set the target url yet.", :red)
+    #       say("Set it with: cf target staging or see the help.\n", :red)
+    #     end
+    #   end
+    # end
 
     desc "line", "Commands to manage the Lines. For more info, cf line help"
     subcommand "line", Cf::Line
