@@ -1,5 +1,5 @@
 source "http://rubygems.org"
-
+gem "csv-hash", :path => "~/gitcodes/csv-hash"
 group :development do
   gem 'aruba', :git => 'git://github.com/cucumber/aruba.git'
   gem 'ruby-debug', :platforms => :mri_18
