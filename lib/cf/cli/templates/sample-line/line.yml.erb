@@ -4,26 +4,26 @@
 # See docs at http://developers.cloudfactory.com/lines/yaml.html
 # See examples at http://developers.cloudfactory.com/lines/examples.html
 # Fill in your API key below! (See http://developers.cloudfactory.com/account#settings)
-api_key: fill_in_your_api_key
+# api_key: fill_in_your_api_key #(optional) If this key is not in this file, then make sure that you did `cf login` after installing the gem.
 title: <%= title.underscore.dasherize %>
 description: A sample line generated via CLI to use both standard and custom form.
-department: Data Processing  # Digitization, Web Research, etc
+department: Data Processing  #Digitization, Web Research, etc
 
-# Line Input Formats (see http://developers.cloudfactory.com/lines/yaml.html#line-input-formats)
+## Line Input Formats (see http://developers.cloudfactory.com/lines/yaml.html#line-input-formats)
 # input_formats:
 #   - name: company
 #     required: true
-#     valid_type: general  # general, url, date, email, ...
+#     valid_type: general  #general, url, date, email, ...
 
-# Stations (see http://developers.cloudfactory.com/lines/yaml.html#stations)
+## Stations (see http://developers.cloudfactory.com/lines/yaml.html#stations)
 # stations:
 #   # Sample Station #1: Human Worker
 #   - station:
 #       station_index: 1
-#       station_type: work   # work, improve, tournament
+#       station_type: work   #work, improve, tournament
 #       # Worker (see http://developers.cloudfactory.com/lines/yaml.html#workers)
 #       worker:
-#         worker_type: human   # "human" or name of robot (google_translate_robot, etc)
+#         worker_type: human   #"human" or name of robot (google_translate_robot, etc)
 #         num_workers: 2
 #         reward: 5
 #       # Task Form (see http://developers.cloudfactory.com/lines/yaml.html#task-forms)
@@ -41,10 +41,10 @@ department: Data Processing  # Digitization, Web Research, etc
 #   # Sample Station #2: Robot Worker
 #   - station:
 #       station_index: 2
-#       station_type: work   # work, improve, tournament
+#       station_type: work   #work, improve, tournament
 #       # Worker (see http://developers.cloudfactory.com/lines/yaml.html#workers)
 #       worker:
-#         worker_type: google_translate_robot   # "human" or name of robot (content_scraper_robot, etc)
+#         worker_type: google_translate_robot   #"human" or name of robot (content_scraper_robot, etc)
 #       # Robot Settings (see http://developers.cloudfactory.com/robots/)
 #       settings:
 #         data: ["{sentence}"]

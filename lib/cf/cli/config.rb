@@ -42,25 +42,26 @@ module Cf
     
     def get_api_key(yaml_file)
       yml = YAML::load(File.read(yaml_file))
-      yml['api_key'].presence
+      yml[:api_key].presence || yml['api_key'].presence
     end
     
     def set_api_key(yaml_source)
-      api_key = get_api_key(yaml_source)
+      api_key = nil
+      api_key = get_api_key(yaml_source) if File.exists?(yaml_source)
       if api_key.blank?
         
         # api_key not found in line.yml file, so checking in the .cf_credentials
         if File.exist?(config_file)
           api_key = get_api_key(config_file)
           if api_key.blank?
-            return false
+            raise "Error: No valid api key found. Do login first with: cf login"
           else
             CF.api_key = api_key if CF.api_key.blank?
             raise "Error: Invalid api key => #{CF.api_key} for target #{CF.api_url}" unless CF::Account.valid?
             return true
           end
         end
-        return false
+        raise "Error: No valid api key found. Do login first with: cf login"
       else
         CF.api_key = api_key if CF.api_key.blank?
         # Do check whether the api_key is valid by calling the CF::Account#valid?

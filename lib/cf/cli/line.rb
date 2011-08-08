@@ -33,7 +33,7 @@ module Cf
 
     def generate(title=nil)
       if title.present?
-        line_destination = "#{title.underscore.dasherize}"
+        line_destination = "#{title.parameterize}"
         yaml_destination = "#{line_destination}/line.yml"
         FileUtils.rm_rf(line_destination, :verbose => true) if options.force? && File.exist?(line_destination)
         if File.exist?(line_destination)
@@ -59,16 +59,13 @@ module Cf
       end
 
       set_target_uri(false)
-      if set_api_key(yaml_source)
-        CF.account_name = CF::Account.info.name
-        line_dump = YAML::load(File.open(yaml_source))
-        line_title = line_dump['title']
+      set_api_key(yaml_source)
+      CF.account_name = CF::Account.info.name
+      line_dump = YAML::load(File.open(yaml_source))
+      line_title = line_dump['title'].parameterize
 
-        CF::Line.destroy(line_title)
-        say("The line #{line_title} was deleted successfully!", :yellow)
-      else
-        say("The api_key is missing in the line.yml file", :red)
-      end
+      CF::Line.destroy(line_title)
+      say("The line #{line_title} was deleted successfully!", :yellow)
     end
 
     desc "line create", "takes the yaml file at line.yml and creates a new line at http://cloudfactory.com"
@@ -82,7 +79,7 @@ module Cf
       end
 
       set_target_uri(false)
-      if set_api_key(yaml_source)
+      set_api_key(yaml_source)
 
         CF.account_name = CF::Account.info.name
 
@@ -193,9 +190,6 @@ module Cf
         say "View your line at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/lines/#{CF.account_name}/#{line.title}", :yellow
         say "\nNow you can do production runs with: cf production start <your_run_title>", :green
         say "Note: Make sure your-run-title.csv file is in the input directory.", :green
-      else
-        say "The api_key is missing in the line.yml file", :red
-      end
     end
 
     desc "line list", "List your lines"
@@ -203,28 +197,21 @@ module Cf
       line_source = Dir.pwd
       yaml_source = "#{line_source}/line.yml"
 
-      unless File.exist?(yaml_source)
-        say("The line.yml file does not exist in this directory", :red) and return
-      end
-
       set_target_uri(false)
-      if set_api_key(yaml_source)
-        CF.account_name = CF::Account.info.name
-        lines = CF::Line.all
-        lines.sort! {|a, b| a[:name] <=> b[:name] }
-        say "\n"
-        say("No Lines", :yellow) if lines.blank?
+      set_api_key(yaml_source)
+      CF.account_name = CF::Account.info.name
+      lines = CF::Line.all
+      lines.sort! {|a, b| a[:name] <=> b[:name] }
+      say "\n"
+      say("No Lines", :yellow) if lines.blank?
 
-        lines_table = table do |t|
-          t.headings = ["Line Title", 'URL']
-          lines.each do |line|
-            t << [line.title, "http://#{CF.account_name}.cloudfactory.com/lines/#{CF.account_name}/#{line.title.parameterize}"]
-          end
+      lines_table = table do |t|
+        t.headings = ["Line Title", 'URL']
+        lines.each do |line|
+          t << [line.title, "http://#{CF.account_name}.cloudfactory.com/lines/#{CF.account_name}/#{line.title.parameterize}"]
         end
-        say(lines_table)
-      else
-        say("The api_key is missing in the line.yml file", :red)
       end
+      say(lines_table)
     end
 
     # helper function like in Rails
