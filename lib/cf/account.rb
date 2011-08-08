@@ -20,12 +20,8 @@ module CF
       end
       
       def login(email, passwd)
-        resp = post('/api_login.json', {:email => email, :password => passwd})
-        
-        if resp.code != 200
-          self.errors = resp.error.message
-        end
-        return resp
+        resp = post('/account_login.json', :user => {:email => email, :password => passwd})
+        resp
       end
     end
   end

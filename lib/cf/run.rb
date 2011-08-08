@@ -118,25 +118,28 @@ module CF
 
     def self.final_output(title)
       resp = get("/runs/#{CF.account_name}/#{title.downcase}/output.json")
-      @final_output =[]
-      resp['output'].each do |r|
-        result = FinalOutput.new()
-        r.to_hash.each_pair do |k,v|
-          result.send("#{k}=",v) if result.respond_to?(k)
-        end
-        if result.final_output == nil
-          result.final_output = resp.output
-        end
-        @final_output << result
-      end
-      return @final_output
+      return resp['output']
+      # debugger
+      # @final_output =[]
+      # resp['output'].each do |r|
+      #   result = FinalOutput.new()
+      #   r.to_hash.each_pair do |k,v|
+      #     result.send("#{k}=",v) if result.respond_to?(k)
+      #   end
+      #   # if result.final_output == nil
+      #   #   result.final_output = resp.output
+      #   # end
+      #   @final_output << result
+      # end
+      # debugger
+      # return @final_output
     end
     
     def self.output(options={})
       station_no = options[:station]
       title = options[:title]
       resp = get("/runs/#{CF.account_name}/#{title.downcase}/output/#{station_no}.json")
-      return resp['output'].first.to_hash
+      return resp['output']
     end
     
     def output(options={})

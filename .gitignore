@@ -8,3 +8,4 @@ vendor/*
 fixtures/api_credentials.yml
 fixtures/cassette_library/*
 .sass-cache/
+Gemfile.lock

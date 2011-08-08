@@ -16,7 +16,7 @@ Feature: Target URL
       """
       
       Your cloudfactory target url is saved as http://sandbox.staging.cloudfactory.com/api/
-      All the best to run your factory on top of CloudFactory.com
+      Since the target is changed, do cf login to set the valid api key.
       
       """
       
@@ -33,7 +33,7 @@ Feature: Target URL
       """
 
       Your cloudfactory target url is saved as http://lvh.me:3000/api/
-      All the best to run your factory on top of CloudFactory.com
+      Since the target is changed, do cf login to set the valid api key.
 
       """
 
@@ -50,7 +50,7 @@ Feature: Target URL
       """
 
       Your cloudfactory target url is saved as http://sandbox.cloudfactory.com/api/
-      All the best to run your factory on top of CloudFactory.com
+      Since the target is changed, do cf login to set the valid api key.
 
       """
 
@@ -76,7 +76,7 @@ Feature: Target URL
       """
       
       You have not set the target url yet.
-      Set the target uri with: cf target --url=http://sandbox.staging.cloudfactory.com
+      Set it with: cf target staging or see the help.
       
       """
 

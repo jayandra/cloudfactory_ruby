@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.executables   = ["cf"]
   s.require_paths = ["lib"]
 
-  s.post_install_message =<<eos
+  s.post_install_message =<<EOF
  ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
  
   Sweet. You now have the 'cf' command installed. Test drive it with:
@@ -53,21 +53,22 @@ Gem::Specification.new do |s|
   https://github.com/sprout/cloudfactory_ruby/wiki/Apps
   
  ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
-eos
+EOF
 
   s.add_dependency  "i18n"
   s.add_dependency  "activesupport", '~> 3.0.3'
   s.add_dependency  "hashie", "~> 1.0.0"
   s.add_dependency  "rest-client"
   s.add_dependency  "json"
-  s.add_dependency  "thor", "0.14.6"
+  s.add_dependency  "thor", "~> 0.14.6"
+  s.add_dependency  "highline"
   s.add_dependency  "httparty", "~> 0.7.8"
   s.add_dependency  "terminal-table", "~> 1.4.2"
   
   s.add_development_dependency "rails", "~> 3.0.3"
   s.add_development_dependency "bundler", "~> 1.0.0"
   s.add_development_dependency "generator_spec", "~> 0.8.3"
-  s.add_development_dependency "rspec", "~> 2.0"
+  s.add_development_dependency "rspec-rails"
   s.add_development_dependency "cucumber"
   s.add_development_dependency "rdoc", "~> 3.5.3"
   s.add_development_dependency "vcr"
