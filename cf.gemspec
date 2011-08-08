@@ -64,6 +64,7 @@ EOF
   s.add_dependency  "highline"
   s.add_dependency  "httparty", "~> 0.7.8"
   s.add_dependency  "terminal-table", "~> 1.4.2"
+  s.add_dependency  "millisami-csv-hash"
   
   s.add_development_dependency "rails", "~> 3.0.3"
   s.add_development_dependency "bundler", "~> 1.0.0"
