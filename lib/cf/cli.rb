@@ -19,6 +19,10 @@ require "#{cli_directory}/line"
 require "#{cli_directory}/form"
 require "#{cli_directory}/production"
 
+if ENV['TEST']
+  require 'ruby-debug'
+end
+
 module Cf
   class CLI < Thor
     include Thor::Actions
