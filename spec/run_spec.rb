@@ -84,6 +84,26 @@ module CF
 
         end
       end
+      
+      it "just using line title" do
+        VCR.use_cassette "run/block/create-run-using-line-title", :record => :new_episodes do
+          line = CF::Line.create("line_title_run","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+                CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
+                CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "SA"})
+                CF::FormField.new({:form => i, :label => "Last Name", :field_type => "SA", :required => "true"})
+              end
+            end
+          end
+          run = CF::Run.create("line_title_run", "Runusinglinetitle", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          run.title.should eq("Runusinglinetitle")
+
+        end
+      end
 
       it "for a line in a plain ruby way" do
         VCR.use_cassette "run/plain-ruby/create-run", :record => :new_episodes do

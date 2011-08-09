@@ -32,13 +32,18 @@ module CF
     #
     #   run = CF::Run.new(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
     def initialize(line, title, input)
-      @line = line
+      if line.class == CF::Line
+        @line = line
+        @line_title = @line.title
+      else
+        @line_title = line
+      end
       @title = title
       if File.exist?(input.to_s)
         @file = input
         @param_data = File.new(input, 'rb')
         @param_for_input = :file
-        resp = self.class.post("/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json", {:data => {:run => {:title => @title}}, @param_for_input => @param_data})
+        resp = self.class.post("/lines/#{CF.account_name}/#{@line_title.downcase}/runs.json", {:data => {:run => {:title => @title}}, @param_for_input => @param_data})
         if resp.code != 200
           self.errors = resp.error.message
         end
@@ -54,7 +59,7 @@ module CF
             :data =>{:run => { :title => @title }, :inputs => @param_data}
           }
         }
-        run =  HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line.title.downcase}/runs.json",options)
+        run =  HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@line_title.downcase}/runs.json",options)
         if run.code != 200
           self.errors = run.parsed_response['error']['message']
         end
