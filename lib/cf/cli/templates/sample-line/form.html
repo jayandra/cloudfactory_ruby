@@ -1,17 +1,20 @@
 <div id="station_2_instructions" class="station_2 cf_form_instruction">
   <ul>
     <li>Go to the <a href="http://www.facebook.com/search.php?type=users">people search in Facebook</a>.</li>
-	<li>Enter the <strong>location</strong> below and hit enter to search</li>
-	<li>Now go through and find the hottest date that is <span id="gender">{{gender}}</span> and looks about <span id="age">{{age}}</span> years old.</li>
-	<li>After you have searched through many and found the best date, paste their Facebook URL into the field below.</li>
+    <li>Enter the <strong>location</strong> below and hit enter to search</li>
+    <li>Now go through and find the hottest date that is <span id="gender">{{gender}}</span> and looks about <span id="age">{{age}}</span> years old.</li>
+    <li>After you have searched through many and found the best date, paste their Facebook URL into the field below.</li>
   </ul>
 </div>
 
 <div id="station_2_form" class="station_2 cf_form_content">
   <div id = "field-panel">
     <p>
-      <label>Facebook Profile URL of hottest date found</label>
-      <input id="fb_url" type="text" name="output[fb_url]" data-valid-type="general" />
+      <form>
+        <label>Facebook Profile URL of hottest date found</label><br />
+        <input id="fb_url" type="text" name="output[fb_url]" data-valid-type="general" /></br>
+        <input type="submit" value="submit" />
+      </form>
     </p>
   </div>
 </div>
