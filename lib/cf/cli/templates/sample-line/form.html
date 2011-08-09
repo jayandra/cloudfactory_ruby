@@ -1,26 +1,17 @@
 <div id="station_2_instructions" class="station_2 cf_form_instruction">
   <ul>
-    <!-- <li>Sample bullet list of instruction</li> -->
-    <li>Find study information of the following CEO</li>
+    <li>Go to the <a href="http://www.facebook.com/search.php?type=users">people search in Facebook</a>.</li>
+	<li>Enter the <strong>location</strong> below and hit enter to search</li>
+	<li>Now go through and find the hottest date that is <span id="gender">{{gender}}</span> and looks about <span id="age">{{age}}</span> years old.</li>
+	<li>After you have searched through many and found the best date, paste their Facebook URL into the field below.</li>
   </ul>
 </div>
 
 <div id="station_2_form" class="station_2 cf_form_content">
-  <label>{{ceo-name}}</label>
-  <label>{{company}}</label>
-
   <div id = "field-panel">
     <p>
-      <label>Qualification</label>
-      <select id="qualification" name="output[qualification]">
-        <option>Masters</option>
-        <option>Bachelors</option>
-        <option>Other</option>
-      </select>
-    </p>
-    <p>
-      <label>University</label>
-      <input id="university" type="text" name="output[university]" data-valid-type="general" />
+      <label>Facebook Profile URL of hottest date found</label>
+      <input id="fb_url" type="text" name="output[fb_url]" data-valid-type="general" />
     </p>
   </div>
 </div>
