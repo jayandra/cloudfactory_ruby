@@ -29,19 +29,22 @@ Gem::Specification.new do |s|
   http://cloudfactory.com/users/sign_up
   Get API key from welcome email or http://cloudfactory.com/account#settings
 
-  2. Generate your first assembly line...
+  2. Login with your credentials
+  > cf login
+  
+  3. Generate your first assembly line...
   > cf line generate <line-title>
 
-  3. Edit the generated line.yml to design your perfect assembly line
+  4. Edit the generated line.yml to design your perfect assembly line
   See http://developers.cloudfactory.com/lines/yaml.html
 
-  4. Create your line in CloudFactory
+  5. Create your line in CloudFactory
   > cf line create
 
-  5. Do a test production run in the sandbox first...
+  6. Do a test production run in the sandbox first...
   > cf production start TITLE -i=INPUT_DATA.CSV
 
-  6. Go live! Send your production run to real workers...
+  7. Go live! Send your production run to real workers...
   > cf production start TITLE -i=INPUT_DATA.CSV --live
   
  ------------------------------------------------------------------------------
@@ -66,7 +69,7 @@ EOF
   s.add_dependency  "terminal-table", "~> 1.4.2"
   s.add_dependency  "millisami-csv-hash"
   
-  
+  s.add_development_dependency 'ruby-debug19'
   s.add_development_dependency "aruba"
   s.add_development_dependency "rails", "~> 3.0.3"
   s.add_development_dependency "bundler", "~> 1.0.0"

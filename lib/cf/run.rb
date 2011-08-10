@@ -32,7 +32,7 @@ module CF
     #
     #   run = CF::Run.new(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
     def initialize(line, title, input)
-      if line.class == CF::Line
+      if line.class == CF::Line || Hashie::Mash
         @line = line
         @line_title = @line.title
       else

@@ -33,7 +33,7 @@ module Cf
       unless File.exist?(input_data)
         say("The input data csv file named #{input_data} is missing.", :red) and return
       end
-
+      
       set_target_uri(options[:live])
       # before starting the run creation process, we need to make sure whether the line exists or not
       # if not, then we got to first create the line and then do the production run
@@ -42,7 +42,6 @@ module Cf
       CF.account_name = CF::Account.info.name
       line = CF::Line.info(line_title)
       input_data_path = "#{Dir.pwd}/#{input_data}"
-
       if line.error.blank?
         say "Creating a production run with title #{run_title}", :green
         run = CF::Run.create(line, run_title, input_data_path)
