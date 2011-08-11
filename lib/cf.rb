@@ -4,13 +4,12 @@ rescue LoadError
   # do nothing
 end
 require 'yaml'
-require 'rails'
 require 'hashie'
 require 'active_support/concern'
-#require 'active_support/rescuable'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
+require 'active_support/hash_with_indifferent_access'
 require "rest_client"
 require 'json'
 require 'terminal-table/import'

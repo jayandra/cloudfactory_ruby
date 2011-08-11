@@ -4,8 +4,8 @@ require 'cf'
 ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
 Before('@slow_process') do
-  @aruba_io_wait_seconds = 4
-  @aruba_timeout_seconds = 4
+  @aruba_io_wait_seconds = 5
+  @aruba_timeout_seconds = 5
 end
 
 Before('@moderate_slow_process') do
