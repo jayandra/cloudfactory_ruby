@@ -155,6 +155,7 @@ module CF
       else
         @input_formats
       end
+      
     end
     def input_formats=(input_formats_value) # :nodoc:
       @input_formats << input_formats_value
