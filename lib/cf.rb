@@ -4,10 +4,8 @@ rescue LoadError
   # do nothing
 end
 require 'yaml'
-require 'rails'
 require 'hashie'
 require 'active_support/concern'
-#require 'active_support/rescuable'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
