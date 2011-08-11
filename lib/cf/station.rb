@@ -227,6 +227,9 @@ module CF
         @resp.to_hash.each_pair do |k,v|
           form.send("#{k}=",v) if form.respond_to?(k)
         end
+        if @resp.code != 200
+          form.errors = @resp.error.message
+        end
         form.station = self
         @form_instance = form
       end

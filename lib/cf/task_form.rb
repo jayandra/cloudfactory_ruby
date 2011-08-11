@@ -14,7 +14,10 @@ module CF
     
     # station attributes required to store station information
     attr_accessor :station
-
+    
+    # Contains Error message if any
+    attr_accessor :errors
+    
     # ==Initializes a new Form
     # ===Usage Example:
     #   attrs = {:title => "Enter text from a business card image",
@@ -30,6 +33,9 @@ module CF
         resp = self.class.post("/lines/#{CF.account_name}/#{@station.line['title'].downcase}/stations/#{@station.index}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "TaskForm"})
         resp.to_hash.each_pair do |k,v|
           self.send("#{k}=",v) if self.respond_to?(k)
+        end
+        if resp.code != 200
+          self.errors = resp.error.message
         end
         @station.form = self
       end

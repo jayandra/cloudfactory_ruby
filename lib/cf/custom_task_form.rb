@@ -20,6 +20,9 @@ module CF
     # station attribute is required for association with custom_from object
     attr_accessor :station
     
+    # Contains Error message if any
+    attr_accessor :errors
+    
     # ==Initializes a new CustomForm
     # ===Usage custom_instruction.new(hash):
     #
@@ -40,6 +43,9 @@ module CF
         custom_form = CF::CustomTaskForm.new({})
         @resp.to_hash.each_pair do |k,v|
           custom_form.send("#{k}=",v) if custom_form.respond_to?(k)
+        end
+        if @resp.code != 200
+          custom_form.errors = @resp.error.message
         end
         custom_form.station = @station
         @station.form = custom_form
