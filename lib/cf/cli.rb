@@ -23,8 +23,8 @@ if ENV['TEST']
   require 'ruby-debug'
 end
 
-module Cf
-  class CLI < Thor
+module Cf # :nodoc: all
+  class CLI < Thor # :nodoc: all
     include Thor::Actions
     include Cf::Config
     

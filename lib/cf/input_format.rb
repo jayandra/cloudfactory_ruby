@@ -14,18 +14,19 @@ module CF
     # ID of an input_format 
     attr_accessor :id
     
-    # ID of Line with which input_format is associated
+    # Title of Line with which input_format is associated
     attr_accessor :line_title, :errors
     
     # ==Initializes a new input_format
-    # * Syntax for creating new input_format: <b>InputFormat.new(</b> Hash <b>)</b>
     # ===Usage Example:
     #   line = CF::Line.create("Digitize", "Survey")
     #
-    #   attrs = {:line => line,
+    #   attrs = 
+    #   {
     #     :name => "image_url",
     #     :required => true,
-    #     :valid_type => "url"} 
+    #     :valid_type => "url"
+    #   } 
     #   
     #   input_format = CF::InputFormat.new(attrs) 
     #   line.input_formats input_format
@@ -51,14 +52,17 @@ module CF
     end
     
     # ==Returns all the input headers of a specific line
+    # ===Usage Example:
     #   line = CF::Line.new("Digitize Card","Survey")
     #
-    #   attrs_1 = {:line => line,
+    #   attrs_1 = 
+    #   {
     #     :name => "image_url",
     #     :required => true, 
     #     :valid_type => "url"
     #   }
-    #   attrs_2 = {:line => line,
+    #   attrs_2 = 
+    #   {
     #     :name => "text_url", 
     #     :required => true, 
     #     :valid_type => "url"
@@ -73,62 +77,6 @@ module CF
     # returns an array of input headers associated with line
     def self.all(line)
       get("/lines/#{CF.account_name}/#{line.title.downcase}/input_formats.json")
-    end
-    
-    # ==Returns a particular input header of a specific line
-    # ===Usage example
-    #   line = CF::Line.new("Digitize Card","Survey")
-    #   attrs = {:line => line,
-    #     :name => "image_url_type",
-    #     :required => true, 
-    #     :valid_type => "url"
-    #   }
-    #      
-    #   input_format = CF::InputFormat.new(attrs)
-    #   line.input_formats input_format
-    #   input_format = line.input_formats[0]
-    #   
-    #   got_input_format = input_format.get
-    def get
-      self.class.get("/lines/#{line_id}/input_formats/#{id}.json")
-    end
-    
-    # ==Updates input header
-    # ===Usage example
-    #   line = CF::Line.new("Digitize Card","Survey")
-    #   attrs = {:line => line,
-    #     :name => "image_url_type", 
-    #     :required => true, 
-    #     :valid_type => "url"
-    #   }
-    #   
-    #   input_format = CF::InputFormat.new(attrs)
-    #   line.input_formats input_format
-    #   input_format = line.input_formats[0]
-    #
-    #   updated_input_format = input_format.update({:name => "jackpot", :field_type => "lottery"})
-    def update(options={})
-      @name              = options[:name]
-      @required           = options[:required]
-      @valid_type  = options[:valid_type]
-      self.class.put("/lines/#{line_id}/input_formats/#{id}.json", :input_format => {:name => @name, :required => @required, :valid_type => @valid_type})
-    end
-    
-    #   line = CF::Line.new("Digitize Card","Survey")
-    #   attrs = {:line => line,
-    #     :name => "image_url_type", 
-    #     :required => true, 
-    #     :valid_type => "url"
-    #   }
-    #   
-    #   input_format = CF::InputFormat.new(attrs)
-    #   line.input_formats input_format
-    #
-    #   input_format = line.input_formats[0]
-    #   input_format.delete
-    # deletes input header
-    def delete
-      self.class.delete("/lines/#{line_id}/input_formats/#{id}.json")
     end
   end
 end

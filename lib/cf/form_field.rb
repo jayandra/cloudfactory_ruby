@@ -3,10 +3,10 @@ module CF
     require 'httparty'
     include Client
 
-    # Label for "form_field" object, e.g. :label => "First Name"
+    # Label for "form" object, e.g. :label => "First Name"
     attr_accessor :label
 
-    # field_type for "form_field" object, e.g. :field_type => "SA"
+    # field_type for "form" object, e.g. :field_type => "SA"
     attr_accessor :field_type
 
     # required boolean either true or false, e.g. :required => "true" & if false then you don't need to mention  
@@ -17,13 +17,18 @@ module CF
 
     # station id attribute required for API Calls
     attr_accessor :station_id
-    attr_accessor :form_field_params, :errors
+    
+    # Parameters for form fields
+    attr_accessor :form_field_params
+    
+    # Contains error message
+    attr_accessor :errors
 
-    # ==Initializes a new "form_field" object
-    # ==Usage of form_field.new(hash):
+    # ==Initializes a new "form" object
+    # ===Usage of form.new(hash):
     #   line = CF::Line.create("Digitize", "Survey") do |l|   
     #     CF::Station.create({:line => l, :type => "work"}) do |s|
-    #       CF::StandardInstruction.create({:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
+    #       CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
     #         CF::FormField.new({:form => i, :label => "First Name", :field_type => "SA", :required => "true"})
     #       end
     #     end

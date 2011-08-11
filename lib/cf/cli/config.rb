@@ -1,5 +1,5 @@
-module Cf
-  module Config
+module Cf # :nodoc: all
+  module Config # :nodoc: all
     def config_file
       File.join(find_home, '.cf_credentials')
     end

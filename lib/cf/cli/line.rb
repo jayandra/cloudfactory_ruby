@@ -1,8 +1,8 @@
 # encoding: utf-8
 require 'thor/group'
 
-module Cf
-  class Newline < Thor::Group
+module Cf # :nodoc: all
+  class Newline < Thor::Group # :nodoc: all
     include Thor::Actions
     include Cf::Config
     source_root File.expand_path('../templates/', __FILE__)
@@ -24,8 +24,8 @@ module Cf
 end
 
 
-module Cf
-  class Line < Thor
+module Cf # :nodoc: all
+  class Line < Thor # :nodoc: all
     include Cf::Config
     desc "line generate LINE-TITLE", "generates a line template at <line-title>/line.yml"
     method_option :force, :type => :boolean, :default => false, :aliases => "-f", :desc => "force to overwrite the files if the line already exists, default is false"

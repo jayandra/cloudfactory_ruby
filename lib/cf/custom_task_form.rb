@@ -21,12 +21,13 @@ module CF
     attr_accessor :station
     
     # ==Initializes a new CustomForm
-    # ==Usage custom_instruction.new(hash):
+    # ===Usage custom_instruction.new(hash):
     #
-    #     attrs = {:title => "Enter text from a business card image",
-    #         :description => "Describe"}
+    #     html = 'html_content'
+    #     css = 'css_content'
+    #     javascript = 'javascript_content'
     #
-    #     instruction = CustomForm.new(attrs)
+    #     instruction = CF::CustomTaskForm.new({:title => "Enter text from a business card image", :instruction => "Describe", :raw_html => html, :raw_css => css, :raw_javascript => javascript})
     def initialize(options={})
       @station     = options[:station]
       @title       = options[:title]
@@ -36,9 +37,6 @@ module CF
       @raw_javascript = options[:raw_javascript]
       if @station
         @resp = self.class.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
-        
-        # custom task form response not well formatted 
-        # @id = @resp.from.id
         custom_form = CF::CustomTaskForm.new({})
         @resp.to_hash.each_pair do |k,v|
           custom_form.send("#{k}=",v) if custom_form.respond_to?(k)
@@ -49,88 +47,15 @@ module CF
     end
   
     # ==Initializes a new CustomForm within block using Variable
-    # ==Usage of custom_instruction.create(instruction):
-    # ===Creating CustomForm using block variable
-    #     attrs = {:title => "Enter text from a business card image",
-    #         :description => "Describe"}
-    #     
-    #     html_content = '<div>.........</div>'
+    # ===Usage custom_instruction.create(hash):
     #
-    #     css_content = 'body {background:#fbfbfb;}
-    #          #instructions{
-    #           text-align:center;
-    #         }.....'
+    #     html = 'html_content'
+    #     css = 'css_content'
+    #     javascript = 'javascript_content'
     #
-    #     javascript_content = '<script>.........</script>'
-    #
-    #     instruction = CustomForm.create(instruction) do |i|
-    #       i.html = html_content 
-    #        i.css = css_content
-    #        i.javascript = javascript_content
-    #      end
-    #
-    # ===OR without block variable
-    #     instruction = CustomForm.create(instruction) do
-    #       html html_content 
-    #       css css_content
-    #       javascript javascript_content
-    #     end
+    #     instruction = CF::CustomTaskForm.create({:title => "Enter text from a business card image", :instruction => "Describe", :raw_html => html, :raw_css => css, :raw_javascript => javascript})
     def self.create(form)
       instruction = CustomTaskForm.new(form)
-      # if block.arity >= 1
-      #         block.call(instruction)
-      #       else
-      #         instruction.instance_eval &block
-      #       end
-      #       instruction
-    end
-
-    # ==Usage of instruction.html:
-    #     html_content = '<div>.........</div>'
-    #
-    #     instruction.html = html_content
-    #
-    def html html_content = nil
-      if html_content
-        @html_content = html_content
-      else
-        @html_content
-      end
-    end
-    def html=(html_content) # :nodoc:
-      @html_content = html_content
-    end
-
-    # ==Usage of instruction.css:
-    #     css_content = 'body {background:#fbfbfb;}
-    #         #instructions{
-    #           text-align:center;
-    #         }.....'
-    #
-    #     instruction.css = css_content
-    def css css_content = nil
-      if css_content
-        @css_content = css_content
-      else
-        @css_content
-      end
-    end
-    def css=(css_content) # :nodoc:
-      @css_content = css_content
-    end
-    # ==Usage of instruction.javascript:
-    #     javascript_content = '<script>.........</script>'
-    #
-    #     instruction.html = javascript_content
-    def javascript javascript_content = nil
-      if javascript_content
-        @javascript_content = javascript_content
-      else
-        @javascript_content
-      end
-    end
-    def javascript=(javascript_content) # :nodoc:
-      @javascript_content = javascript_content
     end
   end
 end

@@ -20,9 +20,9 @@ directory = File.expand_path(File.dirname(__FILE__))
 Hash.send :include, Hashie::HashExtensions
 
 
-module CF  
+module CF  # :nodoc: all
 
-  class << self
+  class << self # :nodoc: all
     attr_accessor :api_key, :account_name, :api_version, :api_url
     def configure
       yield self

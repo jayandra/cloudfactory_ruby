@@ -1,6 +1,6 @@
-module Cf
-  module Generators
-    class InstallGenerator < Rails::Generators::Base
+module Cf # :nodoc: all
+  module Generators # :nodoc: all
+    class InstallGenerator < Rails::Generators::Base # :nodoc: all
       source_root File.expand_path("../templates", __FILE__)
       # argument :account_name, :required => true,
       #                         :desc => "The account name that you used to signup at http://cloudfactory.com"
