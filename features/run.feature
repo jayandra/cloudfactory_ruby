@@ -54,6 +54,7 @@ Feature: Create a production run on CF
     """
     And a file named "brandiator/station_2/form.html" with:
     """
+    <form>
     <div id="my_form_instructions" class="brandiator cf_form_instruction">
       <ul>
         <li>Sample bullet list of instruction</li>
@@ -67,6 +68,7 @@ Feature: Create a production run on CF
     <p><label>email</label><input id="email" type="text" name="output[email]" data-valid-type="email" /></p>
     </div>
     </div>
+    </form>
     """
     And a file named "brandiator/station_2/form.css" with:
     """
@@ -74,11 +76,9 @@ Feature: Create a production run on CF
     """
     And a file named "brandiator/station_2/form.js" with:
     """
-    <script type="text/javascript">
     $(document).ready(function(){
       //do your stuff here
     });
-    </script>
     """
     
     And a file named "brandiator/line.yml" with:
