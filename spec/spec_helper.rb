@@ -2,6 +2,7 @@ require 'cf'
 require 'vcr'
 require 'webmock'
 require 'ruby-debug'
+require 'rails'
 
 RSpec.configure do |config|
   config.before(:suite) do
