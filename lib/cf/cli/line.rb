@@ -68,6 +68,13 @@ module Cf # :nodoc: all
       say("The line #{line_title} was deleted successfully!", :yellow)
     end
 
+    no_tasks {
+      # method to call with line title to delete the line if validation fails during the creation of line
+      def rollback(line_title)
+        CF::Line.destroy(line_title)
+      end
+    }
+    
     desc "line create", "takes the yaml file at line.yml and creates a new line at http://cloudfactory.com"
     def create
       line_source = Dir.pwd
@@ -89,10 +96,8 @@ module Cf # :nodoc: all
         line_department = line_dump['department']
         line = CF::Line.new(line_title, line_department, :description => line_description)
 
-        unless line.errors.blank?
-          say("#{line.errors}", :red) and return
-        end
-
+        say("#{line.errors}", :red); rollback(line_title) and return if line.errors.present?
+        
         say "Creating new assembly line: #{line.title}", :green
         say "Adding InputFormats", :green
 
@@ -109,7 +114,7 @@ module Cf # :nodoc: all
           input_format = line.input_formats input_format_for_line
           say_status "input", "#{attrs[:name]}"
           
-          say("#{line.input_formats[index].errors}", :red) and return if line.input_formats[index].errors.present?
+          say("#{line.input_formats[index].errors}", :red); rollback(line_title) and return if line.input_formats[index].errors.present?
         end
 
         # Creation of Station
@@ -128,7 +133,7 @@ module Cf # :nodoc: all
           station = CF::Station.create(station_params) do |s|
             #say "New Station has been created of type => #{s.type}", :green
             
-            say("#{s.errors}", :red) and return if s.errors.present?
+            say("#{s.errors}", :red); rollback(line_title) and return if s.errors.present?
             
             say "Adding Station #{index}: #{s.type}", :green
             # For Worker
@@ -145,7 +150,7 @@ module Cf # :nodoc: all
                 human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward, :stat_badge => stat_badge})
               end
               
-              say("#{human_worker.errors}", :red) and return if human_worker.errors.present?
+              say("#{human_worker.errors}", :red); rollback(line_title) and return if human_worker.errors.present?
               
               if worker['skill_badges'].present?
                 skill_badges.each do |badge|
@@ -161,7 +166,7 @@ module Cf # :nodoc: all
               say("#{robot_worker.errors}", :red) and return if robot_worker.errors.present?
               say_status "robot", "Robot worker: #{worker_type}"
             else
-              say("Invalid worker type: #{worker_type}", :red) and return
+              say("Invalid worker type: #{worker_type}", :red); rollback(line_title) and return
             end
 
             # Creation of Form
@@ -174,7 +179,7 @@ module Cf # :nodoc: all
                 station_file['station']['task_form']['form_fields'].each do |form_field|
                   form_field_params = form_field.merge(:form => f)
                   field = CF::FormField.new(form_field_params.symbolize_keys)
-                  say("Error in form field: #{field.errors}", :red) and return if field.errors.present?
+                  say("Error in form field: #{field.errors}", :red); rollback(line_title) and return if field.errors.present?
                 end
                 say_status "form", "TaskForm '#{f.title}'"
               end
