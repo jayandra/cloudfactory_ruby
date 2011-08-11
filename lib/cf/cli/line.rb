@@ -157,8 +157,8 @@ module Cf # :nodoc: all
             elsif worker_type =~ /robot/
               settings = worker['settings']
               robot_worker = CF::RobotWorker.create({:station => s, :type => worker_type, :settings => settings})
-
-              #say "New Worker has been created of type => #{worker_type} and settings => #{worker['settings']}", :green
+              
+              say("#{robot_worker.errors}", :red) and return if robot_worker.errors.present?
               say_status "robot", "Robot worker: #{worker_type}"
             else
               say("Invalid worker type: #{worker_type}", :red) and return
@@ -174,6 +174,7 @@ module Cf # :nodoc: all
                 station_file['station']['task_form']['form_fields'].each do |form_field|
                   form_field_params = form_field.merge(:form => f)
                   field = CF::FormField.new(form_field_params.symbolize_keys)
+                  say("Error in form field: #{field.errors}", :red) and return if field.errors.present?
                 end
                 say_status "form", "TaskForm '#{f.title}'"
               end

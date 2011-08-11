@@ -154,39 +154,39 @@ Feature: CLI Errors
       Number must be greater than or equal to 1
       """
 
-  # @announce, @too_slow_process
-  # Scenario: Invalid Robot worker
-  #   Given a file named ".cf_credentials" with:
-  #   """
-  #   ---
-  #   :target_url: http://lvh.me:3000/api/
-  #   :api_version: v1
-  #   :api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
-  # 
-  #   """
-  #   And a file named "eazytizer/line.yml" with:
-  #   """
-  #   title: eazytizer
-  #   department: Web Research
-  #   input_formats:
-  #     - name: email
-  #       required: true
-  #       valid_type: email
-  #   stations:
-  #     - station:
-  #         station_index: 1
-  #         station_type: work
-  #         worker:
-  #           worker_type: mailer_robot
-  #           settings:
-  #             to: {{email}}
-  #             template_variables:
-  #               fb_url: {{fb_url}}
-  # 
-  #   """
-  #   And I cd to "eazytizer"
-  #   When I run `cf line create`
-  #   Then the output should match:
-  #     """
-  #     Number must be greater than or equal to 1
-  #     """
+  @announce, @too_slow_process
+  Scenario: Invalid Robot worker
+    Given a file named ".cf_credentials" with:
+    """
+    ---
+    :target_url: http://lvh.me:3000/api/
+    :api_version: v1
+    :api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
+  
+    """
+    And a file named "eazytizer/line.yml" with:
+    """
+    title: eazytizer
+    department: Web Research
+    input_formats:
+      - name: email
+        required: true
+        valid_type: email
+    stations:
+      - station:
+          station_index: 1
+          station_type: work
+          worker:
+            worker_type: mailer_robot
+            settings:
+              to: {{email}}
+              template_variables:
+                fb_url: {{fb_url}}
+  
+    """
+    And I cd to "eazytizer"
+    When I run `cf line create`
+    Then the output should match:
+      """
+      Template can't be blank
+      """
