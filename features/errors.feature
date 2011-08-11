@@ -4,7 +4,7 @@ Feature: CLI Errors
   I want to get clear error messages in CLI
   
   @announce, @too_slow_process
-  Scenario: Line without
+  Scenario: Line with invalid department
     Given a file named ".cf_credentials" with:
     """
     ---
@@ -13,13 +13,13 @@ Feature: CLI Errors
     :api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
   
     """
-    And a file named "eazytizer/line.yml" with:
+    And a file named "eazytizer1/line.yml" with:
     """
-    title: eazytizer
+    title: eazytizer1
     department: NoDept
     
     """
-    And I cd to "eazytizer"
+    And I cd to "eazytizer1"
     When I run `cf line create`
     Then the output should match:
       """
@@ -36,9 +36,9 @@ Feature: CLI Errors
     :api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
   
     """
-    And a file named "eazytizer/line.yml" with:
+    And a file named "eazytizer2/line.yml" with:
     """
-    title: eazytizer
+    title: eazytizer2
     department: Web Research
     input_formats:
       - name: email
@@ -46,7 +46,7 @@ Feature: CLI Errors
         valid_type: noemail
     
     """
-    And I cd to "eazytizer"
+    And I cd to "eazytizer2"
     When I run `cf line create`
     Then the output should match:
       """
@@ -63,9 +63,9 @@ Feature: CLI Errors
     :api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
 
     """
-    And a file named "eazytizer/line.yml" with:
+    And a file named "eazytizer3/line.yml" with:
     """
-    title: eazytizer
+    title: eazytizer3
     department: Web Research
     input_formats:
       - name: email
@@ -77,7 +77,7 @@ Feature: CLI Errors
           station_type: bad-station
     
     """
-    And I cd to "eazytizer"
+    And I cd to "eazytizer3"
     When I run `cf line create`
     Then the output should match:
       """
@@ -94,9 +94,9 @@ Feature: CLI Errors
     :api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
 
     """
-    And a file named "eazytizer/line.yml" with:
+    And a file named "eazytizer4/line.yml" with:
     """
-    title: eazytizer
+    title: eazytizer4
     department: Web Research
     input_formats:
       - name: email
@@ -112,7 +112,7 @@ Feature: CLI Errors
             reward: 5
 
     """
-    And I cd to "eazytizer"
+    And I cd to "eazytizer4"
     When I run `cf line create`
     Then the output should match:
       """
@@ -129,9 +129,9 @@ Feature: CLI Errors
     :api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
 
     """
-    And a file named "eazytizer/line.yml" with:
+    And a file named "eazytizer5/line.yml" with:
     """
-    title: eazytizer
+    title: eazytizer5
     department: Web Research
     input_formats:
       - name: email
@@ -147,7 +147,7 @@ Feature: CLI Errors
             reward: 5
 
     """
-    And I cd to "eazytizer"
+    And I cd to "eazytizer5"
     When I run `cf line create`
     Then the output should match:
       """
@@ -164,9 +164,9 @@ Feature: CLI Errors
     :api_key: 89ceebf739adbf59d34911f4f28b2fa0e1564fb6
   
     """
-    And a file named "eazytizer/line.yml" with:
+    And a file named "eazytizer6/line.yml" with:
     """
-    title: eazytizer
+    title: eazytizer6
     department: Web Research
     input_formats:
       - name: email
@@ -184,7 +184,7 @@ Feature: CLI Errors
                 fb_url: {{fb_url}}
   
     """
-    And I cd to "eazytizer"
+    And I cd to "eazytizer6"
     When I run `cf line create`
     Then the output should match:
       """
