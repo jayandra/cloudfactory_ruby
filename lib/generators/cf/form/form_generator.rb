@@ -1,5 +1,5 @@
-module Cf
-  module Generators
+module Cf # :nodoc: all
+  module Generators # :nodoc: all
 
     #
     # TODO: if the parameter like 'company' below is not provided, then its a survey form.
@@ -22,7 +22,7 @@ module Cf
     #
     #
 
-    class FormGenerator < Rails::Generators::Base
+    class FormGenerator < Rails::Generators::Base # :nodoc: all
       source_root File.expand_path("../templates", __FILE__)
       argument :attributes, :type => :array, :default => [], :banner => "[label1,label2] field:type field:type"
 

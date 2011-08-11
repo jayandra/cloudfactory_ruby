@@ -1,7 +1,7 @@
 require 'thor/group'
 
-module Cf
-  class Production < Thor
+module Cf # :nodoc: all
+  class Production < Thor # :nodoc: all
     include Cf::Config
 
     desc "production start <run-title>", "creates a production run with input data file at input/<run-title>.csv"

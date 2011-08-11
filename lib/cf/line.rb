@@ -6,12 +6,12 @@ module CF
     # Title of the Line
     attr_accessor :title
 
-    # Category Name is required for the category which is categorized according to ID, e.g. "4dc8ad6572f8be0600000001"
+    # Department Name for Line
     attr_accessor :department_name
 
     # Public is a boolean attribute which when set to true becomes public & vice-versa
     #
-    # Public attribute is optional
+    # Public attribute is optional, by default it's true
     attr_accessor :public
 
     # Description attribute describes about the line
@@ -19,22 +19,19 @@ module CF
     # Description attribute is optional
     attr_accessor :description
 
-    # id attribute is for the line_id & is required to be stored for making Api calls
-    attr_accessor :id
-
     # stations contained within line object
     attr_accessor :stations
 
     # input_formats contained within line object
     attr_accessor :input_formats
+    
+    # Contains Error Messages
     attr_accessor :errors
-    #attr_accessor :input_format_instance
-    #attr_accessor :station_instance
 
     # ==Initializes a new line
     # ==Usage of line.new("line_name")
     #
-    #     line = Line.new("Digit", "Survey")
+    #     line = Line.new("line_name", "Survey")
     def initialize(title, department_name, options={})
       @input_formats =[]
       @stations =[]
@@ -48,8 +45,9 @@ module CF
       end
     end
 
-    # ==Usage of line.stations << station
-    #   line = CF::Line.new("line name")
+    # ==Adds station in a line
+    # ===Usage Example:
+    #   line = CF::Line.new("line_name", "Department_name")
     #   station = CF::Station.new({:type => "Work"})
     #   line.stations station
     #
@@ -101,30 +99,23 @@ module CF
       end
     end
 
-    def << stations #:nodoc:
-      type = stations.type
-      @stations << stations
-      resp = CF::Station.post("/lines/#{self.id}/stations.json", :station => {:type => type})
-    end
-
-
     def stations=(stations) # :nodoc:
       @stations << stations
-      #resp = CF::Station.post("/lines/#{id}/stations.json", :station => {:type => stations.type})
-      #@station_id = resp._id
     end
 
     # ==Initializes a new line
-    # ==Usage of line.create("line_name") do |block|
+    # ===Usage Example:
+    #
     # ===creating Line within block using variable
-    #   Line.create("line_name") do |line|
-    #     CF::InputFormat.new({:line => line, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+    #   Line.create("line_name", "Department_name") do |line|
+    #     CF::InputFormat.new({:line => line, :label => "image_url", :required => true, :valid_type => "url"})
     #     CF::Station.new({:line => line, :type => "Work"})
     #   end
     #
-    # ===OR creating without variable
-    #   CF::Line.create("line_name") do
-    #     CF::InputFormat.new({:line => self, :label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+    # ==OR
+    # ===creating without variable
+    #   CF::Line.create("line_name", "Department_name") do
+    #     CF::InputFormat.new({:line => self, :label => "image_url", :required => true, :valid_type => "url"})
     #     CF::Station.new({:line => self, :type => "Work"})
     #   end
     def self.create(title, department_name, options={}, &block)
@@ -139,10 +130,11 @@ module CF
       line
     end
 
-    # ==Usage of line.input_formats(input_format)
+    # ==Adds input format in a line
+    # ===Usage Example:
     #   line = Line.new("line name", "Survey")
     #
-    #   input_format = CF::InputFormat.new({:label => "image_url", :field_type => "text_data", :value => "http://s3.amazon.com/bizcardarmy/medium/1.jpg", :required => true, :validation_format => "url"})
+    #   input_format = CF::InputFormat.new({:label => "image_url", :required => true, :valid_type => "url"})
     #   line.input_formats input_format
     # * returns
     # line.input_formats as an array of input_formats
@@ -169,8 +161,10 @@ module CF
     end
 
     # ==Returns the content of a line by making an Api call
-    # ===Syntax for get_line method is
+    # ===Usage Example:
     #   CF::Line.info(line)
+    # ==OR
+    #   CF::Line.info("line_title")
     def self.info(line)
       if line.class == CF::Line
         resp = get("/lines/#{CF.account_name}/#{line.title.downcase}.json")
@@ -180,11 +174,18 @@ module CF
     end
 
     # ==Finds a line
-    # ===Syntax for find method is
-    #   CF::Line.find(line.id)
-    def self.find(line_id)
-      get("/lines/#{line_id}.json")
+    # ===Usage Example:
+    #   CF::Line.find(line)
+    # ==OR
+    #   CF::Line.find("line_title")
+    def self.find(line)
+      if line.class == CF::Line
+        resp = get("/lines/#{CF.account_name}/#{line.title.downcase}.json")
+      else
+        resp = get("/lines/#{CF.account_name}/#{line.downcase}.json")
+      end
     end
+    
     # ==Returns all the lines of an account
     # ===Syntax for all method is
     #   CF::Line.all
@@ -192,11 +193,14 @@ module CF
       get("/lines/#{CF.account_name}.json")
     end
     
+    # ==Returns all the stations of a line
+    # ===Usage Example:
+    #   CF::Line.get_stations
     def get_stations
       CF::Station.get("/lines/#{ACCOUNT_NAME}/#{self.title.downcase}/stations.json")
     end
-    # ==Return all the lines whose public value is set true
-    # ===Syntax for public_lines method is
+    # ==Return all the public lines
+    # ===Usage Example:
     #   CF::Line.public_lines
     def self.public_lines
       get("/public_lines.json")
@@ -207,7 +211,7 @@ module CF
     #   line = CF::Line.new("Digitize Card", "Survey")
     #   line.update({:title => "New Title"})
     # * This changes the title of the "line" object from "Digitize Card" to "New Title"
-    def update(options={})
+    def update(options={}) # :nodoc:
       old_title = self.title
       @title = options[:title]
       @department_name = options[:department_name]
@@ -217,13 +221,17 @@ module CF
     end
 
     # ==Deletes a line
-    # ===Syantax for delete method
+    # ===Usage Example:
     #   line = CF::Line.new("Digitize Card", "Survey")
-    #   line.delete
+    #   line.destroy
     def destroy
       self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json")
     end
     
+    # ==Deletes a line by passing it's title
+    # ===Usage Example:
+    #   line = CF::Line.new("line_title", "Survey")
+    #   CF::Line.destroy("line_title")
     def self.destroy(title)
       delete("/lines/#{CF.account_name}/#{title.downcase}.json")
     end

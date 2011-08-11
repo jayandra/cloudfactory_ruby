@@ -5,8 +5,8 @@ require 'generator_spec/test_case'
 
 require 'generators/cf/install/install_generator'
 
-module Cf
-  module Generators
+module Cf # :nodoc: all
+  module Generators # :nodoc: all
     describe InstallGenerator, "using custom matcher" do
       include GeneratorSpec::TestCase
       destination File.expand_path("../tmp", __FILE__)

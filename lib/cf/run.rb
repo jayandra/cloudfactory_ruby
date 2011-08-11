@@ -3,34 +3,29 @@ module CF
     require 'httparty'
     include Client
 
-    # title of the "run" object
+    # Title of the "run" object
     attr_accessor :title
 
-    # file attributes to upload
-    attr_accessor :file, :input
+    # File attribute to upload for Production Run
+    attr_accessor :file
+    
+    # Input to be passed for Production Run
+    attr_accessor :input
 
-    # line attribute with which run is associated
+    # Line attribute with which run is associated
     attr_accessor :line
-
-    attr_accessor :id, :errors
+    
+    # Contains Error Message if any
+    attr_accessor :errors
 
     # ==Initializes a new Run
-    # ==Usage Example:
+    # ===Usage Example:
     #
-    #   line = CF::Line.create("Digitize Card","Digitization") do |l|
-    #     CF::InputHeader.new({:label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
-    #     CF::InputHeader.new({:label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
-    #     CF::Station.create({:line => l, :type => "work") do |s|
-    #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
-    #       CF::StandardInstruction.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-    #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-    #         CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-    #         CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
-    #       end
-    #     end
-    #   end
+    #   run = CF::Run.new("line_title", "run name", file_path)
     #
-    #   run = CF::Run.new(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+    # ==OR
+    # You can pass line object instead of passing line title:
+    #   run = CF::Run.new(line_object, "run name", file_path)
     def initialize(line, title, input)
       if line.class == CF::Line || Hashie::Mash
         @line = line
@@ -67,44 +62,20 @@ module CF
     end
 
     # ==Creates a new Run
-    # ==Usage Example:
+    # ===Usage Example:
     #
-    #   line = CF::Line.create("Digitize Card","Digitization") do |l|
-    #     CF::InputHeader.new({:line => l, :label => "Company", :field_type => "text_data", :value => "Google", :required => true, :validation_format => "general"})
-    #     CF::InputHeader.new({:line => l, :label => "Website", :field_type => "text_data", :value => "www.google.com", :required => true, :validation_format => "url"})
-    #     CF::Station.create({:line => l, :type => "work") do |s|
-    #       CF::HumanWorker.new({:station => s, :number => 1, :reward => 20)
-    #       CF::StandardInstruction.create(:station => s, :title => "Enter text from a business card image", :description => "Describe"}) do |i|
-    #         CF::FormField.new({:instruction => i, :label => "First Name", :field_type => "SA", :required => "true"})
-    #         CF::FormField.new({:instruction => i, :label => "Middle Name", :field_type => "SA"})
-    #         CF::FormField.new({:instruction => i, :label => "Last Name", :field_type => "SA", :required => "true"})
-    #       end
-    #     end
-    #   end
+    #   run = CF::Run.new("line_title", "run name", file_path)
     #
-    #   run = CF::Run.create(line, "run name", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+    # ==OR
+    # You can pass line object instead passing line title:
+    #   run = CF::Run.new(line_object, "run name", file_path)
     def self.create(line, title, file)
       Run.new(line, title, file)
     end
 
-    def get # :nodoc:
-      self.class.get("/lines/#{@line.id}/runs/#{@id}.json")
-    end
-
-    def self.get_final_output(run_id)
-      resp = get("/runs/#{run_id}/final_outputs.json")
-
-      @final_output =[]
-      resp.each do |r|
-        result = FinalOutput.new()
-        r.to_hash.each_pair do |k,v|
-          result.send("#{k}=",v) if result.respond_to?(k)
-        end
-        @final_output << result
-      end
-      return @final_output
-    end
-
+    # ==Returns Final Output of production Run
+    # ===Usage Example:
+    #   run_object.final_output
     def final_output
       resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output.json")
       @final_output =[]
@@ -121,25 +92,18 @@ module CF
       return @final_output
     end
 
+    # ==Returns Final Output of production Run
+    # ===Usage Example:
+    #   CF::Run.final_output("run_title")
     def self.final_output(title)
       resp = get("/runs/#{CF.account_name}/#{title.downcase}/output.json")
       return resp['output']
-      # debugger
-      # @final_output =[]
-      # resp['output'].each do |r|
-      #   result = FinalOutput.new()
-      #   r.to_hash.each_pair do |k,v|
-      #     result.send("#{k}=",v) if result.respond_to?(k)
-      #   end
-      #   # if result.final_output == nil
-      #   #   result.final_output = resp.output
-      #   # end
-      #   @final_output << result
-      # end
-      # debugger
-      # return @final_output
     end
     
+    # ==Returns Output of production Run for any specific Station and for given Run Title
+    # ===Usage Example:
+    #   CF::Run.output({:title => "run_title", :station => 2})
+    # Will return output of second station
     def self.output(options={})
       station_no = options[:station]
       title = options[:title]
@@ -147,12 +111,19 @@ module CF
       return resp['output']
     end
     
+    # ==Returns Output of Run object for any specific Station
+    # ===Usage Example:
+    #   run_object.output(:station => 2)
+    # Will return output of second station
     def output(options={})
       station_no = options[:station]
       resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output/#{station_no}.json")
       return resp['output'].first.to_hash
     end
     
+    # ==Searches Run for the given "run_title"
+    # ===Usage Example:
+    #   CF::Run.find("run_title")
     def self.find(title)
       resp = get("/runs/#{CF.account_name}/#{title.downcase}.json")
       if resp.code != 200

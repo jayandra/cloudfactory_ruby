@@ -250,8 +250,8 @@ module CF
       end
 
       it "should create production run with invalid data" do
-        # WebMock.allow_net_connect!
-        VCR.use_cassette "run/block/create-run-invalid-file", :record => :new_episodes do
+        WebMock.allow_net_connect!
+        # VCR.use_cassette "run/block/create-run-invalid-file", :record => :new_episodes do
           line = CF::Line.create("media_splitting_robot_4","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
@@ -261,7 +261,7 @@ module CF
           run = CF::Run.create(line, "media_splitting_robot_run_4", File.expand_path("../../fixtures/input_data/media_converter_robot.csv", __FILE__))
           run.errors.should eql(["Extra Headers in file: [url_1]", "Insufficient Headers in file: [url]"])
 
-        end
+        # end
       end
 
       it "should create production run with used title data" do

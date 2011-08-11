@@ -1,7 +1,7 @@
-module CF
-  module Client
+module CF # :nodoc: all
+  module Client # :nodoc: all
 
-    extend ActiveSupport::Concern
+    extend ActiveSupport::Concern 
 
     module ClassMethods
       def default_params

@@ -5,8 +5,8 @@ require 'generator_spec/test_case'
 
 require 'generators/cf/form/form_generator'
 
-module Cf
-  module Generators
+module Cf # :nodoc: all
+  module Generators # :nodoc: all
     describe FormGenerator, "Passing both the Labels and Field:Type" do
       include GeneratorSpec::TestCase
       destination File.expand_path("../tmp", __FILE__)

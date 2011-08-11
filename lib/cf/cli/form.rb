@@ -1,7 +1,7 @@
 require 'thor/group'
 
-module Cf
-  class Newform < Thor::Group
+module Cf # :nodoc: all
+  class Newform < Thor::Group # :nodoc: all
     include Thor::Actions
     include Cf::Config
     source_root File.expand_path('../templates', __FILE__)
@@ -17,7 +17,7 @@ module Cf
     end
   end
 
-  class FormPreview < Thor::Group
+  class FormPreview < Thor::Group # :nodoc: all
     include Thor::Actions
     include Cf::Config
     source_root File.expand_path('../templates', __FILE__)
@@ -37,8 +37,8 @@ module Cf
 end
 
 module Cf
-  class Form < Thor
-    include Cf::Config
+  class Form < Thor # :nodoc: all
+    include Cf::Config 
 
     desc "form generate", "generates a custom task form at <line-title>/<form-title>.html and its associated css and js files"
     method_option :station, :type => :numeric, :required => true, :aliases => "-st", :desc => "the station index this form should be associated with"
