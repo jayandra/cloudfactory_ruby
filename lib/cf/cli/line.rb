@@ -90,7 +90,7 @@ module Cf # :nodoc: all
         line = CF::Line.new(line_title, line_department, :description => line_description)
 
         unless line.errors.blank?
-          say("#{line.errors.message}", :red) and return
+          say("#{line.errors}", :red) and return
         end
 
         say "Creating new assembly line: #{line.title}", :green
@@ -98,15 +98,18 @@ module Cf # :nodoc: all
 
         # Creation of InputFormat from yaml file
         input_formats = line_dump['input_formats']
-        input_formats.each do |input_format|
+        input_formats.each_with_index do |input_format, index|
+          
           attrs = {
             :name => input_format['name'],
             :required => input_format['required'],
             :valid_type => input_format['valid_type']
           }
           input_format_for_line = CF::InputFormat.new(attrs)
-          line.input_formats input_format_for_line
+          input_format = line.input_formats input_format_for_line
           say_status "input", "#{attrs[:name]}"
+          
+          say("#{line.input_formats[index].errors}", :red) and return if line.input_formats[index].errors.present?
         end
 
         # Creation of Station
@@ -124,6 +127,9 @@ module Cf # :nodoc: all
           end
           station = CF::Station.create(station_params) do |s|
             #say "New Station has been created of type => #{s.type}", :green
+            
+            say("#{s.errors}", :red) and return if s.errors.present?
+            
             say "Adding Station #{index}: #{s.type}", :green
             # For Worker
             worker = station_file['station']['worker']
@@ -138,6 +144,9 @@ module Cf # :nodoc: all
               else
                 human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward, :stat_badge => stat_badge})
               end
+              
+              say("#{human_worker.errors}", :red) and return if human_worker.errors.present?
+              
               if worker['skill_badges'].present?
                 skill_badges.each do |badge|
                   human_worker.badge = badge
@@ -145,12 +154,14 @@ module Cf # :nodoc: all
               end
               #say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
               say_status "worker", "#{number} Cloud #{pluralize(number, "Worker")} with reward of #{reward} #{pluralize(reward, "cent")}"
-            else
+            elsif worker_type =~ /robot/
               settings = worker['settings']
               robot_worker = CF::RobotWorker.create({:station => s, :type => worker_type, :settings => settings})
 
               #say "New Worker has been created of type => #{worker_type} and settings => #{worker['settings']}", :green
               say_status "robot", "Robot worker: #{worker_type}"
+            else
+              say("Invalid worker type: #{worker_type}", :red) and return
             end
 
             # Creation of Form
