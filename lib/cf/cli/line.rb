@@ -101,9 +101,9 @@ module Cf # :nodoc: all
         line_department = line_dump['department']
         line = CF::Line.new(line_title, line_department, :description => line_description)
 
+        say "Creating new assembly line: #{line.title}", :green
         display_error(line_title, "#{line.errors}") and return if line.errors.present?
         
-        say "Creating new assembly line: #{line.title}", :green
         say "Adding InputFormats", :green
 
         # Creation of InputFormat from yaml file
@@ -118,7 +118,6 @@ module Cf # :nodoc: all
           input_format_for_line = CF::InputFormat.new(attrs)
           input_format = line.input_formats input_format_for_line
           say_status "input", "#{attrs[:name]}"
-          
           display_error(line_title, "#{line.input_formats[index].errors}") and return if line.input_formats[index].errors.present?
         end
 
@@ -136,8 +135,8 @@ module Cf # :nodoc: all
             station_params = {:line => line, :type => type, :input_formats => input_formats_for_station}
           end
           station = CF::Station.create(station_params) do |s|
-            display_error(line_title, "#{s.errors}") and return if s.errors.present?            
             say "Adding Station #{index}: #{s.type}", :green
+            display_error(line_title, "#{s.errors}") and return if s.errors.present?            
 
             # For Worker
             worker = station_file['station']['worker']
@@ -153,21 +152,20 @@ module Cf # :nodoc: all
                 human_worker = CF::HumanWorker.new({:station => s, :number => number, :reward => reward, :stat_badge => stat_badge})
               end
               
-              display_error(line_title, "#{human_worker.errors}") and return if human_worker.errors.present?
-              
               if worker['skill_badges'].present?
                 skill_badges.each do |badge|
                   human_worker.badge = badge
                 end
               end
-              #say "New Worker has been created of type => #{worker_type}, Number => #{number} and Reward => #{reward}", :green
+
               say_status "worker", "#{number} Cloud #{pluralize(number, "Worker")} with reward of #{reward} #{pluralize(reward, "cent")}"
+              display_error(line_title, "#{human_worker.errors}") and return if human_worker.errors.present?
             elsif worker_type =~ /robot/
               settings = worker['settings']
               robot_worker = CF::RobotWorker.create({:station => s, :type => worker_type, :settings => settings})
-              
-              display_error(line_title, "#{robot_worker.errors}") and return if robot_worker.errors.present?
+
               say_status "robot", "Robot worker: #{worker_type}"
+              display_error(line_title, "#{robot_worker.errors}") and return if robot_worker.errors.present?              
             else
               display_error(line_title, "Invalid worker type: #{worker_type}") and return
             end
@@ -180,13 +178,16 @@ module Cf # :nodoc: all
               form = CF::TaskForm.create({:station => s, :title => title, :instruction => instruction}) do |f|
                 
                 # Creation of FormFields
+                say_status "form", "TaskForm '#{f.title}'"
                 display_error(line_title, "#{f.errors}") and return if f.errors.present?
+                
                 station_file['station']['task_form']['form_fields'].each do |form_field|
                   form_field_params = form_field.merge(:form => f)
                   field = CF::FormField.new(form_field_params.symbolize_keys)
+                  say_status "form_field", "FormField '#{field.form_field_params}'"
                   display_error(line_title, field.errors) and return if field.errors.present?
                 end
-                say_status "form", "TaskForm '#{f.title}'"
+                
               end
 
             elsif station_file['station']['custom_task_form'].present?
@@ -201,8 +202,8 @@ module Cf # :nodoc: all
               js_file = station_file['station']['custom_task_form']['js']
               js = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{js_file}")
               form = CF::CustomTaskForm.create({:station => s, :title => title, :instruction => instruction, :raw_html => html, :raw_css => css, :raw_javascript => js})
-              display_error(line_title, "#{form.errors}") and return if form.errors.present?
               say_status "form", "CustomTaskForm '#{form.title}'"
+              display_error(line_title, "#{form.errors}") and return if form.errors.present?
             end
 
           end
