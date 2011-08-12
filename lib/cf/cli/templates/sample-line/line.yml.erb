@@ -3,19 +3,19 @@
 # ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
 
 # See docs at http://cloudfactory.com/developers/
-# See example lines at http://http://cloudfactory.com/developers/lines/
+# See example lines at http://cloudfactory.com/developers/lines/
 
-# Run `cf login` OR manually specify your API key below (See http://cloudfactory.com/developers/resources#account)
+# Run `cf login` OR manually specify your API key below (See http://cloudfactory.com/developers/resources/account.html)
 
 # api_key: fill_in_your_api_key #(optional)
 
 title: <%= title.underscore.dasherize %>
 description: A shiny new assembly line ready for you to customize. Right now it is finding people dates (uncomment and try for fun) but you should just replace everything below accordingly for your line.
 
-# Department to build line in (See http://cloudfactory.com/developers/resources#departments)
+# Department to build line in (See http://cloudfactory.com/developers/resources/department.html)
 department: Web Research
 
-# Line Input Formats (see http://cloudfactory.com/developers/resources#input_formats)
+# Line Input Formats (see http://cloudfactory.com/developers/resources/input_format.html)
 input_formats:
 #   - name: email
 #     required: true
@@ -26,19 +26,18 @@ input_formats:
 #   - name: photo
 #     required: true
 #     valid_type: url           # email, url, number, date, phone
-#
-# # Stations (see http://cloudfactory.com/developers/resources#task_stations)
+# # Stations (see http://cloudfactory.com/developers/resources/station.html)
 stations:
 #   # Sample Station #1: WORKER looks at photo of person seeking a date and determines their gender and approximate age
 #   - station:
 #       station_index: 1
 #       station_type: work      # work, improve, tournament
-#       # Worker (see http://cloudfactory.com/developers/resources#workers)
+#       # Worker (see http://cloudfactory.com/developers/resources/worker.html)
 #       worker:
 #         worker_type: human    # "human" or name of robot (google_translate_robot, etc)
 #         num_workers: 1
-#         reward: 5
-#       # Task Form (see http://cloudfactory.com/developers/resources#task_form)
+#         reward: 2
+#       # Task Form (see http://cloudfactory.com/developers/resources/task_form.html)
 #       task_form:
 #         form_title: Look at a photo to determine the person's gender and approximate age
 #         instruction: Click the photo link and then enter the person's gender and approximate age in the form below
@@ -54,28 +53,35 @@ stations:
 #             field_type: select_box      # short_answer, long_answer, radio_button, check_box, select_box
 #             required: true
 #             option_values:
-#               - Under 18
-#               - 18 to 30
-#               - 30 to 45
-#               - 45 to 60
-#               - Over 60
+#                - 13 to 18
+#                - 19 to 24
+#                - 25 to 29
+#                - 30 to 34
+#                - 35 to 39
+#                - 40 to 49
+#                - 50 to 59
+#                - 60 and up            
+#
 #
 #   # Sample Station #2: TOURNAMENT to find the best local person on facebook that matches the right gender and age
 #   - station:
 #       station_index: 2
 #       station_type: tournament  # work, improve, tournament
-#       jury_worker:
-#         max_judges: 8
-#         reward: 3
-#       auto_judge:
-#         enabled: true
+#       input_formats:                                              
+#         station_0:                                          
+#           - name: location
 #       worker:
 #         worker_type: human      # "human" or name of the robot (google_translate_robot, etc)
-#         num_workers: 3
-#         reward: 3
+#         num_workers: 2
+#         reward: 2
+#       jury_worker:
+#         max_judges: 8
+#         reward: 2
+#       auto_judge:
+#         enabled: true
 #       custom_task_form:
-#         form_title: Do a search on Facebook
-#         instruction: Search on Facebook to find the best date in a certain location and age group
+#         form_title: Clink a link and paste in url
+#         instruction: Look through search results and find the best date
 #         html: form.html
 #         css: form.css
 #         js: form.js
@@ -84,11 +90,12 @@ stations:
 #   - station:
 #       station_index: 3
 #       station_type: work        # work, improve, tournament
-#       # Worker (see http://cloudfactory.com/developers/resources#workers)
+#       input_formats:                                              
+#         station_0:                                          
+#           - name: email                                     
+#       # Worker (see http://cloudfactory.com/developers/resources/worker.html)
 #       worker:
 #         worker_type: mailer_robot
 #         settings:
-#           to: {{email}}
-#           template: '<html><body><h1>We have searched high and low to find a sweet date for you. Now the rest is up to you - head to their facebook page and request them as a friend: {{fb_url}}</h1><p>Good luck!!!!</p></body></html>'
-#           template_variables:
-#             fb_url: {{fb_url}}
+#           to: ["{{email}}"]
+#           template: '<html><body><h1>We have searched high and low to find a sweet date for you. Now the rest is up to you - head to their facebook page and request them as a friend: {{url}}</h1><p>Good luck!!!!</p></body></html>'

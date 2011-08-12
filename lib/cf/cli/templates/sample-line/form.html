@@ -1,20 +1,36 @@
-<div id="station_2_instructions" class="station_2 cf_form_instruction">
-  <ul>
-    <li>Go to the <a href="http://www.facebook.com/search.php?type=users">people search in Facebook</a>.</li>
-    <li>Enter the <strong>location</strong> below and hit enter to search</li>
-    <li>Now go through and find the hottest date that is <span id="gender">{{gender}}</span> and looks about <span id="age">{{age}}</span> years old.</li>
-    <li>After you have searched through many and found the best date, paste their Facebook URL into the field below.</li>
-  </ul>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<head>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+<div id="wrapper">
+  <div id="header">
+    Be a Match Maker
+  </div>
+  <div id="instructions">
+    <h2>Instructions:</h2>
+    <ul>
+      <li><a target="_blank" href="http://wink.com/people/l/{{location}}/s/single/g/{{gender}}/a/{{age}}">Click this link.</a></li>
+      <li>Then enter the url of hottest date found</li>
+    </ul>
+  </div>
 
-<div id="station_2_form" class="station_2 cf_form_content">
-  <div id = "field-panel">
-    <p>
-      <form>
-        <label>Facebook Profile URL of hottest date found</label><br />
-        <input id="fb_url" type="text" name="output[fb_url]" data-valid-type="general" /></br>
-        <input type="submit" value="submit" />
-      </form>
-    </p>
+  <div id="station_2_form">
+    <div id = "field-panel">
+      <p>
+        <form>
+          <label>Enter URL of hottest date found</label><br />
+          <input id="fb_url" type="text" name="output[url]" data-valid-type="general"/>
+          <input type="submit" value="submit" />
+        </form>
+      </p>
+    </div>
+  </div>
+  <div id="footer">
+    Copyright(c)
   </div>
 </div>
+</body>
+</html>

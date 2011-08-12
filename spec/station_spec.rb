@@ -222,7 +222,7 @@ describe CF::Station do
     end
   end
 
-  context "create a station without passing station type" do
+  context "create a station with errors" do
     it "in plain ruby way and it should display an error message" do
       # WebMock.allow_net_connect!
       VCR.use_cassette "stations/plain-ruby/create-without-type", :record => :new_episodes do
@@ -250,6 +250,18 @@ describe CF::Station do
           CF::Station.new({:line => l, :type => "work"})
         end
         line.stations.first.errors.should eql("Input formats not assigned for the line #{line.title.downcase}")
+      end
+    end
+    
+    it "Tournament station displaying errors due to invalid settings" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/tournament-station-error", :record => :new_episodes do
+        line = CF::Line.create("Digitized-91", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::Station.new({:line => self, :type => "tournament"})
+        end
+        line.stations.first.type.should eq("Tournament")
+        line.stations.first.errors.should eql("[\"Jury worker can't be blank\"]")
       end
     end
   end
