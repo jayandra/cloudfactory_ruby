@@ -3,19 +3,19 @@
 # ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁
 
 # See docs at http://cloudfactory.com/developers/
-# See example lines at http://http://cloudfactory.com/developers/lines/
+# See example lines at http://cloudfactory.com/developers/lines/
 
-# Run `cf login` OR manually specify your API key below (See http://cloudfactory.com/developers/resources#account)
+# Run `cf login` OR manually specify your API key below (See http://cloudfactory.com/developers/resources/account.html)
 
 # api_key: fill_in_your_api_key #(optional)
 
 title: <%= title.underscore.dasherize %>
 description: A shiny new assembly line ready for you to customize. Right now it is finding people dates (uncomment and try for fun) but you should just replace everything below accordingly for your line.
 
-# Department to build line in (See http://cloudfactory.com/developers/resources/departments.html)
+# Department to build line in (See http://cloudfactory.com/developers/resources/department.html)
 department: Web Research
 
-# Line Input Formats (see http://cloudfactory.com/developers/resources#input_formats)
+# Line Input Formats (see http://cloudfactory.com/developers/resources/input_format.html)
 input_formats:
 #   - name: email
 #     required: true
@@ -26,18 +26,18 @@ input_formats:
 #   - name: photo
 #     required: true
 #     valid_type: url           # email, url, number, date, phone
-# # Stations (see http://cloudfactory.com/developers/resources/stations.html)
+# # Stations (see http://cloudfactory.com/developers/resources/station.html)
 stations:
 #   # Sample Station #1: WORKER looks at photo of person seeking a date and determines their gender and approximate age
 #   - station:
 #       station_index: 1
 #       station_type: work      # work, improve, tournament
-#       # Worker (see http://cloudfactory.com/developers/resources#workers)
+#       # Worker (see http://cloudfactory.com/developers/resources/worker.html)
 #       worker:
 #         worker_type: human    # "human" or name of robot (google_translate_robot, etc)
 #         num_workers: 1
 #         reward: 2
-#       # Task Form (see http://cloudfactory.com/developers/resources#task_form)
+#       # Task Form (see http://cloudfactory.com/developers/resources/task_form.html)
 #       task_form:
 #         form_title: Look at a photo to determine the person's gender and approximate age
 #         instruction: Click the photo link and then enter the person's gender and approximate age in the form below
@@ -93,7 +93,7 @@ stations:
 #       input_formats:                                              
 #         station_0:                                          
 #           - name: email                                     
-#       # Worker (see http://cloudfactory.com/developers/resources#workers)
+#       # Worker (see http://cloudfactory.com/developers/resources/worker.html)
 #       worker:
 #         worker_type: mailer_robot
 #         settings:
