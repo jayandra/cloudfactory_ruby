@@ -10,7 +10,6 @@ module Cf # :nodoc: all
     describe InstallGenerator, "using custom matcher" do
       include GeneratorSpec::TestCase
       destination File.expand_path("../tmp", __FILE__)
-      arguments %w(valid_api_key)
       
       before do
         prepare_destination
@@ -22,9 +21,9 @@ module Cf # :nodoc: all
         destination_root.should have_structure {
           directory "config" do
             directory "initializers" do
-              file "cloud_factory.rb" do
+              file "cloudfactory.rb" do
                 contains "# CloudFactory Initializer"
-                contains "valid_api_key"
+                contains "your-api-key"
               end
             end
           end
