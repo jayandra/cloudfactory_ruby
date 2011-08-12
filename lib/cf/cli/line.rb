@@ -81,7 +81,8 @@ module Cf # :nodoc: all
       end
     }
     
-    desc "line create", "takes the yaml file at line.yml and creates a new line at http://cloudfactory.com"
+    method_option :force, :type => :boolean, :default => false, :aliases => "-f", :desc => "force to overwrite the line if the line already exists, default is false"
+    desc "line create", "takes the line.yml and creates a new line at http://cloudfactory.com"
     def create
       line_source = Dir.pwd
       yaml_source = "#{line_source}/line.yml"
@@ -100,10 +101,23 @@ module Cf # :nodoc: all
         line_title = line_dump['title'].parameterize
         line_description = line_dump['description']
         line_department = line_dump['department']
+        
+        line = CF::Line.info(line_title)
+        if line.error.blank? && options.force? 
+          rollback(line.title)
+        elsif line.error.blank?
+          say("This line already exist.", :yellow)
+          override = agree("Do you want to override? [y/n] ")
+          if override
+            say("Deleting the line forcefuly..", :yellow)
+            rollback(line.title)
+          else
+            say("Line creation aborted!!", :yellow) and exit(1)
+          end
+        end
         line = CF::Line.new(line_title, line_department, :description => line_description)
-
         say "Creating new assembly line: #{line.title}", :green
-        display_error(line_title, "#{line.errors}") if line.errors.present?
+        say("Error: #{line.errors}", :red) and exit(1) if line.errors.present?
         
         say "Adding InputFormats", :green
 
@@ -212,8 +226,7 @@ module Cf # :nodoc: all
         say " ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁", :white
         say "Line was successfully created.", :green
         say "View your line at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/lines/#{CF.account_name}/#{line.title}", :yellow
-        say "\nNow you can do production runs with: cf production start <your_run_title>", :green
-        say "Note: Make sure your-run-title.csv file is in the input directory.", :green
+        say "\nNow you can do production runs with: cf production start <your-run-title>", :green
     end
 
     desc "line list", "List your lines"
