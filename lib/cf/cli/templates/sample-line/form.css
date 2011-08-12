@@ -1,26 +1,50 @@
-body {background: grey;}
-
-#instructions {
-  text-align:center;
+body {
+  margin: 0 auto;
+  padding: 0;
+  color: #000;
+  width: 960px;
+  background: #302D2F;
+  font-family: georgia;
+}
+#wrapper {
+  background: #FFF;
+  position: relative;
+  padding:0 10px;
+}
+#header {
+  border-bottom: solid 1px grey;
+  padding: 10px;
+  height: 50px;
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  color: #666666;
 }
 
-#image-field-wrapper {
-  min-width:1050px;
-  overflow:hidden;
+ul{
+  list-style: decimal;
 }
-
-#field-panel {
-  float:left;
-  padding: 10px 10px 0 10px;
-  min-width:512px;
-  overflow:hidden;
-}
-
-.input-field {
-  width:150px;
+input[type=text] {
+  width:660px;
   margin:4px;
+  font-size: 12px;
+  height:40px;
+}
+input[type=submit]{
+  width: 160px;
+  height: 40px;
+  border: solid 1px black;
 }
 
-#gender, #age {
+#gender, #age, #location {
 	font-weight: bold;
+	color: #A9BED4;
+}
+a{
+  color: #007EB9;
+}
+#footer{
+  border-top: solid 1px grey;
+  padding: 10px;
+  text-align: center;
 }
