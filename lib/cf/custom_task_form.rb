@@ -39,16 +39,15 @@ module CF
       @raw_css = options[:raw_css]
       @raw_javascript = options[:raw_javascript]
       if @station
-        @resp = self.class.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
-        custom_form = CF::CustomTaskForm.new({})
-        @resp.to_hash.each_pair do |k,v|
-          custom_form.send("#{k}=",v) if custom_form.respond_to?(k)
+        resp = self.class.post("/lines/#{CF.account_name}/#{@station.line_title.downcase}/stations/#{@station.index}/form.json", :form => {:title => @title, :instruction => @instruction, :_type => "CustomTaskForm", :raw_html => @raw_html, :raw_css => @raw_css, :raw_javascript => @raw_javascript})
+        resp.to_hash.each_pair do |k,v|
+          self.send("#{k}=",v) if self.respond_to?(k)
         end
-        if @resp.code != 200
-          custom_form.errors = @resp.error.message
+        if resp.code != 200
+          self.errors = resp.error.message
         end
-        custom_form.station = @station
-        @station.form = custom_form
+        @station.form = self
+        return self
       end
     end
   

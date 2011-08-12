@@ -189,7 +189,7 @@ describe CF::CustomTaskForm do
   end
   
   context "create a Custom Task Form for Error Handling;" do
-    it "creating with invalid Html content" do
+      it "creating with invalid Html content" do
       # WebMock.allow_net_connect!
       VCR.use_cassette "custom-task-form/block/invalid-html-content", :record => :new_episodes do
       html =   '<div id="form-content">
@@ -228,7 +228,7 @@ describe CF::CustomTaskForm do
         end
         line.title.should eql("Digitizecustomform111")
         line.department_name.should eql("Digitization")
-        line.stations.first.form.errors.should eql("[\"Html The name 'final_output[first_name]' is not valid, it should be of format output[name]\", \"Html The name 'final_output[middle_name]' is not valid, it should be of format output[name]\", \"Html The name 'final_output[last_name]' is not valid, it should be of format output[name]\", \"Html The name 'final_output[email]' is not valid, it should be of format output[name]\", \"Html The name 'final_output[phone]' is not valid, it should be of format output[name]\", \"Html The name 'final_output[mobile]' is not valid, it should be of format output[name]\"]")
+        line.stations.first.form.errors.should eql("[\"Raw html should contain a Form tag\", \"Raw html The name 'final_output[first_name]' is not valid, it should be of format output[name]\", \"Raw html The name 'final_output[middle_name]' is not valid, it should be of format output[name]\", \"Raw html The name 'final_output[last_name]' is not valid, it should be of format output[name]\", \"Raw html The name 'final_output[email]' is not valid, it should be of format output[name]\", \"Raw html The name 'final_output[phone]' is not valid, it should be of format output[name]\", \"Raw html The name 'final_output[mobile]' is not valid, it should be of format output[name]\"]")
       end
     end
     
@@ -271,7 +271,7 @@ describe CF::CustomTaskForm do
         end
         line.title.should eql("Digitizecustomform112")
         line.department_name.should eql("Digitization")
-        line.stations.first.form.errors.should eql("[\"Title can't be blank\"]")
+        line.stations.first.form.errors.should eql("[\"Title can't be blank\", \"Raw html should contain a Form tag\"]")
       end
     end
     
@@ -314,7 +314,7 @@ describe CF::CustomTaskForm do
         end
         line.title.should eql("Digitizecustomform113")
         line.department_name.should eql("Digitization")
-        line.stations.first.form.errors.should eql("[\"Instruction can't be blank\"]")
+        line.stations.first.form.errors.should eql("[\"Instruction can't be blank\", \"Raw html should contain a Form tag\"]")
       end
     end
     
@@ -331,7 +331,7 @@ describe CF::CustomTaskForm do
         end
         line.title.should eql("Digitizecustomform114")
         line.department_name.should eql("Digitization")
-        line.stations.first.form.errors.should eql("[\"HTML code is required\"]")
+        line.stations.first.form.errors.should eql("[\"Raw html is required\"]")
       end
     end
     
@@ -351,7 +351,7 @@ describe CF::CustomTaskForm do
         
         line.title.should eql("Digitizecustomform115")
         line.department_name.should eql("Digitization")
-        line.stations.first.form.errors.should eql("[\"HTML code is required\"]")
+        line.stations.first.form.errors.should eql("[\"Raw html is required\"]")
       end
     end
   end
