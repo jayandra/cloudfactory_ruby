@@ -77,6 +77,7 @@ module Cf # :nodoc: all
       def display_error(line_title, error_message)
         say("Error: #{error_message}", :red)
         rollback(line_title)
+        exit(1)
       end
     }
     
@@ -102,7 +103,7 @@ module Cf # :nodoc: all
         line = CF::Line.new(line_title, line_department, :description => line_description)
 
         say "Creating new assembly line: #{line.title}", :green
-        display_error(line_title, "#{line.errors}") and return if line.errors.present?
+        display_error(line_title, "#{line.errors}") if line.errors.present?
         
         say "Adding InputFormats", :green
 
@@ -118,7 +119,7 @@ module Cf # :nodoc: all
           input_format_for_line = CF::InputFormat.new(attrs)
           input_format = line.input_formats input_format_for_line
           say_status "input", "#{attrs[:name]}"
-          display_error(line_title, "#{line.input_formats[index].errors}") and return if line.input_formats[index].errors.present?
+          display_error(line_title, "#{line.input_formats[index].errors}") if line.input_formats[index].errors.present?
         end
 
         # Creation of Station
@@ -136,7 +137,7 @@ module Cf # :nodoc: all
           end
           station = CF::Station.create(station_params) do |s|
             say "Adding Station #{index}: #{s.type}", :green
-            display_error(line_title, "#{s.errors}") and return if s.errors.present?            
+            display_error(line_title, "#{s.errors}") if s.errors.present?            
 
             # For Worker
             worker = station_file['station']['worker']
@@ -159,15 +160,15 @@ module Cf # :nodoc: all
               end
 
               say_status "worker", "#{number} Cloud #{pluralize(number, "Worker")} with reward of #{reward} #{pluralize(reward, "cent")}"
-              display_error(line_title, "#{human_worker.errors}") and return if human_worker.errors.present?
+              display_error(line_title, "#{human_worker.errors}") if human_worker.errors.present?
             elsif worker_type =~ /robot/
               settings = worker['settings']
               robot_worker = CF::RobotWorker.create({:station => s, :type => worker_type, :settings => settings})
 
               say_status "robot", "Robot worker: #{worker_type}"
-              display_error(line_title, "#{robot_worker.errors}") and return if robot_worker.errors.present?              
+              display_error(line_title, "#{robot_worker.errors}") if robot_worker.errors.present?              
             else
-              display_error(line_title, "Invalid worker type: #{worker_type}") and return
+              display_error(line_title, "Invalid worker type: #{worker_type}")
             end
 
             # Creation of Form
@@ -179,13 +180,13 @@ module Cf # :nodoc: all
                 
                 # Creation of FormFields
                 say_status "form", "TaskForm '#{f.title}'"
-                display_error(line_title, "#{f.errors}") and return if f.errors.present?
+                display_error(line_title, "#{f.errors}") if f.errors.present?
                 
                 station_file['station']['task_form']['form_fields'].each do |form_field|
                   form_field_params = form_field.merge(:form => f)
                   field = CF::FormField.new(form_field_params.symbolize_keys)
                   say_status "form_field", "FormField '#{field.form_field_params}'"
-                  display_error(line_title, field.errors) and return if field.errors.present?
+                  display_error(line_title, field.errors) if field.errors.present?
                 end
                 
               end
@@ -203,7 +204,7 @@ module Cf # :nodoc: all
               js = File.read("#{line_source}/station_#{station_file['station']['station_index']}/#{js_file}")
               form = CF::CustomTaskForm.create({:station => s, :title => title, :instruction => instruction, :raw_html => html, :raw_css => css, :raw_javascript => js})
               say_status "form", "CustomTaskForm '#{form.title}'"
-              display_error(line_title, "#{form.errors}") and return if form.errors.present?
+              display_error(line_title, "#{form.errors}") if form.errors.present?
             end
 
           end
