@@ -314,11 +314,11 @@ module CF
         end
       end
     end
-
+  
     context "check run progress and resume run" do
       it "should check the progress" do
         VCR.use_cassette "run/block/run-progress", :record => :new_episodes do
-          # WebMock.allow_net_connect!
+        # WebMock.allow_net_connect!
           line = CF::Line.create("progress_run_line","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
@@ -332,10 +332,10 @@ module CF
           progress.progress.should eql(100)
         end
       end
-
+      
       it "should get the progress details" do
         VCR.use_cassette "run/block/run-progress-detail", :record => :new_episodes do
-          # WebMock.allow_net_connect!
+        # WebMock.allow_net_connect!
           line = CF::Line.create("progress_run_line_1","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
