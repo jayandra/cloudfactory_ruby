@@ -314,5 +314,42 @@ module CF
         end
       end
     end
+  
+    context "check run progress and resume run" do
+      it "should check the progress" do
+        VCR.use_cassette "run/block/run-progress", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+          line = CF::Line.create("progress_run_line","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :settings => {:url => ["{{url}}"], :max_retrieve => 5, :show_source_text => true}, :type => "term_extraction_robot"})
+            end
+          end
+          run = CF::Run.create(line, "progress_run", [{"url"=> "http://www.sprout-technology.com"}])
+          progress = run.progress
+          progress_1 = CF::Run.progress("progress_run")
+          progress.should eql(progress_1)
+          progress.progress.should eql(100)
+        end
+      end
+      
+      it "should get the progress details" do
+        VCR.use_cassette "run/block/run-progress-detail", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+          line = CF::Line.create("progress_run_line_1","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :settings => {:url => ["{{url}}"], :max_retrieve => 5, :show_source_text => true}, :type => "term_extraction_robot"})
+            end
+          end
+          run = CF::Run.create(line, "progress_run_1", [{"url"=> "http://www.sprout-technology.com"}])
+          progress = run.progress_details
+          progress_1 = CF::Run.progress_details("progress_run_1")
+          progress.should eql(progress_1)
+          progress.total.progress.should eql(100)
+          progress.total.units.should eql(1)
+        end
+      end
+    end
   end
 end

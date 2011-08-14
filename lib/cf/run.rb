@@ -133,5 +133,23 @@ module CF
       end
       return resp
     end
+    
+    def self.progress(run_title)
+      get("/runs/#{CF.account_name}/#{run_title}/progress.json")
+    end
+    
+    def progress
+      self.class.get("/runs/#{CF.account_name}/#{self.title}/progress.json")
+    end
+    
+    def self.progress_details(run_title)
+      resp = get("/runs/#{CF.account_name}/#{run_title}/details.json")
+      return resp['progress_details']
+    end
+    
+    def progress_details
+      resp = self.class.get("/runs/#{CF.account_name}/#{self.title}/details.json")
+      return resp['progress_details']
+    end
   end
 end
