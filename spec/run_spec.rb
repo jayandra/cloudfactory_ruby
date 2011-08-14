@@ -84,7 +84,7 @@ module CF
 
         end
       end
-      
+
       it "just using line title" do
         VCR.use_cassette "run/block/create-run-using-line-title", :record => :new_episodes do
           line = CF::Line.create("line_title_run","Digitization") do |l|
@@ -252,14 +252,14 @@ module CF
       it "should create production run with invalid data" do
         WebMock.allow_net_connect!
         # VCR.use_cassette "run/block/create-run-invalid-file", :record => :new_episodes do
-          line = CF::Line.create("media_splitting_robot_4","Digitization") do |l|
-            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
-            CF::Station.create({:line => l, :type => "work"}) do |s|
-              CF::RobotWorker.create({:station => s, :type => "media_splitting_robot", :settings => {:url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"}})
-            end
+        line = CF::Line.create("media_splitting_robot_4","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::RobotWorker.create({:station => s, :type => "media_splitting_robot", :settings => {:url => ["http://media-robot.s3.amazonaws.com/media_robot/media/upload/8/ten.mov"], :split_duration => "2", :overlapping_time => "1"}})
           end
-          run = CF::Run.create(line, "media_splitting_robot_run_4", File.expand_path("../../fixtures/input_data/media_converter_robot.csv", __FILE__))
-          run.errors.should eql(["Extra Headers in file: [url_1]", "Insufficient Headers in file: [url]"])
+        end
+        run = CF::Run.create(line, "media_splitting_robot_run_4", File.expand_path("../../fixtures/input_data/media_converter_robot.csv", __FILE__))
+        run.errors.should eql(["Extra Headers in file: [url_1]", "Insufficient Headers in file: [url]"])
 
         # end
       end
@@ -311,6 +311,64 @@ module CF
           found_run = CF::Run.find("unused_title")
           found_run.code.should eql(404)
           found_run.errors.should eql("Run document not found using selector: {:tenant_id=>BSON::ObjectId('4def16fa5511274d98000014'), \"account_id\"=>BSON::ObjectId('4def122255112748d7000003'), :title=>\"unused_title\"}")
+        end
+      end
+    end
+
+    context "check run progress and resume run" do
+      it "should check the progress" do
+        VCR.use_cassette "run/block/run-progress", :record => :new_episodes do
+          # WebMock.allow_net_connect!
+          line = CF::Line.create("progress_run_line","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :settings => {:url => ["{{url}}"], :max_retrieve => 5, :show_source_text => true}, :type => "term_extraction_robot"})
+            end
+          end
+          run = CF::Run.create(line, "progress_run", [{"url"=> "http://www.sprout-technology.com"}])
+          progress = run.progress
+          progress_1 = CF::Run.progress("progress_run")
+          progress.should eql(progress_1)
+          progress.progress.should eql(100)
+        end
+      end
+
+      it "should get the progress details" do
+        VCR.use_cassette "run/block/run-progress-detail", :record => :new_episodes do
+          # WebMock.allow_net_connect!
+          line = CF::Line.create("progress_run_line_1","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :settings => {:url => ["{{url}}"], :max_retrieve => 5, :show_source_text => true}, :type => "term_extraction_robot"})
+            end
+          end
+          run = CF::Run.create(line, "progress_run_1", [{"url"=> "http://www.sprout-technology.com"}])
+          progress = run.progress_details
+          progress_1 = CF::Run.progress_details("progress_run_1")
+          progress.should eql(progress_1)
+          progress.total.progress.should eql(100)
+          progress.total.units.should eql(1)
+        end
+      end
+
+      it "should get the progress details for multiple stations" do
+        VCR.use_cassette "run/block/run-progress-detail-for-multiple-station", :record => :new_episodes do
+          # WebMock.allow_net_connect!
+          line = CF::Line.create("progress_run_line_2","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :type => "text_extraction_robot", :settings => {:url => ["{{url}}"]}})
+            end
+            CF::Station.create({:line => l, :type => "work"}) do |s1|
+              CF::RobotWorker.create({:station => s1, :type => "keyword_matching_robot", :settings => {:content => ["{{contents_of_url}}"], :keywords => ["SaaS","see","additional","deepak","saroj"]}})
+            end
+          end
+          run = CF::Run.create(line, "progress_run_2", [{"url"=> "http://techcrunch.com/2011/07/26/with-v2-0-assistly-brings-a-simple-pricing-model-rewards-and-a-bit-of-free-to-customer-service-software"}])
+          progress = run.progress_details
+          progress_1 = CF::Run.progress_details("progress_run_2")
+          progress.should eql(progress_1)
+          progress.total.progress.should eql(100)
+          progress.total.units.should eql(1)
         end
       end
     end
