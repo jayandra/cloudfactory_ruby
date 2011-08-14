@@ -151,5 +151,13 @@ module CF
       resp = self.class.get("/runs/#{CF.account_name}/#{self.title}/details.json")
       return resp['progress_details']
     end
+    
+    def self.all(line_title={})
+      if line_title == {}
+        get("/runs/#{CF.account_name}.json")
+      else
+        get("/lines/#{CF.account_name}/#{line_title}/list_runs.json")
+      end
+    end
   end
 end

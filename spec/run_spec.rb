@@ -372,5 +372,63 @@ module CF
         end
       end
     end
+    
+    context "get run" do
+      it "should return all the runs for an account" do
+        VCR.use_cassette "run/block/get-run-account", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+          line = CF::Line.create("progress_run_line_3","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :settings => {:url => ["{{url}}"], :max_retrieve => 5, :show_source_text => true}, :type => "term_extraction_robot"})
+            end
+          end
+          run = CF::Run.create(line, "progress_run_3", [{"url"=> "http://www.sprout-technology.com"}])
+          
+          line_1 = CF::Line.create("progress_run_line_31","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :settings => {:url => ["{{url}}"], :max_retrieve => 5, :show_source_text => true}, :type => "term_extraction_robot"})
+            end
+          end
+          run_1 = CF::Run.create(line_1, "progress_run_31", [{"url"=> "http://www.sprout-technology.com"}])
+          
+          line_2 = CF::Line.create("progress_run_line_32","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :settings => {:url => ["{{url}}"], :max_retrieve => 5, :show_source_text => true}, :type => "term_extraction_robot"})
+            end
+          end
+          run_2 = CF::Run.create(line_2, "progress_run_32", [{"url"=> "http://www.sprout-technology.com"}])
+          
+          got_run = CF::Run.all
+          got_run[0].line.title.should eql("progress_run_line_3")
+          got_run[0].title.should eql("progress_run_3")
+          got_run[1].line.title.should eql("progress_run_line_31")
+          got_run[1].title.should eql("progress_run_31")
+          got_run[2].line.title.should eql("progress_run_line_32")
+          got_run[2].title.should eql("progress_run_32")
+        end
+      end
+      
+      it "should return all the runs for a line" do
+        VCR.use_cassette "run/block/get-run-line", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+          line = CF::Line.create("progress_run_line_11","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::RobotWorker.create({:station => s, :settings => {:url => ["{{url}}"], :max_retrieve => 5, :show_source_text => true}, :type => "term_extraction_robot"})
+            end
+          end
+          run = CF::Run.create(line, "progress_run_11", [{"url"=> "http://www.sprout-technology.com"}])
+          run_1 = CF::Run.create(line, "progress_run_12", [{"url"=> "http://www.sprout-technology.com"}])
+          run_2 = CF::Run.create(line, "progress_run_13", [{"url"=> "http://www.sprout-technology.com"}])
+          got_run = CF::Run.all("progress_run_line_11")
+          got_run[0].title.should eql("progress_run_11")
+          got_run[1].title.should eql("progress_run_12")
+          got_run[2].title.should eql("progress_run_13")
+        end
+      end
+    end
   end
 end
