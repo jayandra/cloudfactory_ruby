@@ -48,24 +48,33 @@ module Cf # :nodoc: all
         say "Title for the line is required.", :red
       end
     end
-
-    desc "line delete", "delete the line at http://cloudfactory.com"
+    
+    desc "line delete", "delete the current line at http://cloudfactory.com"
+    method_option :line, :type => :string, :aliases => "-l", :desc => "specify the line-title to delete"
     def delete
-      line_source = Dir.pwd
-      yaml_source = "#{line_source}/line.yml"
-
-      unless File.exist?(yaml_source)
-        say("The line.yml file does not exist in this directory", :red) and return
+      if options['line'].blank?
+        line_source = Dir.pwd
+        yaml_source = "#{line_source}/line.yml"
+        say("The line.yml file does not exist in this directory", :red) and exit(1) unless File.exist?(yaml_source)
+        set_target_uri(false)
+        set_api_key(yaml_source)
+        CF.account_name = CF::Account.info.name
+        line_dump = YAML::load(File.open(yaml_source))
+        line_title = line_dump['title'].parameterize
+      else
+        set_target_uri(false)
+        set_api_key
+        CF.account_name = CF::Account.info.name
+        line_title = options['line'].parameterize
       end
-
-      set_target_uri(false)
-      set_api_key(yaml_source)
-      CF.account_name = CF::Account.info.name
-      line_dump = YAML::load(File.open(yaml_source))
-      line_title = line_dump['title'].parameterize
-
-      CF::Line.destroy(line_title)
-      say("The line #{line_title} was deleted successfully!", :yellow)
+      
+      line = CF::Line.find(line_title)
+      if line.errors.blank?
+        CF::Line.destroy(line_title)
+        say("The line #{line_title} deleted successfully!", :yellow)
+      else
+        say("The line #{line_title} doesn't exist!", :yellow)
+      end
     end
 
     no_tasks {
