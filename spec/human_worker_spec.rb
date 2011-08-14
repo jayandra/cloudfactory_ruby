@@ -49,6 +49,19 @@ module CF
           line.stations.first.worker.errors.should eql("[\"Reward is not a number\", \"Reward must not contain decimal places\"]")
         end
       end
+      
+      it "should only display the attributes which are mentioned in to_s method" do
+        VCR.use_cassette "human_worker/block/display-to_s", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+          line = CF::Line.create("Display_human_worker", "Digitization") do
+            CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => self, :type => "work"}) do |station|
+              CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
+            end
+          end
+          line.stations.first.worker.to_s.should eql("{:id => => #{line.stations.first.worker.id}, :number => 2, :reward => 20, :stat_badge => {\"approval_rating\"=>80, \"assignment_duration\"=>3600, \"abandonment_rate\"=>30, \"country\"=>nil},  :skill_badges => [nil], :errors => }")
+        end
+      end
     end
 
     context "create a worker with skill_badge and skill_test" do

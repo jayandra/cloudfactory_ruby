@@ -155,5 +155,9 @@ module CF
       resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{@station.line['title'].downcase}/stations/#{@station.index}/workers/#{self.id}/badge.json",request)
       self.skill_badges << resp.parsed_response['skill_badges']
     end
+    
+    def to_s
+      "{:id => => #{self.id}, :number => #{self.number}, :reward => #{self.reward}, :stat_badge => #{self.stat_badge},  :skill_badges => #{self.skill_badges}, :errors => #{self.errors}}"
+    end
   end
 end

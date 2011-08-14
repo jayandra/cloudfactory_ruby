@@ -122,5 +122,22 @@ describe CF::FormField do
       end
     end
     
+    it "should only display the attributes which are mentioned in to_s method" do
+      VCR.use_cassette "form-fields/block/display-to_s", :record => :new_episodes do
+      # WebMock.allow_net_connect!
+        line = CF::Line.create("Display_form_fields", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => self, :type => "work"}) do |station|
+            CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
+            CF::TaskForm.create({:station => station, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "short_answer", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "short_answer"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "short_answer", :required => "true"})
+            end
+          end
+        end
+        line.stations.first.form.form_fields.first.to_s.should eql("{:id => => #{line.stations.first.form.form_fields.first.id}, :label => First Name, :field_type => short_answer, :required => true, :errors => }")
+      end
+    end
   end
 end

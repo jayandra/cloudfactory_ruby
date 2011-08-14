@@ -95,6 +95,32 @@ describe CF::Station do
         expect { line.stations station }.to raise_error(CF::ImproveStationNotAllowed)
       end
     end
+    
+    it "should only display the attributes which are mentioned in to_s method" do
+      VCR.use_cassette "stations/block/display-to_s", :record => :new_episodes do
+      # WebMock.allow_net_connect!
+        line = CF::Line.create("Display_station", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => self, :type => "work"}) do |station|
+            CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
+          end
+        end
+        line.stations.first.to_s.should eql("{:type => WorkStation, :index => 1, :line_title => Display_station, :station_input_formats => , :errors => }")
+      end
+    end
+    
+    it "should only display the attributes which are mentioned in to_s method for tournament station" do
+      VCR.use_cassette "stations/block/display-to_s-tournament", :record => :new_episodes do
+      # WebMock.allow_net_connect!
+        line = CF::Line.create("Display_station_tournament", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => self, :type => "tournament", :jury_worker=> {:max_judges => 10, :reward => 5}, :auto_judge => {:enabled => true}}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 2, :reward => 20})
+          end
+        end
+        line.stations.first.to_s.should eql("{:type => TournamentStation, :index => 1, :line_title => Display_station_tournament, :station_input_formats => , :jury_worker => {:max_judges=>10, :reward=>5}, auto_judge => {:enabled=>true}, :errors => }")
+      end
+    end
   end
 
   context "get station" do

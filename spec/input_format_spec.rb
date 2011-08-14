@@ -63,6 +63,19 @@ describe CF::InputFormat do
         line.input_formats[1].name.should eq("image")
       end
     end
+    
+    it "should only display the attributes which are mentioned in to_s method" do
+      VCR.use_cassette "input_formats/block/display-to_s", :record => :new_episodes do
+      # WebMock.allow_net_connect!
+        line = CF::Line.create("Display_input_format", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => self, :type => "work"}) do |station|
+            CF::HumanWorker.new({:station => station, :number => 2, :reward => 20})
+          end
+        end
+        line.input_formats.first.to_s.should eql("{:id => #{line.input_formats.first.id}, :name => image_url, :required => true, :valid_type => url, :errors => }")
+      end
+    end
   end
 
   context "return all the input headers" do
