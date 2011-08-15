@@ -90,7 +90,7 @@ describe CF::Line do
         line.stations.first.form.instruction.should eq("Describe")
         line.stations.first.form.form_fields.first.label.should eq("First Name")
         line.stations.first.form.form_fields.first.field_type.should eq("SA")
-        line.stations.first.form.form_fields.first.required.should eq(true)
+        line.stations.first.form.form_fields.first.required.should eq("true")
       end
     end
   end
@@ -157,24 +157,6 @@ describe CF::Line do
 
   end
 
-  context "Updating a line" do
-    it "updates an existing line" do
-      # WebMock.allow_net_connect!
-      VCR.use_cassette "lines/block/update-line", :record => :new_episodes do
-        line = CF::Line.new("Digitizd-14", "Digitization", {:public => true, :description => "this is description"})
-        line.update({:title => "Newtitle-1", :department_name => "Survey", :description => "this is new description"})
-        updated_line = CF::Line.info(line)
-        updated_line.title.should eql("newtitle-1")
-        updated_line.title.should_not eql("digitizd-14")
-        # department is not updated
-        # updated_line.department_name.should eql("Survey")
-        # updated_line.department_name.should_not eql("Digitization")
-        updated_line.description.should eql("this is new description")
-        updated_line.description.should_not eql("this is description")
-      end
-    end
-  end
-
   context "deleting" do
     it "should delete a line" do
       # WebMock.allow_net_connect!
@@ -223,13 +205,13 @@ describe CF::Line do
         line.stations.first.form.instruction.should eq("Describe")
         line.stations.first.form.form_fields[0].label.should eq("First Name")
         line.stations.first.form.form_fields[0].field_type.should eq("SA")
-        line.stations.first.form.form_fields[0].required.should eq(true)
+        line.stations.first.form.form_fields[0].required.should eq("true")
         line.stations.first.form.form_fields[1].label.should eq("Middle Name")
         line.stations.first.form.form_fields[1].field_type.should eq("SA")
         line.stations.first.form.form_fields[1].required.should eq(nil)
         line.stations.first.form.form_fields[2].label.should eq("Last Name")
         line.stations.first.form.form_fields[2].field_type.should eq("SA")
-        line.stations.first.form.form_fields[2].required.should eq(true)
+        line.stations.first.form.form_fields[2].required.should eq("true")
       end
     end
   end
@@ -265,6 +247,7 @@ describe CF::Line do
       # WebMock.allow_net_connect!
       VCR.use_cassette "lines/plain-ruby/create-form", :record => :new_episodes do
         line = CF::Line.new("Diggard-1", "Digitization")
+        CF::InputFormat.new({:line => line, :name => "image_url", :required => true, :valid_type => "url"})
         station = CF::Station.new({:type => "work"})
         line.stations station
 
@@ -287,9 +270,9 @@ describe CF::Line do
         line.input_formats input_format
         station = CF::Station.new({:type => "work"})
         line.stations station
-        line.stations.first.input_formats.first['name'].should eq("image_url")
-        line.stations.first.input_formats.first['required'].should eq(true)
-        line.stations.first.input_formats.first['valid_type'].should eq("url")
+        line.input_formats.first.name.should eq("image_url")
+        line.input_formats.first.required.should eq(true)
+        line.input_formats.first.valid_type.should eq("url")
       end
     end
 
@@ -297,6 +280,7 @@ describe CF::Line do
       # WebMock.allow_net_connect!
       VCR.use_cassette "lines/plain-ruby/create-form-fields", :record => :new_episodes do
         line = CF::Line.new("Digitized-4", "Digitization")
+        CF::InputFormat.new({:line => line, :name => "image_url", :required => true, :valid_type => "url"})
         station = CF::Station.new({:type => "work"})
         line.stations station
 
@@ -306,20 +290,20 @@ describe CF::Line do
         form = CF::TaskForm.new({:title => "Enter text from a business card image", :instruction => "Describe"})
         line.stations.first.form = form
 
-        form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
+        form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "short_answer", :required => "true"})
         line.stations.first.form.form_fields form_fields_1
-        form_fields_2 = CF::FormField.new({:label => "Middle Name", :field_type => "SA"})
+        form_fields_2 = CF::FormField.new({:label => "Middle Name", :field_type => "short_answer"})
         line.stations.first.form.form_fields form_fields_2
-        form_fields_3 = CF::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
+        form_fields_3 = CF::FormField.new({:label => "Last Name", :field_type => "short_answer", :required => "true"})
         line.stations.first.form.form_fields form_fields_3
 
         line.stations.first.form.form_fields[0].label.should eql("First Name")
-        line.stations.first.form.form_fields[0].field_type.should eq("SA")
+        line.stations.first.form.form_fields[0].field_type.should eq("short_answer")
         line.stations.first.form.form_fields[0].required.should eq(true)
         line.stations.first.form.form_fields[1].label.should eql("Middle Name")
-        line.stations.first.form.form_fields[1].field_type.should eq("SA")
+        line.stations.first.form.form_fields[1].field_type.should eq("short_answer")
         line.stations.first.form.form_fields[2].label.should eql("Last Name")
-        line.stations.first.form.form_fields[2].field_type.should eq("SA")
+        line.stations.first.form.form_fields[2].field_type.should eq("short_answer")
         line.stations.first.form.form_fields[2].required.should eq(true)
       end
     end
@@ -331,7 +315,7 @@ describe CF::Line do
       VCR.use_cassette "lines/plain-ruby/create-line-with-used-title", :record => :new_episodes do
         line = CF::Line.new("new_line", "Digitization")
         line_1 = CF::Line.new("new_line", "Digitization")
-        line_1.errors.should eql("[\"Title is already taken for this account\"]")
+        line_1.errors.should eql(["Title is already taken for this account"])
       end
     end
   end

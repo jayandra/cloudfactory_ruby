@@ -60,14 +60,6 @@ module CF
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
         else
-          request_general = 
-          {
-            :body => 
-            {
-              :api_key => CF.api_key,
-              :station => {:type => type, :input_formats => @station_input_formats}
-            }
-          }
           if type == "Tournament"
             @jury_worker = stations.jury_worker
             @auto_judge = stations.auto_judge
@@ -81,6 +73,14 @@ module CF
             }
             resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_tournament)
           else
+            request_general = 
+            {
+              :body => 
+              {
+                :api_key => CF.api_key,
+                :station => {:type => type, :input_formats => @station_input_formats}
+              }
+            }
             resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_general)
           end
           station = CF::Station.new()
@@ -157,6 +157,7 @@ module CF
       end
       
     end
+    
     def input_formats=(input_formats_value) # :nodoc:
       @input_formats << input_formats_value
     end

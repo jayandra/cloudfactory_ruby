@@ -21,10 +21,10 @@ module CF
               CF::CustomTaskForm.create({:station => s, :title => "Descibe about Company", :instruction => "Describe", :raw_html => html})
             end
             CF::Station.create({:line => self, :type => "work"}) do |s1|
-              CF::RobotWorker.create({:station => s1, :type => "text_appending_robot", :settings => {:append => ["{description}"], :separator => "||"}})
+              CF::RobotWorker.create({:station => s1, :type => "text_appending_robot", :settings => {:append => ["{{description}}"], :separator => "||"}})
             end
           end
-          run = CF::Run.create(line, "text_appending_robot_run", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          run = CF::Run.create(line, "text_appending_robot_run", [{"Company"=>"Sprout","Website"=>"www.sprout.com"}])
           # debugger
           output = run.final_output
           station_1_output = run.output(:station => 1)
@@ -33,7 +33,7 @@ module CF
           line.stations.last.worker.class.should eql(CF::RobotWorker)
           line.stations.first.worker.reward.should eql(20)
           line.stations.first.worker.number.should eql(1)
-          line.stations.last.worker.settings.should eql({:append => ["{description}"], :separator => "||"})
+          line.stations.last.worker.settings.should eql({:append => ["{{description}}"], :separator => "||"})
           line.stations.last.worker.type.should eql("TextAppendingRobot")
         end
       end
@@ -65,10 +65,10 @@ module CF
           station = CF::Station.new({:type => "work"})
           line.stations station
 
-          worker_1 =  CF::RobotWorker.create({:type => "text_appending_robot", :settings => {:append => ["{description}"], :separator => "||"}})
+          worker_1 =  CF::RobotWorker.create({:type => "text_appending_robot", :settings => {:append => ["{{description}}"], :separator => "||"}})
           line.stations.last.worker = worker_1
           
-          run = CF::Run.create(line, "text_appending_robot_run_1", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+          run = CF::Run.create(line, "text_appending_robot_run_1", [{"Company"=>"Sprout","Website"=>"www.sprout.com"}])
           # debugger
           output = run.final_output
           station_1_output = run.output(:station => 1)
@@ -77,7 +77,7 @@ module CF
           line.stations.last.worker.class.should eql(CF::RobotWorker)
           line.stations.first.worker.reward.should eql(20)
           line.stations.first.worker.number.should eql(1)
-          line.stations.last.worker.settings.should eql({:append => ["{description}"], :separator => "||"})
+          line.stations.last.worker.settings.should eql({:append => ["{{description}}"], :separator => "||"})
           line.stations.last.worker.type.should eql("TextAppendingRobot")
         end
       end

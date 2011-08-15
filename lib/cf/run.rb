@@ -27,10 +27,10 @@ module CF
     # You can pass line object instead of passing line title:
     #   run = CF::Run.new(line_object, "run name", file_path)
     def initialize(line, title, input)
-      if line.class == CF::Line || Hashie::Mash
+      if line.class == CF::Line || line.class == Hashie::Mash
         @line = line
-        @line_title = @line.title
-      else
+        @line_title = line.title
+      elsif line.class == String
         @line_title = line
       end
       @title = title

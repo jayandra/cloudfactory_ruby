@@ -14,21 +14,18 @@ module CF
           station = CF::Station.new({:type => "work"})
           line.stations station
 
-          worker = CF::RobotWorker.create({:type => "google_translate_robot", :settings => {:data => ["{text}"], :from => "en", :to => "es"}})
+          worker = CF::RobotWorker.create({:type => "google_translate_robot", :settings => {:data => ["{{text}}"], :from => "en", :to => "es"}})
           line.stations.first.worker = worker
 
           form = CF::TaskForm.new({:title => "Enter text", :instruction => "Describe"})
           line.stations.first.form = form
 
-          form_fields = CF::FormField.new({:label => "Description", :field_type => "SA", :required => "true"})
-          line.stations.first.form.form_fields form_fields
           line.title.should eql("google_translate_robot")
           line.stations.first.worker.class.should eql(CF::RobotWorker)
           line.stations.first.worker.number.should eql(1)
-          line.stations.first.worker.settings.should eql({:data => ["{text}"], :from => "en", :to => "es"})
+          line.stations.first.worker.settings.should eql({:data => ["{{text}}"], :from => "en", :to => "es"})
           line.stations.first.worker.type.should eql("GoogleTranslateRobot")
-          run = CF::Run.create(line, "google_translate_robot_run", [{"text"=> "I started loving Monsoon", "meta_data_text"=>"monsoon"}])
-
+          run = CF::Run.create(line, "google_translate_robot_run", [{"text"=> "I started loving Monsoon"}])
           @final_output = run.final_output
           line.stations.first.worker.number.should eq(1)
           @final_output.first.final_output.first.translation_of_text.should eql('Empecé a amar a Monzón')
@@ -41,18 +38,15 @@ module CF
           line = CF::Line.create("google_translate_robot_1","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "text", :required => true, :valid_type => "general"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
-              CF::RobotWorker.create({:station => s, :type => "google_translate_robot", :settings => {:data => ["{text}"], :from => "en", :to => "es"}})
-              CF::TaskForm.create({:station => s, :title => "Enter text", :instruction => "Describe"}) do |i|
-                CF::FormField.new({:form => i, :label => "Description", :field_type => "SA", :required => "true"})
-              end
+              CF::RobotWorker.create({:station => s, :type => "google_translate_robot", :settings => {:data => ["{{text}}"], :from => "en", :to => "es"}})
             end
           end
           line.title.should eql("google_translate_robot_1")
           line.stations.first.worker.class.should eql(CF::RobotWorker)
           line.stations.first.worker.number.should eql(1)
-          line.stations.first.worker.settings.should eql({:data => ["{text}"], :from => "en", :to => "es"})
+          line.stations.first.worker.settings.should eql({:data => ["{{text}}"], :from => "en", :to => "es"})
           line.stations.first.worker.type.should eql("GoogleTranslateRobot")
-          run = CF::Run.create(line, "google_translate_robot_run_1", [{"text"=> "I started loving Monsoon", "meta_data_text"=>"monsoon"}])
+          run = CF::Run.create(line, "google_translate_robot_run_1", [{"text"=> "I started loving Monsoon"}])
 
           @final_output = run.final_output
           line.stations.first.worker.number.should eq(1)
