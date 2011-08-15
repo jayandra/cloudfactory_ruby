@@ -13,7 +13,11 @@ module CF # :nodoc: all
       end
 
       def post(*args)
-        handle_response  RestClient.post("#{CF.api_url}#{CF.api_version}#{args.first}", args.last.merge!(default_params), :accept => 'json'){ |response, request, result| response }
+        if args.length > 1
+          handle_response  RestClient.post("#{CF.api_url}#{CF.api_version}#{args.first}", args.last.merge!(default_params), :accept => 'json'){ |response, request, result| response }
+        else
+          handle_response  RestClient.post("#{CF.api_url}#{CF.api_version}#{args.first}", default_params, :accept => 'json'){ |response, request, result| response }
+        end
       end
 
       def put(*args)

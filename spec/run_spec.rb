@@ -430,5 +430,33 @@ module CF
         end
       end
     end
+    
+    context "create a run with insufficient balance and" do
+      it "should resume run" do
+        VCR.use_cassette "run/block/resume-run", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+        # change account available_balance to 10 cents
+          line = CF::Line.create("resume_run_line","Digitization") do |l|
+            CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+            CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+            CF::Station.create({:line => l, :type => "work"}) do |s|
+              CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+              CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+                CF::FormField.new({:form => i, :label => "First Name", :field_type => "short_answer", :required => "true"})
+                CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "short_answer"})
+                CF::FormField.new({:form => i, :label => "Last Name", :field_type => "short_answer", :required => "true"})
+              end
+            end
+          end
+          run = CF::Run.create(line, "resume_run", [{"Company"=>"Apple,Inc","Website"=>"Apple.com"},{"Company"=>"Google","Website"=>"google.com"}])
+          # debugger
+          # Change account available_balance to 200000 cents
+          resumed_run = CF::Run.resume("resume_run")
+          resumed_run.code.should eql(200)
+          resumed_run.status.should eql("resumed")
+          resumed_run.title.should eql("resume_run")
+        end
+      end
+    end
   end
 end

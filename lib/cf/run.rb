@@ -159,5 +159,9 @@ module CF
         get("/lines/#{CF.account_name}/#{line_title}/list_runs.json")
       end
     end
+    
+    def self.resume(run_title)
+      post("/runs/#{CF.account_name}/#{run_title}/resume.json")
+    end
   end
 end
