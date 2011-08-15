@@ -29,6 +29,8 @@ module Cf # :nodoc: all
     include Thor::Actions
     include Cf::Config
     
+    map "-v" => :version
+    
     desc "login", "Setup the cloudfactory credentials"
     def login
       email = ask("Enter your email:")
@@ -129,5 +131,9 @@ module Cf # :nodoc: all
       end
     end
     
+    desc "version", "Shows the current version of cloudfactory gem"
+    def version
+      say("Version: #{CF::VERSION}")
+    end
   end
 end
