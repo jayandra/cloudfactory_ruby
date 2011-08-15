@@ -96,5 +96,34 @@ module Cf # :nodoc: all
         end
       end
     end
+
+    desc "production list", "list the production runs"
+    method_option :line, :type => :string, :aliases => "-l", :desc => "the title of the line"
+    def list
+      set_target_uri(false)
+      set_api_key
+      CF.account_name = CF::Account.info.name
+      if options['line'].present?
+        runs = CF::Run.all(options['line'].parameterize)
+      else
+        runs = CF::Run.all
+      end
+
+      unless runs.kind_of?(Array)
+        if runs.error.present?
+          say("No Runs\n#{runs.error.message}", :red) and exit(1)
+        end
+      end
+
+      runs.sort! {|a, b| a[:name] <=> b[:name] }
+      runs_table = table do |t|
+        t.headings = ["Run Title", 'URL']
+        runs.each do |run|
+          t << [run.title, "http://#{CF.account_name}.cloudfactory.com/runs/#{CF.account_name}/#{run.title}"]
+        end
+      end
+      say("\n")
+      say(runs_table)
+    end
   end
 end

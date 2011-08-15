@@ -152,8 +152,8 @@ module CF
       return resp['progress_details']
     end
     
-    def self.all(line_title={})
-      if line_title == {}
+    def self.all(line_title=nil)
+      if line_title.blank?
         get("/runs/#{CF.account_name}.json")
       else
         get("/lines/#{CF.account_name}/#{line_title}/list_runs.json")
