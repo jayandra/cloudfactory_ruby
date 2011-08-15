@@ -125,5 +125,22 @@ module Cf # :nodoc: all
       say("\n")
       say(runs_table)
     end
+    
+    desc "production resume", "resume a paused production run"
+    method_option :run_title, :type => :string, :required => true, :aliases => "-r", :desc => "the title of the run to resume"
+    def resume
+      set_target_uri(false)
+      set_api_key
+      CF.account_name = CF::Account.info.name
+      result = CF::Run.resume(options['run_title'].parameterize)
+
+      if result.error.present?
+        say("Error: #{result.error.message}", :red) and exit(1)
+      end
+
+      # if result.status == "resumed"
+      say("Run with title \"#{result.title}\" is resumed!", :green)
+      # end
+    end    
   end
 end
