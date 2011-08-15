@@ -100,7 +100,15 @@ module Cf # :nodoc: all
         say "The line.yml file does not exist in this directory", :red
         return
       end
-
+      
+      errors = LineYamlValidator.validate(yaml_source)
+      
+      if errors.present?
+        say("Invalid line.yml file. Correct its structure as per the errors shown below.", :red)
+        errors.each {|error| say("  #{error}", :cyan)}
+        exit(1)
+      end
+      
       set_target_uri(false)
       set_api_key(yaml_source)
 
