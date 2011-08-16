@@ -151,7 +151,7 @@ module Cf
                       required = form_field['required']
                       field_type = form_field['field_type']
                       if !field_type.nil?
-                        unless %w(short_answer long_answer radio_button check_box select_box).include?(field_type)
+                        unless %w(short_answer long_answer radio_button check_box select_box date email number).include?(field_type)
                           errors << "Field Type of Form Field is invalid in Block #{index+1} of station Block #{i+1}!"
                         end
                         if field_type == "radio_button" || field_type == "select_box"
