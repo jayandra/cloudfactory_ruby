@@ -48,7 +48,7 @@ module Cf
                   errors << "Jury worker setting is missing in Block station #{i+1}!"
                 elsif !jury_worker.nil?
                   reward = jury_worker['reward']
-                  errors << "Reward for worker is missing in Block station #{i+1}!" if reward.nil?
+                  errors << "Reward for Jury worker is missing in block of Tournament Station #{i+1}!" if reward.nil?
                   errors << "Reward Must be greater than 0 in Block station #{i+1}!" if !reward.nil? && reward < 1
                 end
               end
