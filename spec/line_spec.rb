@@ -323,7 +323,7 @@ describe CF::Line do
   context "delete line whose production run is already created" do
     it "it should throw error and must be deleted if forced true is passed" do
       VCR.use_cassette "lines/block/delete-line-of-active-run", :record => :new_episodes do
-        WebMock.allow_net_connect!
+        # WebMock.allow_net_connect!
         line = CF::Line.create("delete_line_of_run","Digitization") do |l|
           CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
           CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
@@ -348,6 +348,28 @@ describe CF::Line do
         search_line = CF::Line.find("delete_line_of_run")
         search_line.code.should eql(404)
         search_line.error.message.should eql("Line document not found using selector: {:public=>true, :title=>\"delete_line_of_run\"}")
+      end
+    end
+  end
+  
+  context "returns all the associated elements of line" do
+    it "it give details of line" do
+      VCR.use_cassette "lines/block/line-details", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+        line = CF::Line.create("line_details","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "short_answer", :required => "true"})
+            end
+          end
+        end
+        line_details = CF::Line.details("line_details")
+        line_input_format_id = line_details['input_formats'].first['id']
+        from_field_id = line_details['stations'].first['form_fields'].first['id']
+        station_input_format_id = line_details['stations'].first['input_formats'].first['id']
+        line_details.should eql({"title"=>"line_details", "description"=>"", "public"=>false, "department"=>{"name"=>"Digitization"}, "app"=>{"name"=>"default", "email"=>"manish.das@sprout-technology.com", "notification_url"=>"http://www.cloudfactory.com"}, "code"=>200, "input_formats"=>[{"id"=>"#{line_input_format_id}", "name"=>"Company", "required"=>true, "valid_type"=>"general", "source_station_index"=>0}], "stations"=>[{"index"=>1, "type"=>"WorkStation", "worker"=>{"number"=>1, "reward"=>20, "type"=>"HumanWorker", "stat_badge"=>{"approval_rating"=>80, "abandonment_rate"=>30, "country"=>nil}}, "form"=>{"title"=>"Enter text from a business card image", "instruction"=>"Describe"}, "form_fields"=>[{"id"=>"#{from_field_id}", "label"=>"First Name", "field_type"=>"short_answer", "hint"=>nil, "required"=>true, "unique"=>nil, "hide_label"=>nil, "value"=>nil}], "input_formats"=>[{"id"=>"#{station_input_format_id}", "name"=>"Company", "required"=>true, "valid_type"=>"general", "source_station_index"=>0}]}]})
       end
     end
   end
