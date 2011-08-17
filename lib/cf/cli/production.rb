@@ -47,7 +47,7 @@ module Cf # :nodoc: all
           chosen_file = nil
           choose do |menu|
             menu.header = "Input data files"
-            menu.prompt = "Please choose which file to be used as input data"
+            menu.prompt = "Please choose which file to be used as input data: "
 
             input_files.each do |item|
               menu.choice(extract_name(item)) do
@@ -73,11 +73,10 @@ module Cf # :nodoc: all
       line = CF::Line.info(line_title)
       input_data_file = "#{Dir.pwd}/#{input_data}"
       if line.error.blank?
-        say "Creating a production run with title #{run_title}.", :green
+        say "Creating a production run with title #{run_title}", :green
         run = CF::Run.create(line, run_title, input_data_file)
         if run.errors.blank?
-          say("Run created successfully.", :green)
-          say("View your run at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}\n", :yellow)
+          display_success_run(run, options[:live])
         else
           say("Error: #{run.errors}", :red)
         end
@@ -86,17 +85,29 @@ module Cf # :nodoc: all
         say("Creating the line: #{line_title}", :green)
         Cf::Line.new.create
         # Now create a production run with the title run_title
-        say "Creating a production run with title #{run_title}.", :green
+        say "Creating a production run with title #{run_title}", :green
         run = CF::Run.create(CF::Line.info(line_title), run_title, input_data_file)
         if run.errors.blank?
-          say("Run created successfully.", :green)
-          say("View your run at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}\n", :yellow)
+          display_success_run(run, options[:live])
         else
           say("Error: #{run.errors}", :red)
         end
       end
     end
 
+    no_tasks do
+      def display_success_run(run, live)
+        say("Run created successfully.", :green)
+        say("View your run at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}\n", :magenta)
+        say("And you can view your production at:", :green)
+        if live
+          say("https://www.mturk.com/mturk/searchbar?selectedSearchType=hitgroups&requesterId=A1OCPG2TDIL4AO", :magenta)
+        else
+          say("https://workersandbox.mturk.com/mturk/searchbar?selectedSearchType=hitgroups&requesterId=A1OCPG2TDIL4AO", :magenta)
+        end
+        say("\n")
+      end
+    end
     desc "production list", "list the production runs"
     method_option :line, :type => :string, :aliases => "-l", :desc => "the title of the line"
     def list
