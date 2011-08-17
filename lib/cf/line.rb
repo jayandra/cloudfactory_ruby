@@ -226,16 +226,30 @@ module CF
     # ===Usage Example:
     #   line = CF::Line.new("Digitize Card", "Survey")
     #   line.destroy
-    def destroy
-      self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json")
+    def destroy(options={})
+      force = options[:force]
+      if !force.nil?
+        resp = self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json", :forced => force)
+      else
+        resp = self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json")
+      end
+      if resp.code != 200
+        self.errors = resp.errors.message
+      end
+      return resp
     end
     
     # ==Deletes a line by passing it's title
     # ===Usage Example:
     #   line = CF::Line.new("line_title", "Survey")
     #   CF::Line.destroy("line_title")
-    def self.destroy(title)
-      delete("/lines/#{CF.account_name}/#{title.downcase}.json")
+    def self.destroy(title, options={})
+      forced = options[:forced]
+      if forced
+        resp = delete("/lines/#{CF.account_name}/#{title.downcase}.json", {:forced => forced})
+      else
+        resp = delete("/lines/#{CF.account_name}/#{title.downcase}.json")
+      end
     end
   end
 end

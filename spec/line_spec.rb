@@ -319,4 +319,36 @@ describe CF::Line do
       end
     end
   end
+  
+  context "delete line whose production run is already created" do
+    it "it should throw error and must be deleted if forced true is passed" do
+      VCR.use_cassette "lines/block/delete-line-of-active-run", :record => :new_episodes do
+        WebMock.allow_net_connect!
+        line = CF::Line.create("delete_line_of_run","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+          CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "short_answer", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "short_answer"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "short_answer", :required => "true"})
+            end
+          end
+        end
+
+        run = CF::Run.create(line, "delete_line_of_run_run", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+        
+        delete = CF::Line.destroy("delete_line_of_run")
+        delete.error.message.should eql("cannot delete the line, Active runs exists. use forced delete if you still want to delete the line.")
+        delete.code.should_not eql(200)
+        
+        forced_delete = CF::Line.destroy("delete_line_of_run", :forced => true)
+
+        search_line = CF::Line.find("delete_line_of_run")
+        search_line.code.should eql(404)
+        search_line.error.message.should eql("Line document not found using selector: {:public=>true, :title=>\"delete_line_of_run\"}")
+      end
+    end
+  end
 end
