@@ -37,7 +37,7 @@ module CF
       @stations =[]
       @title = title
       @department_name = department_name
-      @public = options[:public].present? ? options[:public] : false
+      @public = options[:public].present? ? options[:public] : true
       @description = options[:description]
       resp = self.class.post("/lines/#{CF.account_name}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       if resp.code != 200
