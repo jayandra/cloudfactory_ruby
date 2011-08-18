@@ -252,7 +252,7 @@ module CF
       end
     end
     
-    def self.details(line_title)
+    def self.inspect(line_title)
       resp = get("/lines/#{CF.account_name}/#{line_title.downcase}/inspect.json")
       send_resp = resp.to_hash
       @line_input_formats = []

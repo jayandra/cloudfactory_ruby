@@ -365,7 +365,7 @@ describe CF::Line do
             end
           end
         end
-        line_details = CF::Line.details("line_details")
+        line_details = CF::Line.inspect("line_details")
         line_input_format_id = line_details['input_formats'].first['id']
         from_field_id = line_details['stations'].first['form_fields'].first['id']
         station_input_format_id = line_details['stations'].first['input_formats'].first['id']
