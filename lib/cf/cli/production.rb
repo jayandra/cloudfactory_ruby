@@ -26,9 +26,9 @@ module Cf # :nodoc: all
       line_title = line_yaml_dump['title'].parameterize
 
       if title.nil?
-        run_title       = "#{line_title}-#{Time.new.strftime('%y%b%e-%H%M%S')}"
+        run_title       = "#{line_title}-#{Time.new.strftime('%y%b%e-%H%M%S')}".downcase
       else
-        run_title       = "#{title.parameterize}-#{Time.new.strftime('%y%b%e-%H%M%S')}"
+        run_title       = "#{title.parameterize}-#{Time.new.strftime('%y%b%e-%H%M%S')}".downcase
       end
 
       if !options[:input_data].nil?
@@ -76,7 +76,7 @@ module Cf # :nodoc: all
         say "Creating a production run with title #{run_title}", :green
         run = CF::Run.create(line, run_title, input_data_file)
         if run.errors.blank?
-          display_success_run(run, options[:live])
+          display_success_run(run)
         else
           say("Error: #{run.errors}", :red)
         end
@@ -88,7 +88,7 @@ module Cf # :nodoc: all
         say "Creating a production run with title #{run_title}", :green
         run = CF::Run.create(CF::Line.info(line_title), run_title, input_data_file)
         if run.errors.blank?
-          display_success_run(run, options[:live])
+          display_success_run(run)
         else
           say("Error: #{run.errors}", :red)
         end
@@ -96,18 +96,12 @@ module Cf # :nodoc: all
     end
 
     no_tasks do
-      def display_success_run(run, live)
+      def display_success_run(run)
         say("Run created successfully.", :green)
-        say("View your run at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}\n", :magenta)
-        say("And you can view your production at:", :green)
-        if live
-          say("https://www.mturk.com/mturk/searchbar?selectedSearchType=hitgroups&requesterId=A1OCPG2TDIL4AO", :magenta)
-        else
-          say("https://workersandbox.mturk.com/mturk/searchbar?selectedSearchType=hitgroups&requesterId=A1OCPG2TDIL4AO", :magenta)
-        end
-        say("\n")
+        say("View your production at:\n\thttp://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}/workerpool_preview\n", :green)
       end
     end
+    
     desc "production list", "list the production runs"
     method_option :line, :type => :string, :aliases => "-l", :desc => "the title of the line"
     def list

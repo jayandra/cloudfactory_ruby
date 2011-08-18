@@ -51,6 +51,7 @@ module Cf # :nodoc: all
     
     desc "line delete", "delete the current line at http://cloudfactory.com"
     method_option :line, :type => :string, :aliases => "-l", :desc => "specify the line-title to delete"
+    method_option :force, :type => :boolean, :aliases => "-f", :default => false, :desc => "force delete the line"
     def delete
       if options['line'].blank?
         line_source = Dir.pwd
@@ -70,8 +71,21 @@ module Cf # :nodoc: all
       
       line = CF::Line.find(line_title)
       if line.errors.blank?
-        CF::Line.destroy(line_title)
-        say("The line #{line_title} deleted successfully!", :yellow)
+        if options.force
+          CF::Line.destroy(line_title, :forced => true)
+          say("The line #{line_title} deleted forcefully!", :yellow)
+        else
+          # say("!! Warning !!\nThe following are existing production runs based on this line.\n", :cyan)
+          # Cf::Production.new.list
+          say("!! Warning !!\nThere are existing production runs based on this line.\n", :yellow)
+          delete_forcefully = agree("Do you still want to delete this line? [y/n] ")
+          if delete_forcefully
+            CF::Line.destroy(line_title, :forced => true)
+            say("The line #{line_title} deleted successfully!", :yellow)
+          else
+            say("Line deletion aborted!", :cyan)
+          end
+        end
       else
         say("The line #{line_title} doesn't exist!", :yellow)
       end
