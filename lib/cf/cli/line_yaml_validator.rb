@@ -1,6 +1,6 @@
 module Cf
   class LineYamlValidator
-    
+
     def self.validate(yaml_path)
       line_dump = YAML::load(File.read(yaml_path))
       errors = []
@@ -91,83 +91,85 @@ module Cf
                 end
               end
 
-              # Checking Stat_badge
-              stat_badge = station['station']['worker']['stat_badge']
-              if !stat_badge.nil?
-                errors << "Stat badge setting is invalid in Block station #{i+1}!" if stat_badge.class != Hash
-              end
-
-              # Checking skill_badge
-              skill_badges = station['station']['worker']['skill_badges']
-              if !skill_badges.nil?
-                errors << "Skill badge settings is invalid in Block station #{i+1}!" if skill_badges.class != Array
-                skill_badges.each_with_index do |badge, badge_index|
-                  badge_title = badge['title']
-                  badge_description = badge['description']
-                  max_badges = badge['max_badges']
-                  badge_test = badge['test']
-                  test_input = badge_test['input'] if badge_test.class == Hash
-                  expected_output = badge_test['expected_output'] if badge_test.class == Hash
-                  errors << "Skill badge title is Missing in Block #{badge_index+1}!" if badge_title.nil?
-                  errors << "Skill badge Description is Missing in Block #{badge_index+1}!" if badge_description.nil?
-                  errors << "Skill badge max_badges must be greater than 1000 in Block #{badge_index+1}!" if max_badges < 1000 && !max_badges.nil?
-                  errors << "Skill badge Test is Missing in Block #{badge_index+1}!" if badge_test.nil?
-                  errors << "Skill badge Test is Invalid (must be Hash) in Block #{badge_index+1}!" if badge_test.class != Hash && !badge_test.nil?
-                  errors << "Skill badge Test input is Missing in Block #{badge_index+1}!" if test_input.nil? && !badge_test.nil?
-                  errors << "Skill badge Test input is Invalid (must be Hash) in Block #{badge_index+1}!" if  test_input.class != Hash && !test_input.nil? && !badge_test.nil?
-                  errors << "Skill badge Test expected_output is Missing in Block #{badge_index+1}!" if expected_output.nil? && !badge_test.nil?
-                  errors << "Skill badge Test expected_output is Invalid (must be an array) in Block #{badge_index+1}!" if expected_output.class != Array && !expected_output.nil? && !badge_test.nil?
+              if station_type != "improve"
+                # Checking Stat_badge
+                stat_badge = station['station']['worker']['stat_badge']
+                if !stat_badge.nil?
+                  errors << "Stat badge setting is invalid in Block station #{i+1}!" if stat_badge.class != Hash
                 end
-              end
 
-              # Checking TaskForm
-              if worker_type == "human"
-                task_form = station['station']['task_form']
-                if task_form.nil?
-                  custom_task_form = station['station']['custom_task_form']
-                  if custom_task_form.nil?
-                    errors << "Form is missing in Block station #{i+1}!"
-                  elsif custom_task_form.class == Hash
-                    form_title = custom_task_form['form_title']
+                # Checking skill_badge
+                skill_badges = station['station']['worker']['skill_badges']
+                if !skill_badges.nil?
+                  errors << "Skill badge settings is invalid in Block station #{i+1}!" if skill_badges.class != Array
+                  skill_badges.each_with_index do |badge, badge_index|
+                    badge_title = badge['title']
+                    badge_description = badge['description']
+                    max_badges = badge['max_badges']
+                    badge_test = badge['test']
+                    test_input = badge_test['input'] if badge_test.class == Hash
+                    expected_output = badge_test['expected_output'] if badge_test.class == Hash
+                    errors << "Skill badge title is Missing in Block #{badge_index+1}!" if badge_title.nil?
+                    errors << "Skill badge Description is Missing in Block #{badge_index+1}!" if badge_description.nil?
+                    errors << "Skill badge max_badges must be greater than 1000 in Block #{badge_index+1}!" if max_badges < 1000 && !max_badges.nil?
+                    errors << "Skill badge Test is Missing in Block #{badge_index+1}!" if badge_test.nil?
+                    errors << "Skill badge Test is Invalid (must be Hash) in Block #{badge_index+1}!" if badge_test.class != Hash && !badge_test.nil?
+                    errors << "Skill badge Test input is Missing in Block #{badge_index+1}!" if test_input.nil? && !badge_test.nil?
+                    errors << "Skill badge Test input is Invalid (must be Hash) in Block #{badge_index+1}!" if  test_input.class != Hash && !test_input.nil? && !badge_test.nil?
+                    errors << "Skill badge Test expected_output is Missing in Block #{badge_index+1}!" if expected_output.nil? && !badge_test.nil?
+                    errors << "Skill badge Test expected_output is Invalid (must be an array) in Block #{badge_index+1}!" if expected_output.class != Array && !expected_output.nil? && !badge_test.nil?
+                  end
+                end
+
+                # Checking TaskForm
+                if worker_type == "human"
+                  task_form = station['station']['task_form']
+                  if task_form.nil?
+                    custom_task_form = station['station']['custom_task_form']
+                    if custom_task_form.nil?
+                      errors << "Form is missing in Block station #{i+1}!"
+                    elsif custom_task_form.class == Hash
+                      form_title = custom_task_form['form_title']
+                      errors << "Form Title is missing in Block station #{i+1}!" if form_title.nil?
+
+                      instruction = custom_task_form['instruction']
+                      errors << "Form Instruction is missing in Block station #{i+1}!" if instruction.nil?
+                    end
+                  elsif task_form.class == Hash
+                    form_title = task_form['form_title']
                     errors << "Form Title is missing in Block station #{i+1}!" if form_title.nil?
 
-                    instruction = custom_task_form['instruction']
+                    instruction = task_form['instruction']
                     errors << "Form Instruction is missing in Block station #{i+1}!" if instruction.nil?
-                  end
-                elsif task_form.class == Hash
-                  form_title = task_form['form_title']
-                  errors << "Form Title is missing in Block station #{i+1}!" if form_title.nil?
 
-                  instruction = task_form['instruction']
-                  errors << "Form Instruction is missing in Block station #{i+1}!" if instruction.nil?
-
-                  # Checking Form Fields
-                  form_fields = task_form['form_fields']
-                  errors << "Form Field is missing in Block station #{i+1}!" if form_fields.nil?
-                  if form_fields.class == Array
-                    form_fields.each_with_index do |form_field, index|
-                      field_label = form_field['label']
-                      errors << "Label is missing in block #{index+1} of Form Field within Station #{i+1}!" if field_label.nil?
-                      required = form_field['required']
-                      field_type = form_field['field_type']
-                      if !field_type.nil?
-                        unless %w(short_answer long_answer radio_button check_box select_box date email number).include?(field_type)
-                          errors << "Field Type of Form Field is invalid in Block #{index+1} of station Block #{i+1}!"
-                        end
-                        if field_type == "radio_button" || field_type == "select_box"
-                          option_values = form_field['option_values']
-                          if option_values.nil?
-                            errors << "Option values is required for field_type => #{field_type} in block #{index+1} of Form Field within Station #{i+1} !"
-                          elsif !option_values.nil?
-                            if option_values.class != Array
-                              errors << "Option values must be an array for field_type => #{field_type} in block #{index+1} of Form Field within Station #{i+1}!"  
+                    # Checking Form Fields
+                    form_fields = task_form['form_fields']
+                    errors << "Form Field is missing in Block station #{i+1}!" if form_fields.nil?
+                    if form_fields.class == Array
+                      form_fields.each_with_index do |form_field, index|
+                        field_label = form_field['label']
+                        errors << "Label is missing in block #{index+1} of Form Field within Station #{i+1}!" if field_label.nil?
+                        required = form_field['required']
+                        field_type = form_field['field_type']
+                        if !field_type.nil?
+                          unless %w(short_answer long_answer radio_button check_box select_box date email number).include?(field_type)
+                            errors << "Field Type of Form Field is invalid in Block #{index+1} of station Block #{i+1}!"
+                          end
+                          if field_type == "radio_button" || field_type == "select_box"
+                            option_values = form_field['option_values']
+                            if option_values.nil?
+                              errors << "Option values is required for field_type => #{field_type} in block #{index+1} of Form Field within Station #{i+1} !"
+                            elsif !option_values.nil?
+                              if option_values.class != Array
+                                errors << "Option values must be an array for field_type => #{field_type} in block #{index+1} of Form Field within Station #{i+1}!"  
+                              end
                             end
                           end
                         end
                       end
+                    else
+                      errors << "Form fields must be an array for Station #{i+1}!"
                     end
-                  else
-                    errors << "Form fields must be an array for Station #{i+1}!"
                   end
                 end
               end
@@ -175,9 +177,7 @@ module Cf
           end
         end
       end
-
       return errors
     end
-    
   end
 end
