@@ -17,10 +17,9 @@ module CF
           
           output = run.final_output
           output.first.final_output.first.scraped_link_from_document.should eql([["http://www.cloudfactory.com", "http://www.bizcardarmy.com"]])
-          output.first.final_output.first.query.should eql("1st 2 links after Sprout products")
 
           line.stations.first.worker.class.should eql(CF::RobotWorker)
-          line.stations.first.worker.reward.should eql(10)
+          line.stations.first.worker.reward.should eql(0.5)
           line.stations.first.worker.number.should eql(1)
           line.stations.first.worker.settings.should eql({:document => ["http://www.sprout-technology.com"], :query => "1st 2 links after Sprout products"})
           line.stations.first.worker.type.should eql("ContentScrapingRobot")
@@ -44,10 +43,9 @@ module CF
           
           output = run.final_output
           output.first.final_output.first.scraped_link_from_document.should eql([["http://www.cloudfactory.com", "http://www.bizcardarmy.com"]])
-          output.first.final_output.first.query.should eql("1st 2 links after Sprout products")
 
           line.stations.first.worker.class.should eql(CF::RobotWorker)
-          line.stations.first.worker.reward.should eql(10)
+          line.stations.first.worker.reward.should eql(0.5)
           line.stations.first.worker.number.should eql(1)
           line.stations.first.worker.settings.should eql({:document => ["http://www.sprout-technology.com"], :query => "1st 2 links after Sprout products"})
           line.stations.first.worker.type.should eql("ContentScrapingRobot")

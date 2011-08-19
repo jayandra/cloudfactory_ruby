@@ -78,14 +78,14 @@ describe CF::CustomTaskForm do
         line = CF::Line.create("Digitizecustomform11", "Digitization") do
           CF::InputFormat.new({:line => self, :name => "Name", :required => true, :valid_format => "general"})
           CF::InputFormat.new({:line => self, :name => "Contact", :required => true, :valid_type => "url"})
-          CF::Station.create({:line => self, :type => "tournament", :max_judges => 10, :auto_judge => true}) do |s|
+          CF::Station.create({:line => self, :type => "work"}) do |s|
             CF::HumanWorker.new({:station => s, :number => 3, :reward => 20})
             CF::CustomTaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe", :raw_html => html, :raw_css => css, :raw_javascript => javascript})
           end
         end
         line.title.should eql("Digitizecustomform11")
         line.department_name.should eql("Digitization")
-        line.stations.first.type.should eql("TournamentStation")
+        line.stations.first.type.should eql("WorkStation")
         CGI.unescape_html(line.stations.first.form.raw_html).should eql(html)
         CGI.unescape_html(line.stations.first.form.raw_css).should eql(css)
         CGI.unescape_html(line.stations.first.form.raw_javascript).should eql(javascript)
@@ -94,7 +94,7 @@ describe CF::CustomTaskForm do
     
     it "in plain ruby way" do
       VCR.use_cassette "custom-task-form/plain/create", :record => :new_episodes do
-      html =   '<div id="form-content">
+      html =   '<form><div id="form-content">
                   <div id="instructions">
                     <ul>
                       <li>Look at the business card properly and fill in asked data.</li>
@@ -108,18 +108,18 @@ describe CF::CustomTaskForm do
                     </div>
                     <div id = "field-panel">
                       Name<br />
-                      <input class="input-field first_name" type="text" name="final_output[first_name]" />
-                      <input class="input-field middle_name" type="text" name="final_output[middle_name]" />
-                      <input class="input-field last_name" type="text" name="final_output[last_name]" /><br />
+                      <input class="input-field first_name" type="text" name="output[first_name]" />
+                      <input class="input-field middle_name" type="text" name="output[middle_name]" />
+                      <input class="input-field last_name" type="text" name="output[last_name]" /><br />
 
                       <br />Contact<br />
-                      <input class="input-field email" type="text" name="final_output[email]" placeholder="Email"/>
-                      <input class="input-field phone" type="text" name="final_output[phone]" placeholder="Phone"/>
-                      <input class="input-field mobile" type="text" name="final_output[mobile]" placeholder="Mobile"/><br />
+                      <input class="input-field email" type="text" name="output[email]" placeholder="Email"/>
+                      <input class="input-field phone" type="text" name="output[phone]" placeholder="Phone"/>
+                      <input class="input-field mobile" type="text" name="output[mobile]" placeholder="Mobile"/><br />
 
                     </div>
                   </div>
-                </div>'
+                </div></form>'
                 
         css = '<style>body {background:#fbfbfb;}
                 #instructions{

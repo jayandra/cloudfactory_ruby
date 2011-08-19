@@ -18,6 +18,7 @@ require "#{cli_directory}/config"
 require "#{cli_directory}/line"
 require "#{cli_directory}/form"
 require "#{cli_directory}/production"
+require "#{cli_directory}/line_yaml_validator"
 
 if ENV['TEST']
   require 'ruby-debug'
@@ -27,6 +28,8 @@ module Cf # :nodoc: all
   class CLI < Thor # :nodoc: all
     include Thor::Actions
     include Cf::Config
+    
+    map "-v" => :version
     
     desc "login", "Setup the cloudfactory credentials"
     def login
@@ -128,5 +131,9 @@ module Cf # :nodoc: all
       end
     end
     
+    desc "version", "Shows the current version of cloudfactory gem"
+    def version
+      say("Version: #{CF::VERSION}")
+    end
   end
 end

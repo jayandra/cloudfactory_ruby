@@ -10,7 +10,7 @@ module CF
           line = CF::Line.create("concept_tagging_robot","Digitization") do |l|
             CF::InputFormat.new({:line => l, :name => "url", :valid_type => "url", :required => "true"})
             CF::Station.create({:line => l, :type => "work"}) do |s|
-              CF::RobotWorker.create({:station => s, :type => "concept_tagging_robot", :settings => {:url => ["{url}"]}})
+              CF::RobotWorker.create({:station => s, :type => "concept_tagging_robot", :settings => {:url => ["{{url}}"]}})
             end
           end
           run = CF::Run.create(line, "concept_tagging_robot_run", [{"url"=>"www.mosexindex.com"}])
@@ -18,9 +18,9 @@ module CF
           output.first.final_output.first.concept_tagging_of_url.should eql(["Canada", "English language"])
           output.first.final_output.first.concept_tagging_relevance_of_url.should eql([89.5153, 79.0912])
           line.stations.first.worker.class.should eql(CF::RobotWorker)
-          line.stations.first.worker.reward.should eql(1)
+          line.stations.first.worker.reward.should eql(0.5)
           line.stations.first.worker.number.should eql(1)
-          line.stations.first.worker.settings.should eql({:url => ["{url}"]})
+          line.stations.first.worker.settings.should eql({:url => ["{{url}}"]})
           line.stations.first.worker.type.should eql("ConceptTaggingRobot")
         end
       end
@@ -35,7 +35,7 @@ module CF
           station = CF::Station.new({:type => "work"})
           line.stations station
 
-          worker = CF::RobotWorker.create({:type => "concept_tagging_robot", :settings => {:url => ["{url}"]}})
+          worker = CF::RobotWorker.create({:type => "concept_tagging_robot", :settings => {:url => ["{{url}}"]}})
           line.stations.first.worker = worker
 
           run = CF::Run.create(line, "concept_tagging_robot_run_1", [{"url"=>"www.mosexindex.com"}])
@@ -43,9 +43,9 @@ module CF
           output.first.final_output.first.concept_tagging_of_url.should eql(["Canada", "English language"])
           output.first.final_output.first.concept_tagging_relevance_of_url.should eql([89.5153, 79.0912])
           line.stations.first.worker.class.should eql(CF::RobotWorker)
-          line.stations.first.worker.reward.should eql(1)
+          line.stations.first.worker.reward.should eql(0.5)
           line.stations.first.worker.number.should eql(1)
-          line.stations.first.worker.settings.should eql({:url => ["{url}"]})
+          line.stations.first.worker.settings.should eql({:url => ["{{url}}"]})
           line.stations.first.worker.type.should eql("ConceptTaggingRobot")
         end
       end

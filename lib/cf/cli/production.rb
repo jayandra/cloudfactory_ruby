@@ -26,9 +26,9 @@ module Cf # :nodoc: all
       line_title = line_yaml_dump['title'].parameterize
 
       if title.nil?
-        run_title       = "#{line_title}-#{Time.new.strftime('%y%b%e-%H%M%S')}"
+        run_title       = "#{line_title}-#{Time.new.strftime('%y%b%e-%H%M%S')}".downcase
       else
-        run_title       = "#{title.parameterize}-#{Time.new.strftime('%y%b%e-%H%M%S')}"
+        run_title       = "#{title.parameterize}-#{Time.new.strftime('%y%b%e-%H%M%S')}".downcase
       end
 
       if !options[:input_data].nil?
@@ -47,7 +47,7 @@ module Cf # :nodoc: all
           chosen_file = nil
           choose do |menu|
             menu.header = "Input data files"
-            menu.prompt = "Please choose which file to be used as input data"
+            menu.prompt = "Please choose which file to be used as input data: "
 
             input_files.each do |item|
               menu.choice(extract_name(item)) do
@@ -73,11 +73,10 @@ module Cf # :nodoc: all
       line = CF::Line.info(line_title)
       input_data_file = "#{Dir.pwd}/#{input_data}"
       if line.error.blank?
-        say "Creating a production run with title #{run_title}.", :green
+        say "Creating a production run with title #{run_title}", :green
         run = CF::Run.create(line, run_title, input_data_file)
         if run.errors.blank?
-          say("Run created successfully.", :green)
-          say("View your run at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}\n", :yellow)
+          display_success_run(run)
         else
           say("Error: #{run.errors}", :red)
         end
@@ -86,15 +85,67 @@ module Cf # :nodoc: all
         say("Creating the line: #{line_title}", :green)
         Cf::Line.new.create
         # Now create a production run with the title run_title
-        say "Creating a production run with title #{run_title}.", :green
+        say "Creating a production run with title #{run_title}", :green
         run = CF::Run.create(CF::Line.info(line_title), run_title, input_data_file)
         if run.errors.blank?
-          say("Run created successfully.", :green)
-          say("View your run at http://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}\n", :yellow)
+          display_success_run(run)
         else
           say("Error: #{run.errors}", :red)
         end
       end
     end
+
+    no_tasks do
+      def display_success_run(run)
+        say("Run created successfully.", :green)
+        say("View your production at:\n\thttp://#{CF.account_name}.#{CF.api_url.split("/")[-2]}/runs/#{CF.account_name}/#{run.title}/workerpool_preview\n", :green)
+      end
+    end
+    
+    desc "production list", "list the production runs"
+    method_option :line, :type => :string, :aliases => "-l", :desc => "the title of the line"
+    def list
+      set_target_uri(false)
+      set_api_key
+      CF.account_name = CF::Account.info.name
+      if options['line'].present?
+        runs = CF::Run.all(options['line'].parameterize)
+      else
+        runs = CF::Run.all
+      end
+
+      unless runs.kind_of?(Array)
+        if runs.error.present?
+          say("No Runs\n#{runs.error.message}", :red) and exit(1)
+        end
+      end
+
+      runs.sort! {|a, b| a[:name] <=> b[:name] }
+      runs_table = table do |t|
+        t.headings = ["Run Title", 'URL']
+        runs.each do |run|
+          t << [run.title, "http://#{CF.account_name}.cloudfactory.com/runs/#{CF.account_name}/#{run.title}"]
+        end
+      end
+      say("\n")
+      say(runs_table)
+    end
+    
+    desc "production resume", "resume a paused production run"
+    method_option :run_title, :type => :string, :required => true, :aliases => "-r", :desc => "the title of the run to resume"
+    def resume
+      set_target_uri(false)
+      set_api_key
+      CF.account_name = CF::Account.info.name
+      result = CF::Run.resume(options['run_title'].parameterize)
+
+      if result.error.present?
+        say("Error: #{result.error.message}", :red) and exit(1)
+      end
+
+      # if result.status == "resumed"
+      say("Run with title \"#{result.title}\" is resumed!", :green)
+      # end
+    end    
   end
 end

@@ -274,5 +274,13 @@ module CF
     def delete
       self.class.delete("/lines/#{CF.account_name}/#{self.line_title.downcase}/stations/#{self.index}.json")
     end
+    
+    def to_s
+      if self.type == "TournamentStation"
+        "{:type => #{self.type}, :index => #{self.index}, :line_title => #{self.line_title}, :station_input_formats => #{self.station_input_formats}, :jury_worker => #{self.jury_worker}, auto_judge => #{self.auto_judge}, :errors => #{self.errors}}"
+      else
+        "{:type => #{self.type}, :index => #{self.index}, :line_title => #{self.line_title}, :station_input_formats => #{self.station_input_formats}, :errors => #{self.errors}}"
+      end
+    end
   end
 end

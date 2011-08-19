@@ -27,10 +27,10 @@ module CF
     # You can pass line object instead of passing line title:
     #   run = CF::Run.new(line_object, "run name", file_path)
     def initialize(line, title, input)
-      if line.class == CF::Line || Hashie::Mash
+      if line.class == CF::Line || line.class == Hashie::Mash
         @line = line
-        @line_title = @line.title
-      else
+        @line_title = line.title
+      elsif line.class == String
         @line_title = line
       end
       @title = title
@@ -132,6 +132,36 @@ module CF
         resp.delete(:error)
       end
       return resp
+    end
+    
+    def self.progress(run_title)
+      get("/runs/#{CF.account_name}/#{run_title}/progress.json")
+    end
+    
+    def progress
+      self.class.get("/runs/#{CF.account_name}/#{self.title}/progress.json")
+    end
+    
+    def self.progress_details(run_title)
+      resp = get("/runs/#{CF.account_name}/#{run_title}/details.json")
+      return resp['progress_details']
+    end
+    
+    def progress_details
+      resp = self.class.get("/runs/#{CF.account_name}/#{self.title}/details.json")
+      return resp['progress_details']
+    end
+    
+    def self.all(line_title=nil)
+      if line_title.blank?
+        get("/runs/#{CF.account_name}.json")
+      else
+        get("/lines/#{CF.account_name}/#{line_title}/list_runs.json")
+      end
+    end
+    
+    def self.resume(run_title)
+      post("/runs/#{CF.account_name}/#{run_title}/resume.json")
     end
   end
 end

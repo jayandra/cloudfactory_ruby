@@ -63,5 +63,9 @@ module CF
         @form_field_params = options
       end
     end
+    
+    def to_s
+      "{:id => => #{self.id}, :label => #{self.label}, :field_type => #{self.field_type}, :required => #{self.required}, :errors => #{self.errors}}"
+    end
   end
 end

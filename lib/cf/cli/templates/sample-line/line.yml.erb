@@ -10,6 +10,7 @@
 # api_key: fill_in_your_api_key #(optional)
 
 title: <%= title.underscore.dasherize %>
+public: false
 description: A shiny new assembly line ready for you to customize. Right now it is finding people dates (uncomment and try for fun) but you should just replace everything below accordingly for your line.
 
 # Department to build line in (See http://cloudfactory.com/developers/resources/department.html)
@@ -43,14 +44,14 @@ stations:
 #         instruction: Click the photo link and then enter the person's gender and approximate age in the form below
 #         form_fields:
 #           - label: Gender
-#             field_type: radio_button    # short_answer, long_answer, radio_button, check_box, select_box
+#             field_type: radio_button    # short_answer, long_answer, radio_button, check_box, select_box, date, email, number
 #             required: true
 #             option_values:
 #               - male
 #               - female
 #               - not sure
 #           - label: Age
-#             field_type: select_box      # short_answer, long_answer, radio_button, check_box, select_box
+#             field_type: select_box      # short_answer, long_answer, radio_button, check_box, select_box, date, email, number
 #             required: true
 #             option_values:
 #                - 13 to 18

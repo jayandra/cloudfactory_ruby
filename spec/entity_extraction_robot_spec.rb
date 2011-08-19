@@ -20,7 +20,7 @@ module CF
           output.first.final_output.first.entity_relevances_of_document.should eql([[92.12089999999999, 73.8997, 48.079100000000004, 28.9416, 27.1982, 21.1997]])
           output.first.final_output.first.entity_types_of_document.should eql([["Person", "Person", "Person", "Person", "Country", "Country"]])
           line.stations.first.worker.class.should eql(CF::RobotWorker)
-          line.stations.first.worker.reward.should eql(5)
+          line.stations.first.worker.reward.should eql(0.5)
           line.stations.first.worker.number.should eql(1)
           line.stations.first.worker.settings.should eql({:document => ["Franz Kafka and George Orwell are authors. Ludwig Von Beethoven and Mozart are musicians. China and Japan are countries"]})
         end
@@ -46,7 +46,7 @@ module CF
           output.first.final_output.first.entity_relevances_of_document.should eql([[92.12089999999999, 73.8997, 48.079100000000004, 28.9416, 27.1982, 21.1997]])
           output.first.final_output.first.entity_types_of_document.should eql([["Person", "Person", "Person", "Person", "Country", "Country"]])
           line.stations.first.worker.class.should eql(CF::RobotWorker)
-          line.stations.first.worker.reward.should eql(5)
+          line.stations.first.worker.reward.should eql(0.5)
           line.stations.first.worker.number.should eql(1)
           line.stations.first.worker.settings.should eql({:document => ["Franz Kafka and George Orwell are authors. Ludwig Von Beethoven and Mozart are musicians. China and Japan are countries"]})
         end

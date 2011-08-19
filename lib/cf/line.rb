@@ -37,7 +37,7 @@ module CF
       @stations =[]
       @title = title
       @department_name = department_name
-      @public = options[:public].present? ? options[:public] : false
+      @public = options[:public].present? ? options[:public] : true
       @description = options[:description]
       resp = self.class.post("/lines/#{CF.account_name}.json", {:line => {:title => title, :department_name => department_name, :public => @public, :description => @description}})
       if resp.code != 200
@@ -60,14 +60,6 @@ module CF
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
         else
-          request_general = 
-          {
-            :body => 
-            {
-              :api_key => CF.api_key,
-              :station => {:type => type, :input_formats => @station_input_formats}
-            }
-          }
           if type == "Tournament"
             @jury_worker = stations.jury_worker
             @auto_judge = stations.auto_judge
@@ -81,6 +73,14 @@ module CF
             }
             resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_tournament)
           else
+            request_general = 
+            {
+              :body => 
+              {
+                :api_key => CF.api_key,
+                :station => {:type => type, :input_formats => @station_input_formats}
+              }
+            }
             resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_general)
           end
           station = CF::Station.new()
@@ -157,6 +157,7 @@ module CF
       end
       
     end
+    
     def input_formats=(input_formats_value) # :nodoc:
       @input_formats << input_formats_value
     end
@@ -225,16 +226,61 @@ module CF
     # ===Usage Example:
     #   line = CF::Line.new("Digitize Card", "Survey")
     #   line.destroy
-    def destroy
-      self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json")
+    def destroy(options={})
+      force = options[:force]
+      if !force.nil?
+        resp = self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json", :forced => force)
+      else
+        resp = self.class.delete("/lines/#{CF.account_name}/#{self.title.downcase}.json")
+      end
+      if resp.code != 200
+        self.errors = resp.errors.message
+      end
+      return resp
     end
     
     # ==Deletes a line by passing it's title
     # ===Usage Example:
     #   line = CF::Line.new("line_title", "Survey")
     #   CF::Line.destroy("line_title")
-    def self.destroy(title)
-      delete("/lines/#{CF.account_name}/#{title.downcase}.json")
+    def self.destroy(title, options={})
+      forced = options[:forced]
+      if forced
+        resp = delete("/lines/#{CF.account_name}/#{title.downcase}.json", {:forced => forced})
+      else
+        resp = delete("/lines/#{CF.account_name}/#{title.downcase}.json")
+      end
+    end
+    
+    def self.inspect(line_title)
+      resp = get("/lines/#{CF.account_name}/#{line_title.downcase}/inspect.json")
+      send_resp = resp.to_hash
+      @line_input_formats = []
+      resp.input_formats.each do |l_i|
+        @line_input_formats << l_i.to_hash
+      end
+      send_resp.delete("input_formats")
+      send_resp.merge!("input_formats" => @line_input_formats)
+      @stations = []
+      resp.stations.each do |s|
+        @station_input_formats = []
+        s.input_formats.each do |i|
+          @station_input_formats << i.to_hash
+        end
+        @station_form_fields = []
+        s.form_fields.each do |f|
+          @station_form_fields << f.to_hash
+        end
+        temp_station = s.to_hash
+        temp_station.delete("form_fields")
+        temp_station.merge!("form_fields" => @station_form_fields)
+        temp_station.delete("input_formats")
+        temp_station.merge!("input_formats" => @station_input_formats)
+        @stations << temp_station
+      end
+      send_resp.delete("stations")
+      send_resp.merge!("stations" => @stations)
+      return send_resp
     end
   end
 end

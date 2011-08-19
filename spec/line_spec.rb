@@ -90,7 +90,7 @@ describe CF::Line do
         line.stations.first.form.instruction.should eq("Describe")
         line.stations.first.form.form_fields.first.label.should eq("First Name")
         line.stations.first.form.form_fields.first.field_type.should eq("SA")
-        line.stations.first.form.form_fields.first.required.should eq(true)
+        line.stations.first.form.form_fields.first.required.should eq("true")
       end
     end
   end
@@ -157,24 +157,6 @@ describe CF::Line do
 
   end
 
-  context "Updating a line" do
-    it "updates an existing line" do
-      # WebMock.allow_net_connect!
-      VCR.use_cassette "lines/block/update-line", :record => :new_episodes do
-        line = CF::Line.new("Digitizd-14", "Digitization", {:public => true, :description => "this is description"})
-        line.update({:title => "Newtitle-1", :department_name => "Survey", :description => "this is new description"})
-        updated_line = CF::Line.info(line)
-        updated_line.title.should eql("newtitle-1")
-        updated_line.title.should_not eql("digitizd-14")
-        # department is not updated
-        # updated_line.department_name.should eql("Survey")
-        # updated_line.department_name.should_not eql("Digitization")
-        updated_line.description.should eql("this is new description")
-        updated_line.description.should_not eql("this is description")
-      end
-    end
-  end
-
   context "deleting" do
     it "should delete a line" do
       # WebMock.allow_net_connect!
@@ -223,13 +205,13 @@ describe CF::Line do
         line.stations.first.form.instruction.should eq("Describe")
         line.stations.first.form.form_fields[0].label.should eq("First Name")
         line.stations.first.form.form_fields[0].field_type.should eq("SA")
-        line.stations.first.form.form_fields[0].required.should eq(true)
+        line.stations.first.form.form_fields[0].required.should eq("true")
         line.stations.first.form.form_fields[1].label.should eq("Middle Name")
         line.stations.first.form.form_fields[1].field_type.should eq("SA")
         line.stations.first.form.form_fields[1].required.should eq(nil)
         line.stations.first.form.form_fields[2].label.should eq("Last Name")
         line.stations.first.form.form_fields[2].field_type.should eq("SA")
-        line.stations.first.form.form_fields[2].required.should eq(true)
+        line.stations.first.form.form_fields[2].required.should eq("true")
       end
     end
   end
@@ -265,6 +247,7 @@ describe CF::Line do
       # WebMock.allow_net_connect!
       VCR.use_cassette "lines/plain-ruby/create-form", :record => :new_episodes do
         line = CF::Line.new("Diggard-1", "Digitization")
+        CF::InputFormat.new({:line => line, :name => "image_url", :required => true, :valid_type => "url"})
         station = CF::Station.new({:type => "work"})
         line.stations station
 
@@ -287,9 +270,9 @@ describe CF::Line do
         line.input_formats input_format
         station = CF::Station.new({:type => "work"})
         line.stations station
-        line.stations.first.input_formats.first['name'].should eq("image_url")
-        line.stations.first.input_formats.first['required'].should eq(true)
-        line.stations.first.input_formats.first['valid_type'].should eq("url")
+        line.input_formats.first.name.should eq("image_url")
+        line.input_formats.first.required.should eq(true)
+        line.input_formats.first.valid_type.should eq("url")
       end
     end
 
@@ -297,6 +280,7 @@ describe CF::Line do
       # WebMock.allow_net_connect!
       VCR.use_cassette "lines/plain-ruby/create-form-fields", :record => :new_episodes do
         line = CF::Line.new("Digitized-4", "Digitization")
+        CF::InputFormat.new({:line => line, :name => "image_url", :required => true, :valid_type => "url"})
         station = CF::Station.new({:type => "work"})
         line.stations station
 
@@ -306,20 +290,20 @@ describe CF::Line do
         form = CF::TaskForm.new({:title => "Enter text from a business card image", :instruction => "Describe"})
         line.stations.first.form = form
 
-        form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "SA", :required => "true"})
+        form_fields_1 = CF::FormField.new({:label => "First Name", :field_type => "short_answer", :required => "true"})
         line.stations.first.form.form_fields form_fields_1
-        form_fields_2 = CF::FormField.new({:label => "Middle Name", :field_type => "SA"})
+        form_fields_2 = CF::FormField.new({:label => "Middle Name", :field_type => "short_answer"})
         line.stations.first.form.form_fields form_fields_2
-        form_fields_3 = CF::FormField.new({:label => "Last Name", :field_type => "SA", :required => "true"})
+        form_fields_3 = CF::FormField.new({:label => "Last Name", :field_type => "short_answer", :required => "true"})
         line.stations.first.form.form_fields form_fields_3
 
         line.stations.first.form.form_fields[0].label.should eql("First Name")
-        line.stations.first.form.form_fields[0].field_type.should eq("SA")
+        line.stations.first.form.form_fields[0].field_type.should eq("short_answer")
         line.stations.first.form.form_fields[0].required.should eq(true)
         line.stations.first.form.form_fields[1].label.should eql("Middle Name")
-        line.stations.first.form.form_fields[1].field_type.should eq("SA")
+        line.stations.first.form.form_fields[1].field_type.should eq("short_answer")
         line.stations.first.form.form_fields[2].label.should eql("Last Name")
-        line.stations.first.form.form_fields[2].field_type.should eq("SA")
+        line.stations.first.form.form_fields[2].field_type.should eq("short_answer")
         line.stations.first.form.form_fields[2].required.should eq(true)
       end
     end
@@ -331,7 +315,61 @@ describe CF::Line do
       VCR.use_cassette "lines/plain-ruby/create-line-with-used-title", :record => :new_episodes do
         line = CF::Line.new("new_line", "Digitization")
         line_1 = CF::Line.new("new_line", "Digitization")
-        line_1.errors.should eql("[\"Title is already taken for this account\"]")
+        line_1.errors.should eql(["Title is already taken for this account"])
+      end
+    end
+  end
+  
+  context "delete line whose production run is already created" do
+    it "it should throw error and must be deleted if forced true is passed" do
+      VCR.use_cassette "lines/block/delete-line-of-active-run", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+        line = CF::Line.create("delete_line_of_run","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+          CF::InputFormat.new({:line => l, :name => "Website", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "short_answer", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "short_answer"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "short_answer", :required => "true"})
+            end
+          end
+        end
+
+        run = CF::Run.create(line, "delete_line_of_run_run", File.expand_path("../../fixtures/input_data/test.csv", __FILE__))
+        
+        delete = CF::Line.destroy("delete_line_of_run")
+        delete.error.message.should eql("cannot delete the line, Active runs exists. use forced delete if you still want to delete the line.")
+        delete.code.should_not eql(200)
+        
+        forced_delete = CF::Line.destroy("delete_line_of_run", :forced => true)
+
+        search_line = CF::Line.find("delete_line_of_run")
+        search_line.code.should eql(404)
+        search_line.error.message.should eql("Line document not found using selector: {:public=>true, :title=>\"delete_line_of_run\"}")
+      end
+    end
+  end
+  
+  context "returns all the associated elements of line" do
+    it "it give details of line" do
+      VCR.use_cassette "lines/block/line-details", :record => :new_episodes do
+        # WebMock.allow_net_connect!
+        line = CF::Line.create("line_details","Digitization") do |l|
+          CF::InputFormat.new({:line => l, :name => "Company", :required => true, :valid_type => "general"})
+          CF::Station.create({:line => l, :type => "work"}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 1, :reward => 20})
+            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "short_answer", :required => "true"})
+            end
+          end
+        end
+        line_details = CF::Line.inspect("line_details")
+        line_input_format_id = line_details['input_formats'].first['id']
+        from_field_id = line_details['stations'].first['form_fields'].first['id']
+        station_input_format_id = line_details['stations'].first['input_formats'].first['id']
+        line_details.should eql({"title"=>"line_details", "description"=>"", "public"=>false, "department"=>{"name"=>"Digitization"}, "app"=>{"name"=>"default", "email"=>"manish.das@sprout-technology.com", "notification_url"=>"http://www.cloudfactory.com"}, "code"=>200, "input_formats"=>[{"id"=>"#{line_input_format_id}", "name"=>"Company", "required"=>true, "valid_type"=>"general", "source_station_index"=>0}], "stations"=>[{"index"=>1, "type"=>"WorkStation", "worker"=>{"number"=>1, "reward"=>20, "type"=>"HumanWorker", "stat_badge"=>{"approval_rating"=>80, "abandonment_rate"=>30, "country"=>nil}}, "form"=>{"title"=>"Enter text from a business card image", "instruction"=>"Describe"}, "form_fields"=>[{"id"=>"#{from_field_id}", "label"=>"First Name", "field_type"=>"short_answer", "hint"=>nil, "required"=>true, "unique"=>nil, "hide_label"=>nil, "value"=>nil}], "input_formats"=>[{"id"=>"#{station_input_format_id}", "name"=>"Company", "required"=>true, "valid_type"=>"general", "source_station_index"=>0}]}]})
       end
     end
   end

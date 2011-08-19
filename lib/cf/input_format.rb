@@ -39,6 +39,9 @@ module CF
       if !@station.nil? or !@line.nil?
         line_title = @station.nil? ? @line.title : @station.line_title
         resp = self.class.post("/lines/#{CF.account_name}/#{@line.title.downcase}/input_formats.json", :input_format => {:name => @name, :required => @required, :valid_type => @valid_type})
+        resp.to_hash.each_pair do |k,v|
+          self.send("#{k}=",v) if self.respond_to?(k)
+        end
         if resp.code != 200
           self.errors = resp.error.message
         end
@@ -77,6 +80,10 @@ module CF
     # returns an array of input headers associated with line
     def self.all(line)
       get("/lines/#{CF.account_name}/#{line.title.downcase}/input_formats.json")
+    end
+    
+    def to_s
+      "{:id => #{self.id}, :name => #{self.name}, :required => #{self.required}, :valid_type => #{self.valid_type}, :errors => #{self.errors}}"
     end
   end
 end

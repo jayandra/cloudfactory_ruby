@@ -88,5 +88,9 @@ module CF
     def self.create(options)
       RobotWorker.new(options)
     end
+    
+    def to_s
+      "{:number => #{self.number}, :reward => #{self.reward}, :type => #{self.type}, :settings => #{self.settings}, :errors => #{self.errors}}"
+    end
   end
 end
