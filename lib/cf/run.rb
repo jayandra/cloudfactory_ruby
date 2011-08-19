@@ -78,18 +78,7 @@ module CF
     #   run_object.final_output
     def final_output
       resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output.json")
-      @final_output =[]
-      resp['output'].each do |r|
-        result = FinalOutput.new()
-        r.to_hash.each_pair do |k,v|
-          result.send("#{k}=",v) if result.respond_to?(k)
-        end
-        if result.final_output == nil
-          result.final_output = resp.output
-        end
-        @final_output << result
-      end
-      return @final_output
+      return resp['output']
     end
 
     # ==Returns Final Output of production Run
