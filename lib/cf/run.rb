@@ -78,7 +78,13 @@ module CF
     #   run_object.final_output
     def final_output
       resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output.json")
-      return resp['output']
+      output = []
+      if resp['output'].class == Array
+        resp['output'].each do |o|
+          output << o.to_hash
+        end
+      end
+      return output
     end
 
     # ==Returns Final Output of production Run
@@ -86,7 +92,13 @@ module CF
     #   CF::Run.final_output("run_title")
     def self.final_output(title)
       resp = get("/runs/#{CF.account_name}/#{title.downcase}/output.json")
-      return resp['output']
+      output = []
+      if resp['output'].class == Array
+        resp['output'].each do |o|
+          output << o.to_hash
+        end
+      end
+      return output
     end
     
     # ==Returns Output of production Run for any specific Station and for given Run Title
@@ -97,7 +109,13 @@ module CF
       station_no = options[:station]
       title = options[:title]
       resp = get("/runs/#{CF.account_name}/#{title.downcase}/output/#{station_no}.json")
-      return resp['output']
+      output = []
+      if resp['output'].class == Array
+        resp['output'].each do |o|
+          output << o.to_hash
+        end
+      end
+      return output
     end
     
     # ==Returns Output of Run object for any specific Station
@@ -107,7 +125,13 @@ module CF
     def output(options={})
       station_no = options[:station]
       resp = self.class.get("/runs/#{CF.account_name}/#{self.title.downcase}/output/#{station_no}.json")
-      return resp['output'].first.to_hash
+      output = []
+      if resp['output'].class == Array
+        resp['output'].each do |o|
+          output << o.to_hash
+        end
+      end
+      return output
     end
     
     # ==Searches Run for the given "run_title"
