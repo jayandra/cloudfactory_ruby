@@ -173,12 +173,13 @@ module Cf # :nodoc: all
           type = station_file['station']['station_type']
           index = station_file['station']['station_index']
           input_formats_for_station = station_file['station']['input_formats']
+          batch_size = station_file['station']['batch_size']
           if type == "tournament"
             jury_worker = station_file['station']['jury_worker']
             auto_judge = station_file['station']['auto_judge']
-            station_params = {:line => line, :type => type, :jury_worker => jury_worker, :auto_judge => auto_judge, :input_formats => input_formats_for_station}
+            station_params = {:line => line, :type => type, :jury_worker => jury_worker, :auto_judge => auto_judge, :input_formats => input_formats_for_station, :batch_size => batch_size}
           else
-            station_params = {:line => line, :type => type, :input_formats => input_formats_for_station}
+            station_params = {:line => line, :type => type, :input_formats => input_formats_for_station, :batch_size => batch_size}
           end
           station = CF::Station.create(station_params) do |s|
             say "Adding Station #{index}: #{s.type}", :green

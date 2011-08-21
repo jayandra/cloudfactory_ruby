@@ -56,6 +56,7 @@ module CF
     def stations stations = nil
       if stations
         type = stations.type
+        @batch_size = stations.batch_size
         @station_input_formats = stations.station_input_formats
         if type == "Improve" && self.stations.size < 1
           raise ImproveStationNotAllowed.new("You cannot add Improve Station as a first station of a line")
@@ -63,30 +64,53 @@ module CF
           if type == "Tournament"
             @jury_worker = stations.jury_worker
             @auto_judge = stations.auto_judge
-            request_tournament = 
-            {
-              :body => 
+            if @batch_size.nil?
+              request_tournament = 
               {
-                :api_key => CF.api_key,
-                :station => {:type => type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
+                :body => 
+                {
+                  :api_key => CF.api_key,
+                  :station => {:type => type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
+                }
               }
-            }
+            else
+              request_tournament = 
+              {
+                :body => 
+                {
+                  :api_key => CF.api_key,
+                  :station => {:type => type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats, :batch_size => @batch_size}
+                }
+              }
+            end
             resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_tournament)
           else
-            request_general = 
-            {
-              :body => 
+            if @batch_size.nil?
+              request_general = 
               {
-                :api_key => CF.api_key,
-                :station => {:type => type, :input_formats => @station_input_formats}
+                :body => 
+                {
+                  :api_key => CF.api_key,
+                  :station => {:type => type, :input_formats => @station_input_formats}
+                }
               }
-            }
+            else
+              request_general = 
+              {
+                :body => 
+                {
+                  :api_key => CF.api_key,
+                  :station => {:type => type, :input_formats => @station_input_formats, :batch_size => @batch_size}
+                }
+              }
+            end
             resp = HTTParty.post("#{CF.api_url}#{CF.api_version}/lines/#{CF.account_name}/#{self.title.downcase}/stations.json",request_general)
           end
           station = CF::Station.new()
           resp.to_hash.each_pair do |k,v|
             station.send("#{k}=",v) if station.respond_to?(k)
           end
+          station.batch_size = @batch_size
           station.line = self
           station.line_title = self.title
           if resp.response.code != "200"

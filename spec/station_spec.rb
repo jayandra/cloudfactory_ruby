@@ -53,8 +53,8 @@ describe CF::Station do
           end
         end
         line.stations.first.type.should eq("WorkStation")
-        line.stations.first.worker.number.should == 2
-        line.stations.first.worker.reward.should == 20
+        line.stations.first.worker.number.should eql(2)
+        line.stations.first.worker.reward.should eql(20)
         line.stations.first.form.title.should eq("Enter text from a business card image")
         line.stations.first.form.instruction.should eq("Describe")
         line.stations.first.form.form_fields[0].label.should eq("First Name")
@@ -248,6 +248,41 @@ describe CF::Station do
         end
         line.stations.first.type.should eq("Tournament")
         line.stations.first.errors.should eql("[\"Jury worker can't be blank\"]")
+      end
+    end
+  end
+  
+  context "create station with batch size option" do
+    it "for work station in block DSL way" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/block/create-with-batch-size", :record => :new_episodes do
+        line = CF::Line.create("batch_size_line", "Digitization") do
+          CF::InputFormat.new({:line => self, :name => "image_url", :required => true, :valid_type => "url"})
+          CF::Station.create({:line => self, :type => "work", :batch_size => 3}) do |s|
+            CF::HumanWorker.new({:station => s, :number => 2, :reward => 20})
+            CF::TaskForm.create({:station => s, :title => "Enter text from a business card image", :instruction => "Describe"}) do |i|
+              CF::FormField.new({:form => i, :label => "First Name", :field_type => "short_answer", :required => "true"})
+              CF::FormField.new({:form => i, :label => "Middle Name", :field_type => "short_answer"})
+              CF::FormField.new({:form => i, :label => "Last Name", :field_type => "short_answer", :required => "true"})
+            end
+          end
+        end
+        line.stations.first.type.should eql("WorkStation")
+        line.stations.first.batch_size.should eql(3)
+        line.stations.first.worker.number.should eql(2)
+        line.stations.first.worker.reward.should eql(20)
+      end
+    end
+    
+    it "for work station in Plain Ruby way" do
+      # WebMock.allow_net_connect!
+      VCR.use_cassette "stations/plain-ruby/create-with-batch-size", :record => :new_episodes do
+        line = CF::Line.new("batch_size_line_1", "Digitization")
+        CF::InputFormat.new({:line => line, :name => "image_url", :required => true, :valid_type => "url"})
+        station = CF::Station.new({:type => "work", :batch_size => 3})
+        line.stations station
+        line.stations.first.type.should eql("WorkStation")
+        line.stations.first.batch_size.should eql(3)
       end
     end
   end

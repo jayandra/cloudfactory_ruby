@@ -25,7 +25,7 @@ module CF
     attr_accessor :auto_judge
     
     # Contains Error Message if any
-    attr_accessor :errors
+    attr_accessor :errors, :batch_size
 
     # ==Initializes a new station
     # ===Usage Example:
@@ -40,22 +40,42 @@ module CF
       @auto_judge = options[:auto_judge]
       @station_input_formats = options[:input_formats]
       @line_instance = options[:line]
-      request_general = 
-      {
-        :body => 
+      @batch_size = options[:batch_size]
+      if @batch_size.nil?
+        request_general = 
         {
-          :api_key => CF.api_key,
-          :station => {:type => @type, :input_formats => @station_input_formats}
+          :body => 
+          {
+            :api_key => CF.api_key,
+            :station => {:type => @type, :input_formats => @station_input_formats}
+          }
         }
-      }
-      request_tournament = 
-      {
-        :body => 
+        request_tournament = 
         {
-          :api_key => CF.api_key,
-          :station => {:type => @type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
+          :body => 
+          {
+            :api_key => CF.api_key,
+            :station => {:type => @type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats}
+          }
         }
-      }
+      else
+        request_general = 
+        {
+          :body => 
+          {
+            :api_key => CF.api_key,
+            :station => {:type => @type, :input_formats => @station_input_formats, :batch_size => @batch_size}
+          }
+        }
+        request_tournament = 
+        {
+          :body => 
+          {
+            :api_key => CF.api_key,
+            :station => {:type => @type, :jury_worker => @jury_worker, :auto_judge => @auto_judge, :input_formats => @station_input_formats, :batch_size => @batch_size}
+          }
+        }
+      end
       if @line_title
         if @type == "Improve"
           line = options[:line]
